@@ -67,6 +67,7 @@ export const initializeDatabase = Effect.gen(function* () {
       criteria_json TEXT NOT NULL, revealed_turn_count INTEGER NOT NULL DEFAULT 0,
       scored_turn_count INTEGER NOT NULL DEFAULT 0, is_processing INTEGER NOT NULL DEFAULT 0,
       elapsed_ms INTEGER NOT NULL DEFAULT 0, processing_latency_ms INTEGER,
+      request_started_at TEXT, request_index INTEGER NOT NULL DEFAULT 0,
       evaluation_json TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, error TEXT
     )`,
     `CREATE TABLE IF NOT EXISTS live_snapshots (
@@ -76,13 +77,20 @@ export const initializeDatabase = Effect.gen(function* () {
     )`,
   ]
   for (const statement of statements) yield* sql.unsafe(statement)
+  const liveColumns = rows(yield* sql.unsafe("PRAGMA table_info(live_sessions)"))
+  if (!liveColumns.some(({ name }) => name === "request_started_at")) {
+    yield* sql.unsafe("ALTER TABLE live_sessions ADD COLUMN request_started_at TEXT")
+  }
+  if (!liveColumns.some(({ name }) => name === "request_index")) {
+    yield* sql.unsafe("ALTER TABLE live_sessions ADD COLUMN request_index INTEGER NOT NULL DEFAULT 0")
+  }
 
   // A process exit during a demo run must not leave permanently "processing" data.
   yield* sql`UPDATE calls SET status = 'pending', error = NULL WHERE status = 'processing'`
   yield* sql`UPDATE runs SET status = 'failed', completed_at = ${now()} WHERE status IN ('queued', 'running')`
   yield* sql`UPDATE live_sessions
     SET status = CASE WHEN status = 'playing' THEN 'paused' ELSE status END,
-      is_processing = 0, updated_at = ${now()}
+      is_processing = 0, request_started_at = NULL, updated_at = ${now()}
     WHERE status = 'playing' OR is_processing = 1`
 
   for (const call of seedCalls) {
@@ -394,6 +402,8 @@ export const getLiveSession = (id: string) =>
       isProcessing: Boolean(row.is_processing),
       elapsedMs: Number(row.elapsed_ms),
       processingLatencyMs: row.processing_latency_ms == null ? null : Number(row.processing_latency_ms),
+      requestStartedAt: row.request_started_at == null ? null : String(row.request_started_at),
+      requestIndex: Number(row.request_index),
       transcript: allTurns.slice(0, revealed),
       evaluation: row.evaluation_json == null ? null : JSON.parse(String(row.evaluation_json)),
       snapshots,
@@ -423,10 +433,11 @@ export const revealLiveTurn = (id: string) =>
     return yield* getLiveSession(id)
   })
 
-export const beginLiveScoring = (id: string, generation: number) =>
+export const beginLiveScoring = (id: string, generation: number, requestStartedAt = now()) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
-    yield* sql`UPDATE live_sessions SET is_processing = 1, updated_at = ${now()}
+    yield* sql`UPDATE live_sessions SET is_processing = 1, request_started_at = ${requestStartedAt},
+      request_index = request_index + 1, updated_at = ${requestStartedAt}
       WHERE id = ${id} AND generation = ${generation}`
   })
 
@@ -452,15 +463,22 @@ export const saveLiveSnapshot = (
     const isFinal = turnCount >= total
     yield* sql`UPDATE live_sessions SET scored_turn_count = ${turnCount}, is_processing = 0,
       processing_latency_ms = ${latencyMs}, evaluation_json = ${JSON.stringify(evaluation)},
+      request_started_at = NULL,
       status = ${isFinal ? "completed" : String(current.status)}, updated_at = ${timestamp}, error = NULL
       WHERE id = ${id} AND generation = ${generation}`
     return true
   })
 
-export const failLiveScoring = (id: string, generation: number, error: string) =>
+export const failLiveScoring = (
+  id: string,
+  generation: number,
+  error: string,
+  processingLatencyMs: number | null = null,
+) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
     yield* sql`UPDATE live_sessions SET status = 'failed', is_processing = 0, error = ${error},
+      request_started_at = NULL, processing_latency_ms = ${processingLatencyMs},
       updated_at = ${now()} WHERE id = ${id} AND generation = ${generation}`
   })
 
@@ -470,6 +488,7 @@ export const resetLiveSession = (id: string) =>
     yield* sql`UPDATE live_sessions SET status = 'ready', generation = generation + 1,
       revealed_turn_count = 0, scored_turn_count = 0, is_processing = 0, elapsed_ms = 0,
       processing_latency_ms = NULL, evaluation_json = NULL, updated_at = ${now()}, error = NULL
+      , request_started_at = NULL, request_index = 0
       WHERE id = ${id}`
     return yield* getLiveSession(id)
   })

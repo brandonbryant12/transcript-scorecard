@@ -41,6 +41,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
     if (disposed || inFlight.has(id)) return
     inFlight.add(id)
     let generation: number | undefined
+    let providerLatencyMs: number | null = null
     try {
       const session = await runtime.runPromise(getLiveSession(id))
       if (!session || session.status === "failed" || session.status === "completed") {
@@ -52,8 +53,6 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
 
       generation = session.generation
       const turnCount = session.revealedTurnCount
-      const started = Date.now()
-      await runtime.runPromise(beginLiveScoring(id, generation))
       const [call, criteria] = await Promise.all([
         runtime.runPromise(getCall(session.callId)),
         runtime.runPromise(getLiveCriteria(id)),
@@ -67,6 +66,12 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
           apiKey,
           undefined,
           { revealedTurnCount: turnCount, totalTurns: session.totalTurns },
+          {
+            onStart: (startedAt) => runtime.runPromise(beginLiveScoring(id, generation!, startedAt)),
+            onComplete: (latencyMs) => {
+              providerLatencyMs = latencyMs
+            },
+          },
         ),
       )
       const applied = await runtime.runPromise(
@@ -75,7 +80,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
           generation,
           turnCount,
           { overallScore: evaluation.overallScore, criteria: evaluation.criteria },
-          Date.now() - started,
+          evaluation.providerLatencyMs,
         ),
       )
       if (applied && turnCount === session.totalTurns) {
@@ -85,7 +90,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
       }
     } catch (cause) {
       if (generation !== undefined) {
-        await runtime.runPromise(failLiveScoring(id, generation, publicError(cause)))
+        await runtime.runPromise(failLiveScoring(id, generation, publicError(cause), providerLatencyMs))
       }
     } finally {
       inFlight.delete(id)

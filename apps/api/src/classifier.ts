@@ -2,6 +2,11 @@ import { choice, score, TypeSafeClient, type Question, type Questions } from "@t
 import { computeWeightedScore, type CallDetail, type Criterion, type Evaluation } from "@scorecard/domain"
 import { Effect, Schema } from "effect"
 
+export interface ProviderTimingHooks {
+  readonly onStart?: (startedAt: string) => void | Promise<void>
+  readonly onComplete?: (latencyMs: number) => void | Promise<void>
+}
+
 const WireAnswer = Schema.Union(
   Schema.Struct({
     type: Schema.Literal("score"),
@@ -30,6 +35,7 @@ export const classifyWithTypeSafe = (
   apiKey: string,
   fetchImplementation?: typeof fetch,
   liveContext?: { readonly revealedTurnCount: number; readonly totalTurns: number },
+  providerTiming?: ProviderTimingHooks,
 ) =>
   Effect.tryPromise({
     try: async () => {
@@ -70,32 +76,42 @@ export const classifyWithTypeSafe = (
         logLevel: "warn",
         ...(fetchImplementation ? { fetch: fetchImplementation } : {}),
       })
-      const rawResponse = await client.systemOne({
-        model: "jev-latest",
-        state: {
-          call: {
-            subject: call.subject,
-            customer_name: call.customerName,
-            employee_name: call.agentName,
-            transcript: call.transcript.map(({ id, speaker, text }) => ({ id, speaker, text })),
+      const requestStartedAt = new Date().toISOString()
+      await providerTiming?.onStart?.(requestStartedAt)
+      const providerStarted = performance.now()
+      let rawResponse: unknown
+      let providerLatencyMs = 0
+      try {
+        rawResponse = await client.systemOne({
+          model: "jev-latest",
+          state: {
+            call: {
+              subject: call.subject,
+              customer_name: call.customerName,
+              employee_name: call.agentName,
+              transcript: call.transcript.map(({ id, speaker, text }) => ({ id, speaker, text })),
+            },
+            evaluation_context: {
+              purpose: "Quality assurance scorecard for a customer support employee",
+              evidence_rule: "Base every judgment only on the supplied transcript",
+              ...(liveContext
+                ? {
+                    assessment_stage:
+                      liveContext.revealedTurnCount === liveContext.totalTurns ? "final" : "provisional",
+                    revealed_turns: liveContext.revealedTurnCount,
+                    total_turns: liveContext.totalTurns,
+                    guidance:
+                      "For a provisional assessment, score only the behavior shown so far. Do not assume how the rest of the call unfolds.",
+                  }
+                : {}),
+            },
           },
-          evaluation_context: {
-            purpose: "Quality assurance scorecard for a customer support employee",
-            evidence_rule: "Base every judgment only on the supplied transcript",
-            ...(liveContext
-              ? {
-                  assessment_stage:
-                    liveContext.revealedTurnCount === liveContext.totalTurns ? "final" : "provisional",
-                  revealed_turns: liveContext.revealedTurnCount,
-                  total_turns: liveContext.totalTurns,
-                  guidance:
-                    "For a provisional assessment, score only the behavior shown so far. Do not assume how the rest of the call unfolds.",
-                }
-              : {}),
-          },
-        },
-        questions: questions as Questions,
-      })
+          questions: questions as Questions,
+        })
+      } finally {
+        providerLatencyMs = Math.max(0, Math.round(performance.now() - providerStarted))
+        await providerTiming?.onComplete?.(providerLatencyMs)
+      }
       const response = await Schema.decodeUnknownPromise(WireResult)(rawResponse)
 
       const results = enabled.map((criterion) => {
@@ -145,7 +161,9 @@ export const classifyWithTypeSafe = (
         outputTokens: response.usage.output_tokens,
         createdAt: new Date().toISOString(),
         criteria: results,
-      } satisfies Evaluation
+        providerLatencyMs,
+        requestStartedAt,
+      } satisfies Evaluation & { readonly providerLatencyMs: number; readonly requestStartedAt: string }
     },
     catch: (cause) => (cause instanceof Error ? cause : new Error(String(cause))),
   })

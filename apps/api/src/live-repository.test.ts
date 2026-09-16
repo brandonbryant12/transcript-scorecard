@@ -2,8 +2,9 @@ import { mkdtempSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { SqliteClient } from "@effect/sql-sqlite-node"
+import { SqlClient } from "@effect/sql"
 import type { LiveEvaluation } from "@scorecard/domain"
-import { ManagedRuntime } from "effect"
+import { Effect, ManagedRuntime } from "effect"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
   beginLiveScoring,
@@ -96,6 +97,56 @@ describe("live session persistence", () => {
       evaluation: null,
       snapshots: [],
     })
+  })
+
+  it("anchors each provider request to a server timestamp and preserves its measured duration", async () => {
+    const created = await runtime.runPromise(createLiveSession("call-1001"))
+    const id = created!.id
+    const generation = created!.generation
+    const startedAt = "2026-09-16T20:15:30.000Z"
+
+    await runtime.runPromise(beginLiveScoring(id, generation, startedAt))
+    const running = await runtime.runPromise(getLiveSession(id))
+    expect(running).toMatchObject({
+      isProcessing: true,
+      requestStartedAt: startedAt,
+      requestIndex: 1,
+    })
+
+    await runtime.runPromise(saveLiveSnapshot(id, generation, 1, evaluation(72), 187))
+    const settled = await runtime.runPromise(getLiveSession(id))
+    expect(settled).toMatchObject({
+      isProcessing: false,
+      requestStartedAt: null,
+      requestIndex: 1,
+      processingLatencyMs: 187,
+    })
+
+    await runtime.runPromise(resetLiveSession(id))
+    const reset = await runtime.runPromise(getLiveSession(id))
+    expect(reset).toMatchObject({ requestStartedAt: null, requestIndex: 0 })
+  })
+
+  it("adds provider timing columns to an existing live session database", async () => {
+    const legacyFilename = join(directory, "legacy.sqlite")
+    let legacyRuntime = makeRuntime(legacyFilename)
+    await legacyRuntime.runPromise(Effect.gen(function* () {
+      const sql = yield* SqlClient.SqlClient
+      yield* sql.unsafe(`CREATE TABLE live_sessions (
+        id TEXT PRIMARY KEY, call_id TEXT NOT NULL, status TEXT NOT NULL, generation INTEGER NOT NULL,
+        criteria_json TEXT NOT NULL, revealed_turn_count INTEGER NOT NULL DEFAULT 0,
+        scored_turn_count INTEGER NOT NULL DEFAULT 0, is_processing INTEGER NOT NULL DEFAULT 0,
+        elapsed_ms INTEGER NOT NULL DEFAULT 0, processing_latency_ms INTEGER,
+        evaluation_json TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, error TEXT
+      )`)
+    }))
+    await legacyRuntime.dispose()
+
+    legacyRuntime = makeRuntime(legacyFilename)
+    await legacyRuntime.runPromise(initializeDatabase)
+    const created = await legacyRuntime.runPromise(createLiveSession("call-1001"))
+    expect(created).toMatchObject({ requestStartedAt: null, requestIndex: 0 })
+    await legacyRuntime.dispose()
   })
 
   it("recovers an active session as paused after API process initialization", async () => {

@@ -48,6 +48,36 @@ function StudioBlank({ message }: { message: string }) {
   return <div className="studio-blank"><Sparkles size={24} /><strong>Ready to listen</strong><p>{message}</p></div>;
 }
 
+function LatencyPanel({ session }: { session: LiveSessionDetail | null }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!session?.requestStartedAt) return;
+    setNow(Date.now());
+    const timer = window.setInterval(() => setNow(Date.now()), 50);
+    return () => window.clearInterval(timer);
+  }, [session?.requestStartedAt]);
+
+  const completed = session?.snapshots.slice(-6) ?? [];
+  const latencies = session?.snapshots.map((snapshot) => snapshot.latencyMs) ?? [];
+  const average = latencies.length ? latencies.reduce((sum, latency) => sum + latency, 0) / latencies.length : null;
+  const sorted = [...latencies].sort((a, b) => a - b);
+  const p95 = sorted.length ? sorted[Math.max(0, Math.ceil(sorted.length * .95) - 1)] : null;
+  const last = session?.processingLatencyMs ?? completed.at(-1)?.latencyMs ?? null;
+  const running = session?.requestStartedAt ? Math.max(0, now - Date.parse(session.requestStartedAt)) : null;
+  const scale = Math.max(1, ...completed.map((snapshot) => snapshot.latencyMs), running ?? 0);
+
+  return <article className={`panel latency-panel ${running !== null ? "in-flight" : ""}`}>
+    <div className="latency-heading"><span><Zap size={14} />TypeSafe round trip</span><small>Server measured · polling excluded</small></div>
+    <div className="latency-main"><strong>{running === null && last === null ? "—" : Math.round(running ?? last ?? 0)}{running !== null || last !== null ? <i>ms</i> : null}</strong><span>{running !== null ? `Elapsed (live) · request #${session?.requestIndex}` : last === null ? "Awaiting first request" : session?.status === "failed" ? "Failed provider call" : "Latest provider call"}</span></div>
+    <div className="latency-history" aria-label="Recent TypeSafe request latencies">
+      {completed.map((snapshot) => <div key={snapshot.sequence} title={`Request #${snapshot.sequence}: ${snapshot.latencyMs}ms`}><i style={{ height: `${Math.max(12, snapshot.latencyMs / scale * 100)}%` }} /><span>#{snapshot.sequence}<b>{snapshot.latencyMs}ms</b></span></div>)}
+      {running !== null ? <div className="active" title={`Request #${session?.requestIndex}: ${Math.round(running)}ms and running`}><i style={{ height: `${Math.max(12, running / scale * 100)}%` }} /><span>#{session?.requestIndex}<b>{Math.round(running)}ms</b></span></div> : null}
+      {!completed.length && running === null ? <p>No provider calls yet</p> : null}
+    </div>
+    <div className="latency-stats"><span>Avg <b>{average === null ? "—" : `${Math.round(average)}ms`}</b></span><span>P95 <b>{p95 === null ? "—" : `${Math.round(p95)}ms`}</b></span><span>Scored <b>{latencies.length}</b></span></div>
+  </article>;
+}
+
 export function LiveStudio() {
   const [calls, setCalls] = useState<CallSummary[] | null>(null);
   const [criteria, setCriteria] = useState<Criterion[]>([]);
@@ -181,11 +211,14 @@ export function LiveStudio() {
       </article>
       <div className="scoring-column">
         <article className={`panel live-score-card ${session?.isProcessing ? "processing" : ""}`}>
-          <div className="score-orbit"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="51"/><circle className="score-progress" cx="60" cy="60" r="51" style={{ strokeDashoffset: 320 - 3.2 * (currentScore ?? 0), stroke: currentScore === null ? "#96aaa6" : scoreColor(currentScore) }} /></svg><div><strong>{currentScore === null ? "—" : Math.round(currentScore)}</strong><span>live score</span></div></div>
+          <div className="score-orbit"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="51"/><circle className="score-progress" cx="60" cy="60" r="51" style={{ strokeDashoffset: 320 - 3.2 * (currentScore ?? 0), stroke: currentScore === null ? "#96aaa6" : scoreColor(currentScore) }} /></svg><div><strong>{currentScore === null ? "—" : Math.round(currentScore)}</strong><span>{session?.status === "completed" ? "final score" : "live score"}</span></div></div>
           <div className="score-copy"><p className="eyebrow">Weighted QA score</p><h2>{session?.status === "completed" ? "Final result" : session?.isProcessing ? "Recalculating…" : currentScore === null ? "Awaiting first score" : "Latest snapshot"}</h2>{scoreDelta !== null ? <span className={`score-delta ${scoreDelta >= 0 ? "positive" : "negative"}`}>{scoreDelta >= 0 ? "+" : ""}{scoreDelta.toFixed(1)} since last snapshot</span> : <span className="score-delta neutral">Delta appears after the next snapshot</span>}</div>
           {session?.isProcessing ? <span className="processing-sheen" /> : null}
         </article>
-        <article className="panel formula-card"><div className="formula-head"><span><Gauge size={15} />Live formula</span><small>Σ(weight × score) ÷ Σweight</small></div>{formula.terms.length ? <div className="formula-expression"><b>(</b>{formula.terms.map((term, index) => <span key={term.name}>{index > 0 ? <b>+</b> : null}<i>{term.weight} × {term.score === null ? "—" : term.score.toFixed(1)}</i></span>)}<b>) ÷ {formula.totalWeight}</b><strong>= {currentScore === null ? "—" : currentScore.toFixed(1)}</strong></div> : <p>Loading the active scorecard…</p>}</article>
+        <div className="studio-insights">
+          <article className="panel formula-card"><div className="formula-head"><span><Gauge size={15} />Live formula</span><small>Σ(weight × score) ÷ Σweight</small></div>{formula.terms.length ? <div className="formula-expression"><b>(</b>{formula.terms.map((term, index) => <span key={term.name}>{index > 0 ? <b>+</b> : null}<i>{term.weight} × {term.score === null ? "—" : term.score.toFixed(1)}</i></span>)}<b>) ÷ {formula.totalWeight}</b><strong>= {currentScore === null ? "—" : currentScore.toFixed(1)}</strong></div> : <p>Loading the active scorecard…</p>}</article>
+          <LatencyPanel session={session} />
+        </div>
         <div className="live-criteria">
           {criteria.length ? criteria.map((configured) => {
             const criterion = session?.evaluation?.criteria.find((result) => result.criterionId === configured.id);

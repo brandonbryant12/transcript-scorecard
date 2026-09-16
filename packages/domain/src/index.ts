@@ -155,6 +155,8 @@ export const LiveSessionDetail = Schema.Struct({
   isProcessing: Schema.Boolean,
   elapsedMs: Schema.Number,
   processingLatencyMs: Schema.NullOr(Schema.Number),
+  requestStartedAt: Schema.NullOr(Schema.String),
+  requestIndex: Schema.Number,
   transcript: Schema.Array(TranscriptTurn),
   evaluation: Schema.NullOr(LiveEvaluation),
   snapshots: Schema.Array(LiveSnapshot),

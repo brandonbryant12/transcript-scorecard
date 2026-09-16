@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx --env-file-if-exists=../../.env watch src/main.ts",
+    "dev": "tsx watch --env-file-if-exists=../../.env src/main.ts",
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "start": "tsx --env-file-if-exists=../../.env src/main.ts",

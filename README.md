@@ -42,6 +42,8 @@ Open [http://localhost:5173](http://localhost:5173). The API listens on [http://
 
 The default SQLite database is created automatically at `apps/api/data/scorecard.sqlite` and is ignored by Git.
 
+The live studio highlights the server-measured TypeSafe SDK round-trip duration for each successful scoring request, with recent request timings, average, and P95 latency. A running timer appears when an in-flight request is observed. Browser polling delay is excluded from completed timings; SDK retries, if any, are included.
+
 Try **Cannot connect smart hub** for a strong opening followed by an accuracy drop, or **Duplicate subscription charge** for a rough opening followed by recovery. All calls are fictional; scores come from real TypeSafe API requests and may vary. Replays consume API usage. This local demo has no authentication.
 
 ## Checks

@@ -6,6 +6,8 @@ import { classifyWithTypeSafe } from "./classifier"
 describe("TypeSafe classifier adapter", () => {
   it("sends structured state with score and evidence questions", async () => {
     let requestBody: Record<string, unknown> | undefined
+    let providerStartedAt: string | undefined
+    let providerLatencyMs: number | undefined
     const fakeFetch: typeof fetch = async (_input, init) => {
       requestBody = JSON.parse(String(init?.body)) as Record<string, unknown>
       return new Response(JSON.stringify({
@@ -40,7 +42,18 @@ describe("TypeSafe classifier adapter", () => {
     }
 
     const result = await Effect.runPromise(
-      classifyWithTypeSafe(call, [criterion], "run-test", "secret-never-serialized", fakeFetch),
+      classifyWithTypeSafe(
+        call,
+        [criterion],
+        "run-test",
+        "secret-never-serialized",
+        fakeFetch,
+        undefined,
+        {
+          onStart: (startedAt) => { providerStartedAt = startedAt },
+          onComplete: (latencyMs) => { providerLatencyMs = latencyMs },
+        },
+      ),
     )
     expect(result.overallScore).toBe(87.5)
     expect(result.criteria[0]!.evidence?.turnId).toBe("turn-2")
@@ -50,5 +63,8 @@ describe("TypeSafe classifier adapter", () => {
       "evidence__empathy",
     ])
     expect(JSON.stringify(requestBody)).not.toContain("secret-never-serialized")
+    expect(Date.parse(providerStartedAt!)).not.toBeNaN()
+    expect(providerLatencyMs).toBeGreaterThanOrEqual(0)
+    expect(result.providerLatencyMs).toBe(providerLatencyMs)
   })
 })
