@@ -20,6 +20,7 @@ import {
   clampScoreEveryTurns,
   DEFAULT_REVEAL_INTERVAL_MS,
   DEFAULT_SCORE_EVERY_TURNS,
+  estimateSystemOneCostUsd,
   SYSTEM_ONE_PRICING,
 } from "@scorecard/domain"
 import { Effect } from "effect"
@@ -60,7 +61,7 @@ export const initializeDatabase = Effect.gen(function* () {
     `CREATE TABLE IF NOT EXISTS evaluations (
       id TEXT PRIMARY KEY, call_id TEXT NOT NULL, run_id TEXT NOT NULL,
       overall_score REAL NOT NULL, model TEXT NOT NULL, input_tokens INTEGER NOT NULL,
-      output_tokens INTEGER NOT NULL, created_at TEXT NOT NULL
+      output_tokens INTEGER NOT NULL, latency_ms INTEGER, created_at TEXT NOT NULL
     )`,
     `CREATE TABLE IF NOT EXISTS criterion_results (
       evaluation_id TEXT NOT NULL, criterion_id TEXT NOT NULL, criterion_name TEXT NOT NULL,
@@ -99,6 +100,10 @@ export const initializeDatabase = Effect.gen(function* () {
   }
   if (!liveColumns.some(({ name }) => name === "score_every_turns")) {
     yield* sql.unsafe("ALTER TABLE live_sessions ADD COLUMN score_every_turns INTEGER NOT NULL DEFAULT 5")
+  }
+  const evaluationColumns = rows(yield* sql.unsafe("PRAGMA table_info(evaluations)"))
+  if (!evaluationColumns.some(({ name }) => name === "latency_ms")) {
+    yield* sql.unsafe("ALTER TABLE evaluations ADD COLUMN latency_ms INTEGER")
   }
   const snapshotColumns = rows(yield* sql.unsafe("PRAGMA table_info(live_snapshots)"))
   if (!snapshotColumns.some(({ name }) => name === "model")) {
@@ -167,6 +172,15 @@ const callSummaryFromRow = (row: Row): CallSummary => ({
   status: String(row.status) as CallSummary["status"],
   overallScore: row.overall_score == null ? null : Number(row.overall_score),
   error: row.error == null ? null : String(row.error),
+  latencyMs: row.latency_ms == null ? null : Number(row.latency_ms),
+  inputTokens: row.input_tokens == null ? null : Number(row.input_tokens),
+  outputTokens: row.output_tokens == null ? null : Number(row.output_tokens),
+  estimatedCostUsd:
+    row.input_tokens == null || row.output_tokens == null
+      ? null
+      : estimateSystemOneCostUsd(Number(row.input_tokens), Number(row.output_tokens)),
+  model: row.model == null ? null : String(row.model),
+  evaluatedAt: row.evaluated_at == null ? null : String(row.evaluated_at),
 })
 
 export const listCriteria = Effect.gen(function* () {
@@ -194,7 +208,8 @@ export const updateCriterion = (id: string, input: UpdateCriterionInput) =>
 
 export const listCalls = Effect.gen(function* () {
   const sql = yield* SqlClient.SqlClient
-  return rows(yield* sql`SELECT c.*, e.overall_score
+  return rows(yield* sql`SELECT c.*, e.overall_score, e.latency_ms, e.input_tokens,
+      e.output_tokens, e.model, e.created_at evaluated_at
     FROM calls c LEFT JOIN evaluations e ON e.id = c.latest_evaluation_id
     ORDER BY c.started_at DESC`).map(callSummaryFromRow)
 })
@@ -228,6 +243,7 @@ const evaluationFor = (evaluationId: string | null) =>
       model: String(evaluationRow.model),
       inputTokens: Number(evaluationRow.input_tokens),
       outputTokens: Number(evaluationRow.output_tokens),
+      latencyMs: evaluationRow.latency_ms == null ? null : Number(evaluationRow.latency_ms),
       createdAt: String(evaluationRow.created_at),
       criteria,
     } satisfies Evaluation
@@ -236,7 +252,8 @@ const evaluationFor = (evaluationId: string | null) =>
 export const getCall = (id: string) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
-    const row = rows(yield* sql`SELECT c.*, e.overall_score FROM calls c
+    const row = rows(yield* sql`SELECT c.*, e.overall_score, e.latency_ms, e.input_tokens,
+      e.output_tokens, e.model, e.created_at evaluated_at FROM calls c
       LEFT JOIN evaluations e ON e.id = c.latest_evaluation_id WHERE c.id = ${id}`)[0]
     if (!row) return null
     const evaluation = yield* evaluationFor(row.latest_evaluation_id == null ? null : String(row.latest_evaluation_id))
@@ -334,9 +351,10 @@ export const saveEvaluation = (evaluation: Evaluation) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
     yield* sql`INSERT INTO evaluations
-      (id, call_id, run_id, overall_score, model, input_tokens, output_tokens, created_at)
+      (id, call_id, run_id, overall_score, model, input_tokens, output_tokens, latency_ms, created_at)
       VALUES (${evaluation.id}, ${evaluation.callId}, ${evaluation.runId}, ${evaluation.overallScore},
-        ${evaluation.model}, ${evaluation.inputTokens}, ${evaluation.outputTokens}, ${evaluation.createdAt})`
+        ${evaluation.model}, ${evaluation.inputTokens}, ${evaluation.outputTokens},
+        ${evaluation.latencyMs}, ${evaluation.createdAt})`
     for (const result of evaluation.criteria) {
       yield* sql`INSERT INTO criterion_results
         (evaluation_id, criterion_id, criterion_name, criterion_description, weight, levels_json,

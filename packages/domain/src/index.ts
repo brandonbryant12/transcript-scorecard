@@ -63,6 +63,8 @@ export const Evaluation = Schema.Struct({
   model: Schema.String,
   inputTokens: Schema.Number,
   outputTokens: Schema.Number,
+  // Server-measured SDK round trip; null for evaluations stored before it was recorded.
+  latencyMs: Schema.NullOr(Schema.Number),
   createdAt: Schema.String,
   criteria: Schema.Array(CriterionResult),
 })
@@ -78,6 +80,12 @@ export const CallSummary = Schema.Struct({
   status: CallStatus,
   overallScore: Schema.NullOr(Schema.Number),
   error: Schema.NullOr(Schema.String),
+  latencyMs: Schema.NullOr(Schema.Number),
+  inputTokens: Schema.NullOr(Schema.Number),
+  outputTokens: Schema.NullOr(Schema.Number),
+  estimatedCostUsd: Schema.NullOr(Schema.Number),
+  model: Schema.NullOr(Schema.String),
+  evaluatedAt: Schema.NullOr(Schema.String),
 })
 export type CallSummary = typeof CallSummary.Type
 

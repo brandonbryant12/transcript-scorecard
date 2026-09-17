@@ -214,6 +214,7 @@ export const classifyWithTypeSafe = (
         model: response.model,
         inputTokens: response.usage.input_tokens,
         outputTokens: response.usage.output_tokens,
+        latencyMs: providerLatencyMs,
         createdAt: new Date().toISOString(),
         criteria: results,
         signals,
