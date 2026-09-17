@@ -21,6 +21,7 @@ const makeRuntime = (filename: string) => ManagedRuntime.make(SqliteClient.layer
 
 const evaluation = (overallScore: number): LiveEvaluation => ({
   overallScore,
+  signals: null,
   criteria: [{
     criterionId: "empathy",
     criterionName: "Empathy & active listening",

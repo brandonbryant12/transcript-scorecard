@@ -15,6 +15,13 @@ import type {
   TranscriptTurn,
   UpdateCriterionInput,
 } from "@scorecard/domain"
+import {
+  clampRevealIntervalMs,
+  clampScoreEveryTurns,
+  DEFAULT_REVEAL_INTERVAL_MS,
+  DEFAULT_SCORE_EVERY_TURNS,
+  SYSTEM_ONE_PRICING,
+} from "@scorecard/domain"
 import { Effect } from "effect"
 import { seedCalls, seedCriteria } from "./seed"
 
@@ -67,12 +74,15 @@ export const initializeDatabase = Effect.gen(function* () {
       criteria_json TEXT NOT NULL, revealed_turn_count INTEGER NOT NULL DEFAULT 0,
       scored_turn_count INTEGER NOT NULL DEFAULT 0, is_processing INTEGER NOT NULL DEFAULT 0,
       elapsed_ms INTEGER NOT NULL DEFAULT 0, processing_latency_ms INTEGER,
+      reveal_interval_ms INTEGER NOT NULL DEFAULT 500,
+      score_every_turns INTEGER NOT NULL DEFAULT 5,
       request_started_at TEXT, request_index INTEGER NOT NULL DEFAULT 0,
       evaluation_json TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, error TEXT
     )`,
     `CREATE TABLE IF NOT EXISTS live_snapshots (
       session_id TEXT NOT NULL, generation INTEGER NOT NULL, sequence INTEGER NOT NULL,
       turn_count INTEGER NOT NULL, evaluation_json TEXT NOT NULL, latency_ms INTEGER NOT NULL,
+      model TEXT, input_tokens INTEGER, output_tokens INTEGER, estimated_cost_usd REAL,
       created_at TEXT NOT NULL, PRIMARY KEY (session_id, generation, sequence)
     )`,
   ]
@@ -83,6 +93,25 @@ export const initializeDatabase = Effect.gen(function* () {
   }
   if (!liveColumns.some(({ name }) => name === "request_index")) {
     yield* sql.unsafe("ALTER TABLE live_sessions ADD COLUMN request_index INTEGER NOT NULL DEFAULT 0")
+  }
+  if (!liveColumns.some(({ name }) => name === "reveal_interval_ms")) {
+    yield* sql.unsafe("ALTER TABLE live_sessions ADD COLUMN reveal_interval_ms INTEGER NOT NULL DEFAULT 500")
+  }
+  if (!liveColumns.some(({ name }) => name === "score_every_turns")) {
+    yield* sql.unsafe("ALTER TABLE live_sessions ADD COLUMN score_every_turns INTEGER NOT NULL DEFAULT 5")
+  }
+  const snapshotColumns = rows(yield* sql.unsafe("PRAGMA table_info(live_snapshots)"))
+  if (!snapshotColumns.some(({ name }) => name === "model")) {
+    yield* sql.unsafe("ALTER TABLE live_snapshots ADD COLUMN model TEXT")
+  }
+  if (!snapshotColumns.some(({ name }) => name === "input_tokens")) {
+    yield* sql.unsafe("ALTER TABLE live_snapshots ADD COLUMN input_tokens INTEGER")
+  }
+  if (!snapshotColumns.some(({ name }) => name === "output_tokens")) {
+    yield* sql.unsafe("ALTER TABLE live_snapshots ADD COLUMN output_tokens INTEGER")
+  }
+  if (!snapshotColumns.some(({ name }) => name === "estimated_cost_usd")) {
+    yield* sql.unsafe("ALTER TABLE live_snapshots ADD COLUMN estimated_cost_usd REAL")
   }
 
   // A process exit during a demo run must not leave permanently "processing" data.
@@ -346,7 +375,11 @@ export const finishRun = (runId: string) =>
     if (completed < total) yield* sql`UPDATE runs SET status = 'failed' WHERE id = ${runId}`
   })
 
-export const createLiveSession = (callId: string) =>
+export const createLiveSession = (
+  callId: string,
+  intervalMs = DEFAULT_REVEAL_INTERVAL_MS,
+  scoreEveryTurns = DEFAULT_SCORE_EVERY_TURNS,
+) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
     const call = rows(yield* sql`SELECT id FROM calls WHERE id = ${callId}`)[0]
@@ -356,8 +389,11 @@ export const createLiveSession = (callId: string) =>
     const id = `live-${crypto.randomUUID()}`
     const timestamp = now()
     yield* sql`INSERT INTO live_sessions
-      (id, call_id, status, generation, criteria_json, created_at, updated_at)
-      VALUES (${id}, ${callId}, 'ready', 1, ${JSON.stringify(criteria)}, ${timestamp}, ${timestamp})`
+      (id, call_id, status, generation, criteria_json, reveal_interval_ms, score_every_turns,
+        created_at, updated_at)
+      VALUES (${id}, ${callId}, 'ready', 1, ${JSON.stringify(criteria)},
+        ${clampRevealIntervalMs(intervalMs)}, ${clampScoreEveryTurns(scoreEveryTurns)},
+        ${timestamp}, ${timestamp})`
     return yield* getLiveSession(id)
   })
 
@@ -386,10 +422,29 @@ export const getLiveSession = (id: string) =>
         turnCount: Number(snapshot.turn_count),
         overallScore: evaluation.overallScore,
         criteria: evaluation.criteria,
+        signals: evaluation.signals ?? null,
         latencyMs: Number(snapshot.latency_ms),
+        model: snapshot.model == null ? null : String(snapshot.model),
+        inputTokens: snapshot.input_tokens == null ? null : Number(snapshot.input_tokens),
+        outputTokens: snapshot.output_tokens == null ? null : Number(snapshot.output_tokens),
+        estimatedCostUsd:
+          snapshot.estimated_cost_usd == null ? null : Number(snapshot.estimated_cost_usd),
         createdAt: String(snapshot.created_at),
       }
     })
+    const costedSnapshots = snapshots.filter(
+      (snapshot) =>
+        snapshot.inputTokens !== null &&
+        snapshot.outputTokens !== null &&
+        snapshot.estimatedCostUsd !== null,
+    )
+    const hasUnknownCost = costedSnapshots.length !== snapshots.length
+    const totalInputTokens = costedSnapshots.reduce((sum, snapshot) => sum + snapshot.inputTokens!, 0)
+    const totalOutputTokens = costedSnapshots.reduce((sum, snapshot) => sum + snapshot.outputTokens!, 0)
+    const totalEstimatedCostUsd = costedSnapshots.reduce(
+      (sum, snapshot) => sum + snapshot.estimatedCostUsd!,
+      0,
+    )
     return {
       id: String(row.id),
       callId: String(row.call_id),
@@ -398,18 +453,47 @@ export const getLiveSession = (id: string) =>
       revealedTurnCount: revealed,
       totalTurns: allTurns.length,
       scoredTurnCount: Number(row.scored_turn_count),
-      pendingTurnCount: revealed > Number(row.scored_turn_count) ? 1 : 0,
+      pendingTurnCount: Math.max(0, revealed - Number(row.scored_turn_count)),
       isProcessing: Boolean(row.is_processing),
       elapsedMs: Number(row.elapsed_ms),
+      revealIntervalMs: Number(row.reveal_interval_ms),
+      scoreEveryTurns: Number(row.score_every_turns),
       processingLatencyMs: row.processing_latency_ms == null ? null : Number(row.processing_latency_ms),
       requestStartedAt: row.request_started_at == null ? null : String(row.request_started_at),
       requestIndex: Number(row.request_index),
+      totalInputTokens,
+      totalOutputTokens,
+      totalEstimatedCostUsd,
+      costCoverage:
+        snapshots.length === 0 || costedSnapshots.length === 0
+          ? "none"
+          : hasUnknownCost || String(row.status) === "failed"
+            ? "partial"
+            : "complete",
+      pricing: SYSTEM_ONE_PRICING,
       transcript: allTurns.slice(0, revealed),
       evaluation: row.evaluation_json == null ? null : JSON.parse(String(row.evaluation_json)),
       snapshots,
       updatedAt: String(row.updated_at),
       error: row.error == null ? null : String(row.error),
     } satisfies LiveSessionDetail
+  })
+
+export const setLivePacing = (
+  id: string,
+  pacing: { readonly intervalMs?: number | undefined; readonly scoreEveryTurns?: number | undefined },
+) =>
+  Effect.gen(function* () {
+    const sql = yield* SqlClient.SqlClient
+    if (pacing.intervalMs !== undefined) {
+      yield* sql`UPDATE live_sessions SET reveal_interval_ms = ${clampRevealIntervalMs(pacing.intervalMs)},
+        updated_at = ${now()} WHERE id = ${id}`
+    }
+    if (pacing.scoreEveryTurns !== undefined) {
+      yield* sql`UPDATE live_sessions SET score_every_turns = ${clampScoreEveryTurns(pacing.scoreEveryTurns)},
+        updated_at = ${now()} WHERE id = ${id}`
+    }
+    return yield* getLiveSession(id)
   })
 
 export const setLiveStatus = (id: string, status: "playing" | "paused") =>
@@ -423,12 +507,15 @@ export const setLiveStatus = (id: string, status: "playing" | "paused") =>
 export const revealLiveTurn = (id: string) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
-    const row = rows(yield* sql`SELECT s.revealed_turn_count, c.transcript_json FROM live_sessions s
-      JOIN calls c ON c.id = s.call_id WHERE s.id = ${id} AND s.status = 'playing'`)[0]
+    const row = rows(yield* sql`SELECT s.revealed_turn_count, s.reveal_interval_ms, c.transcript_json
+      FROM live_sessions s JOIN calls c ON c.id = s.call_id WHERE s.id = ${id} AND s.status = 'playing'`)[0]
     if (!row) return yield* getLiveSession(id)
     const total = (JSON.parse(String(row.transcript_json)) as ReadonlyArray<TranscriptTurn>).length
-    const next = Math.min(total, Number(row.revealed_turn_count) + 1)
-    yield* sql`UPDATE live_sessions SET revealed_turn_count = ${next}, elapsed_ms = ${next * 1000},
+    const revealed = Number(row.revealed_turn_count)
+    if (revealed >= total) return yield* getLiveSession(id)
+    // Accumulate rather than multiply, so a pace change mid-replay keeps elapsed honest.
+    yield* sql`UPDATE live_sessions SET revealed_turn_count = ${revealed + 1},
+      elapsed_ms = elapsed_ms + ${Number(row.reveal_interval_ms)},
       updated_at = ${now()} WHERE id = ${id} AND status = 'playing'`
     return yield* getLiveSession(id)
   })
@@ -447,6 +534,12 @@ export const saveLiveSnapshot = (
   turnCount: number,
   evaluation: LiveEvaluation,
   latencyMs: number,
+  provider: {
+    readonly model: string
+    readonly inputTokens: number
+    readonly outputTokens: number
+    readonly estimatedCostUsd: number
+  } | null = null,
 ) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
@@ -458,8 +551,11 @@ export const saveLiveSnapshot = (
     const sequence = Number(current.sequence) + 1
     const timestamp = now()
     yield* sql`INSERT INTO live_snapshots
-      (session_id, generation, sequence, turn_count, evaluation_json, latency_ms, created_at)
-      VALUES (${id}, ${generation}, ${sequence}, ${turnCount}, ${JSON.stringify(evaluation)}, ${latencyMs}, ${timestamp})`
+      (session_id, generation, sequence, turn_count, evaluation_json, latency_ms,
+        model, input_tokens, output_tokens, estimated_cost_usd, created_at)
+      VALUES (${id}, ${generation}, ${sequence}, ${turnCount}, ${JSON.stringify(evaluation)}, ${latencyMs},
+        ${provider?.model ?? null}, ${provider?.inputTokens ?? null}, ${provider?.outputTokens ?? null},
+        ${provider?.estimatedCostUsd ?? null}, ${timestamp})`
     const isFinal = turnCount >= total
     yield* sql`UPDATE live_sessions SET scored_turn_count = ${turnCount}, is_processing = 0,
       processing_latency_ms = ${latencyMs}, evaluation_json = ${JSON.stringify(evaluation)},

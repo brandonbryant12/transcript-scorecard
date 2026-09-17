@@ -127,21 +127,91 @@ export type Dashboard = typeof Dashboard.Type
 export const LiveStatus = Schema.Literal("ready", "playing", "paused", "completed", "failed")
 export type LiveStatus = typeof LiveStatus.Type
 
+// Observational signals that ride along with a scoring request. They are deliberately
+// excluded from the weighted score: they describe the call, they do not grade it.
+export const EMOTION_LABELS = [
+  "frustrated",
+  "anxious",
+  "skeptical",
+  "cooperative",
+  "reassured",
+  "neutral",
+] as const
+export type EmotionLabel = (typeof EMOTION_LABELS)[number]
+
+export const EmotionSignal = Schema.Struct({
+  label: Schema.String,
+  confidence: Schema.Number,
+  probabilities: Schema.Record({ key: Schema.String, value: Schema.Number }),
+})
+export type EmotionSignal = typeof EmotionSignal.Type
+
+export const CallSignals = Schema.Struct({
+  // Probability that the employee restated the customer's problem back to them.
+  restatedProblem: Schema.Number,
+  emotion: EmotionSignal,
+})
+export type CallSignals = typeof CallSignals.Type
+
 export const LiveEvaluation = Schema.Struct({
   overallScore: Schema.Number,
   criteria: Schema.Array(CriterionResult),
+  signals: Schema.NullOr(CallSignals),
 })
 export type LiveEvaluation = typeof LiveEvaluation.Type
+
+export const SYSTEM_ONE_PRICING = {
+  inputUsdPerMillion: 0.042,
+  outputUsdPerMillion: 0,
+  currency: "USD",
+  sourceUrl: "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+  checkedAt: "2026-09-16",
+} as const
+
+export const estimateSystemOneCostUsd = (inputTokens: number, outputTokens: number): number =>
+  (inputTokens * SYSTEM_ONE_PRICING.inputUsdPerMillion +
+    outputTokens * SYSTEM_ONE_PRICING.outputUsdPerMillion) /
+  1_000_000
 
 export const LiveSnapshot = Schema.Struct({
   sequence: Schema.Number,
   turnCount: Schema.Number,
   overallScore: Schema.Number,
   criteria: Schema.Array(CriterionResult),
+  signals: Schema.NullOr(CallSignals),
   latencyMs: Schema.Number,
+  model: Schema.NullOr(Schema.String),
+  inputTokens: Schema.NullOr(Schema.Number),
+  outputTokens: Schema.NullOr(Schema.Number),
+  estimatedCostUsd: Schema.NullOr(Schema.Number),
   createdAt: Schema.String,
 })
 export type LiveSnapshot = typeof LiveSnapshot.Type
+
+// Two independent knobs. The transcript reveals one turn per interval so the replay
+// reads quickly, while rescoring batches: a request goes out once this many turns have
+// accumulated unscored, keeping provider calls well below one per turn.
+export const DEFAULT_REVEAL_INTERVAL_MS = 500
+export const MIN_REVEAL_INTERVAL_MS = 250
+export const MAX_REVEAL_INTERVAL_MS = 30_000
+
+export const REVEAL_INTERVAL_OPTIONS = [250, 500, 1_000, 2_000, 5_000] as const
+
+export const clampRevealIntervalMs = (value: number): number =>
+  !Number.isFinite(value)
+    ? DEFAULT_REVEAL_INTERVAL_MS
+    : Math.min(MAX_REVEAL_INTERVAL_MS, Math.max(MIN_REVEAL_INTERVAL_MS, Math.round(value)))
+
+export const DEFAULT_SCORE_EVERY_TURNS = 5
+export const MIN_SCORE_EVERY_TURNS = 1
+export const MAX_SCORE_EVERY_TURNS = 25
+
+export const SCORE_EVERY_TURNS_OPTIONS = [1, 2, 3, 5, 8, 10, 15] as const
+
+export const clampScoreEveryTurns = (value: number): number =>
+  !Number.isFinite(value)
+    ? DEFAULT_SCORE_EVERY_TURNS
+    : Math.min(MAX_SCORE_EVERY_TURNS, Math.max(MIN_SCORE_EVERY_TURNS, Math.round(value)))
 
 export const LiveSessionDetail = Schema.Struct({
   id: Schema.String,
@@ -154,9 +224,22 @@ export const LiveSessionDetail = Schema.Struct({
   pendingTurnCount: Schema.Number,
   isProcessing: Schema.Boolean,
   elapsedMs: Schema.Number,
+  revealIntervalMs: Schema.Number,
+  scoreEveryTurns: Schema.Number,
   processingLatencyMs: Schema.NullOr(Schema.Number),
   requestStartedAt: Schema.NullOr(Schema.String),
   requestIndex: Schema.Number,
+  totalInputTokens: Schema.Number,
+  totalOutputTokens: Schema.Number,
+  totalEstimatedCostUsd: Schema.Number,
+  costCoverage: Schema.Literal("complete", "partial", "none"),
+  pricing: Schema.Struct({
+    inputUsdPerMillion: Schema.Number,
+    outputUsdPerMillion: Schema.Number,
+    currency: Schema.Literal("USD"),
+    sourceUrl: Schema.String,
+    checkedAt: Schema.String,
+  }),
   transcript: Schema.Array(TranscriptTurn),
   evaluation: Schema.NullOr(LiveEvaluation),
   snapshots: Schema.Array(LiveSnapshot),

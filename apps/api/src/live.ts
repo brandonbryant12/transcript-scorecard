@@ -1,4 +1,6 @@
 import type { SqlClient } from "@effect/sql"
+import type { LiveSessionDetail } from "@scorecard/domain"
+import { clampRevealIntervalMs, estimateSystemOneCostUsd } from "@scorecard/domain"
 import { Effect } from "effect"
 import { classifyWithTypeSafe } from "./classifier"
 import {
@@ -12,11 +14,21 @@ import {
   revealLiveTurn,
   saveEvaluation,
   saveLiveSnapshot,
+  setLivePacing,
   setLiveStatus,
 } from "./repository"
 
 interface LiveRuntime {
   readonly runPromise: <A, E>(effect: Effect.Effect<A, E, SqlClient.SqlClient>) => Promise<A>
+}
+
+// Turns reveal faster than they are scored: a request goes out once enough turns have
+// piled up unscored, and always for the last turn so the final evaluation covers the
+// whole call regardless of where the batch boundary fell.
+const readyToScore = (session: LiveSessionDetail): boolean => {
+  const pending = session.revealedTurnCount - session.scoredTurnCount
+  if (pending <= 0) return false
+  return pending >= session.scoreEveryTurns || session.revealedTurnCount >= session.totalTurns
 }
 
 const publicError = (cause: unknown): string =>
@@ -48,7 +60,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
         clearTimer(id)
         return
       }
-      if (session.revealedTurnCount === 0 || session.revealedTurnCount <= session.scoredTurnCount) return
+      if (!readyToScore(session)) return
       if (session.status !== "playing") return
 
       generation = session.generation
@@ -79,8 +91,14 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
           id,
           generation,
           turnCount,
-          { overallScore: evaluation.overallScore, criteria: evaluation.criteria },
+          { overallScore: evaluation.overallScore, criteria: evaluation.criteria, signals: evaluation.signals },
           evaluation.providerLatencyMs,
+          {
+            model: evaluation.model,
+            inputTokens: evaluation.inputTokens,
+            outputTokens: evaluation.outputTokens,
+            estimatedCostUsd: estimateSystemOneCostUsd(evaluation.inputTokens, evaluation.outputTokens),
+          },
         ),
       )
       if (applied && turnCount === session.totalTurns) {
@@ -97,7 +115,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
       if (disposed) return
       const latest = await runtime.runPromise(getLiveSession(id))
       if (!latest || latest.status === "completed" || latest.status === "failed") clearTimer(id)
-      else if (latest.status === "playing" && latest.revealedTurnCount > latest.scoredTurnCount) {
+      else if (latest.status === "playing" && readyToScore(latest)) {
         safely(kick(id))
       }
     }
@@ -110,9 +128,17 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
   }
 
   return {
-    create: (callId: string) => runtime.runPromise(createLiveSession(callId)),
+    create: (callId: string, intervalMs?: number, scoreEveryTurns?: number) =>
+      runtime.runPromise(createLiveSession(callId, intervalMs, scoreEveryTurns)),
     get: (id: string) => runtime.runPromise(getLiveSession(id)),
-    control: async (id: string, action: "start" | "pause" | "reset") => {
+    control: async (
+      id: string,
+      action: "start" | "pause" | "reset" | "pace",
+      pacing: { readonly intervalMs?: number | undefined; readonly scoreEveryTurns?: number | undefined } = {},
+    ) => {
+      if (pacing.intervalMs !== undefined || pacing.scoreEveryTurns !== undefined) {
+        await runtime.runPromise(setLivePacing(id, pacing))
+      }
       if (action === "reset") {
         clearTimer(id)
         return runtime.runPromise(resetLiveSession(id))
@@ -121,11 +147,22 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
         clearTimer(id)
         return runtime.runPromise(setLiveStatus(id, "paused"))
       }
+      if (action === "pace") {
+        const paced = await runtime.runPromise(getLiveSession(id))
+        // Re-arm the ticker at the new spacing only while the replay is actually running,
+        // and re-check the gate in case a smaller batch size is now already satisfied.
+        if (paced?.status === "playing") {
+          clearTimer(id)
+          timers.set(id, setInterval(() => safely(tick(id)), clampRevealIntervalMs(paced.revealIntervalMs)))
+          if (readyToScore(paced)) safely(kick(id))
+        }
+        return paced
+      }
       const session = await runtime.runPromise(setLiveStatus(id, "playing"))
       if (!session) return null
       clearTimer(id)
       safely(tick(id))
-      timers.set(id, setInterval(() => safely(tick(id)), 1000))
+      timers.set(id, setInterval(() => safely(tick(id)), clampRevealIntervalMs(session.revealIntervalMs)))
       return session
     },
     dispose: () => {

@@ -1,4 +1,5 @@
 import type { Criterion, TranscriptTurn } from "@scorecard/domain"
+import { longDemoCall } from "./long-call"
 
 export interface SeedCall {
   readonly id: string
@@ -222,6 +223,7 @@ export const seedCalls: ReadonlyArray<SeedCall> = [
       ["employee", "You’re welcome. The confirmation and case number are in your inbox now.", 212],
     ]),
   },
+  longDemoCall,
 ]
 
 const updatedAt = "2026-09-16T00:00:00.000Z"

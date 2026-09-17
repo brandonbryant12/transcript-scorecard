@@ -1,5 +1,12 @@
-import { choice, score, TypeSafeClient, type Question, type Questions } from "@typesafe-ai/sdk"
-import { computeWeightedScore, type CallDetail, type Criterion, type Evaluation } from "@scorecard/domain"
+import { choice, noul, score, TypeSafeClient, type Question, type Questions } from "@typesafe-ai/sdk"
+import {
+  computeWeightedScore,
+  EMOTION_LABELS,
+  type CallDetail,
+  type CallSignals,
+  type Criterion,
+  type Evaluation,
+} from "@scorecard/domain"
 import { Effect, Schema } from "effect"
 
 export interface ProviderTimingHooks {
@@ -20,6 +27,10 @@ const WireAnswer = Schema.Union(
     choice: Schema.String,
     confidence: Schema.Number,
     probabilities: Schema.Record({ key: Schema.String, value: Schema.Number }),
+  }),
+  Schema.Struct({
+    type: Schema.Literal("noul"),
+    noul: Schema.Number,
   }),
 )
 const WireResult = Schema.Struct({
@@ -69,6 +80,33 @@ export const classifyWithTypeSafe = (
           evidenceOptions,
         )
       }
+
+      // Observational signals. Descriptions are written to separate the labels from one
+      // another, and "neutral" is the catch-all so the model is never forced into a mood.
+      questions.signal__restated = noul(
+        {
+          task: "Did the employee restate or summarise the customer's problem back to them in their own words?",
+          guidance: "Judge only the employee's turns in the supplied transcript.",
+        },
+        {
+          true: "The employee played the problem back, confirmed their understanding, or summarised the situation for the customer to confirm.",
+          false: "The employee moved straight to questions, instructions, or a fix without reflecting the problem back.",
+        },
+      )
+      questions.signal__emotion = choice(
+        {
+          task: "What is the customer's predominant emotional state in the most recent part of the call?",
+          guidance: "Weigh the customer's latest turns most heavily; judge the customer, never the employee.",
+        },
+        {
+          frustrated: "Annoyed or exasperated with the employee, the product, or having to repeat themselves.",
+          anxious: "Worried about consequences, under time pressure, or uneasy about risk.",
+          skeptical: "Doubting what the employee has told them, or pressing for proof of a claim.",
+          cooperative: "Engaged and working the problem with the employee, without notable distress.",
+          reassured: "Calm and confident the issue is handled or in good hands.",
+          neutral: "Matter-of-fact exchange with no clear emotional colour.",
+        },
+      )
 
       const client = new TypeSafeClient({
         apiKey,
@@ -145,6 +183,23 @@ export const classifyWithTypeSafe = (
         }
       })
 
+      const restatedAnswer = response.answers.signal__restated
+      const emotionAnswer = response.answers.signal__emotion
+      const signals: CallSignals | null =
+        restatedAnswer?.type === "noul" && emotionAnswer?.type === "choice"
+          ? {
+              restatedProblem: restatedAnswer.noul,
+              emotion: {
+                label: emotionAnswer.choice,
+                confidence: emotionAnswer.confidence,
+                // Keep every label present so the UI can render a stable set of bars.
+                probabilities: Object.fromEntries(
+                  EMOTION_LABELS.map((label) => [label, emotionAnswer.probabilities[label] ?? 0]),
+                ),
+              },
+            }
+          : null
+
       return {
         id: `evaluation-${crypto.randomUUID()}`,
         callId: call.id,
@@ -161,9 +216,14 @@ export const classifyWithTypeSafe = (
         outputTokens: response.usage.output_tokens,
         createdAt: new Date().toISOString(),
         criteria: results,
+        signals,
         providerLatencyMs,
         requestStartedAt,
-      } satisfies Evaluation & { readonly providerLatencyMs: number; readonly requestStartedAt: string }
+      } satisfies Evaluation & {
+        readonly signals: CallSignals | null
+        readonly providerLatencyMs: number
+        readonly requestStartedAt: string
+      }
     },
     catch: (cause) => (cause instanceof Error ? cause : new Error(String(cause))),
   })
