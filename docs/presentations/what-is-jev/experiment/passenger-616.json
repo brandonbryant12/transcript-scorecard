@@ -1,0 +1,50 @@
+{
+  "passenger_id": 616,
+  "actual": 1,
+  "predicted": 1,
+  "request": {
+    "model": "jev-1.13.0",
+    "state": {
+      "dataset_context": "Passenger aboard RMS Titanic in 1912",
+      "passenger": {
+        "ticket_class": 2,
+        "recorded_sex": "female",
+        "age_years": 24.0,
+        "siblings_spouses_aboard": 1,
+        "parents_children_aboard": 2,
+        "fare_gbp": 65.0,
+        "embarked": "S"
+      }
+    },
+    "questions": {
+      "survival": {
+        "type": "choice",
+        "instructions": "Based only on the supplied passenger features and your general knowledge of the Titanic disaster, predict whether this passenger survived. Estimate uncertainty; do not assume a missing value is zero. Ticket class: 1=first, 2=second, 3=third. Embarked: C=Cherbourg, Q=Queenstown, S=Southampton.",
+        "criteria": {
+          "survived": "The passenger survived the Titanic disaster.",
+          "did_not_survive": "The passenger did not survive the Titanic disaster."
+        }
+      }
+    }
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "survival": {
+        "type": "choice",
+        "choice": "survived",
+        "confidence": 0.28,
+        "probabilities": {
+          "did_not_survive": 0.36,
+          "survived": 0.64
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 492,
+      "output_tokens": 40
+    }
+  },
+  "elapsed_ms": 374,
+  "completed_at": "2026-09-24T01:59:04.293695+00:00"
+}

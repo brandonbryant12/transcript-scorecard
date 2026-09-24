@@ -1,0 +1,28 @@
+{
+  "model": "jev-1.13.0",
+  "n": 100,
+  "correct": 72,
+  "accuracy": 0.72,
+  "accuracy_wilson95": [
+    0.6251178763865427,
+    0.7986044083240164
+  ],
+  "confusion_matrix_actual_rows_predicted_columns_no_yes": [
+    [
+      52,
+      10
+    ],
+    [
+      18,
+      20
+    ]
+  ],
+  "majority_baseline_accuracy": 0.62,
+  "female_survives_baseline_accuracy": 0.74,
+  "brier_score": 0.23153499999999996,
+  "latency_median_ms": 370.5,
+  "latency_p95_ms": 418,
+  "input_tokens": 49260,
+  "output_tokens": 4070,
+  "completed_at": "2026-09-24T02:07:55.877435+00:00"
+}

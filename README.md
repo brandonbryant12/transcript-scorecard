@@ -65,3 +65,7 @@ Copy `.env.example` to `.env` for local development. Do not prefix `JEV_API_KEY`
 | `JEV_API_KEY` | Server-side classifier credential | Required for live scoring |
 | `PORT` | API listen port | `3001` |
 | `SCORECARD_DB_PATH` | SQLite file location, resolved from `apps/api` | `./data/scorecard.sqlite` |
+
+## JEV presentation
+
+[What is JEV? A decision model](docs/presentations/what-is-jev/README.md) is an informal HTML slide deck covering classifiers, the JEV API, a real Titanic experiment, and application patterns. Open `docs/presentations/what-is-jev/what-is-jev.html` in a browser; it works offline.
