@@ -1,6 +1,12 @@
 import type { IncomingMessage, ServerResponse } from "node:http"
 import type { SqlClient } from "@effect/sql"
 import type { StartRunInput, UpdateCriterionInput } from "@scorecard/domain"
+import {
+  MAX_REVEAL_INTERVAL_MS,
+  MAX_SCORE_EVERY_TURNS,
+  MIN_REVEAL_INTERVAL_MS,
+  MIN_SCORE_EVERY_TURNS,
+} from "@scorecard/domain"
 import { Either, Schema, type Effect } from "effect"
 import {
   createRun,
@@ -53,8 +59,25 @@ const UpdateCriterion = Schema.Struct({
 const StartRun = Schema.Struct({
   callIds: Schema.optional(Schema.Array(NonEmptyString)),
 })
-const CreateLive = Schema.Struct({ callId: NonEmptyString })
-const ControlLive = Schema.Struct({ action: Schema.Literal("start", "pause", "reset") })
+const RevealIntervalMs = Schema.Number.pipe(
+  Schema.greaterThanOrEqualTo(MIN_REVEAL_INTERVAL_MS),
+  Schema.lessThanOrEqualTo(MAX_REVEAL_INTERVAL_MS),
+)
+const ScoreEveryTurns = Schema.Number.pipe(
+  Schema.int(),
+  Schema.greaterThanOrEqualTo(MIN_SCORE_EVERY_TURNS),
+  Schema.lessThanOrEqualTo(MAX_SCORE_EVERY_TURNS),
+)
+const CreateLive = Schema.Struct({
+  callId: NonEmptyString,
+  intervalMs: Schema.optional(RevealIntervalMs),
+  scoreEveryTurns: Schema.optional(ScoreEveryTurns),
+})
+const ControlLive = Schema.Struct({
+  action: Schema.Literal("start", "pause", "reset", "pace"),
+  intervalMs: Schema.optional(RevealIntervalMs),
+  scoreEveryTurns: Schema.optional(ScoreEveryTurns),
+})
 
 const validateCriterion = (body: unknown): UpdateCriterionInput | string => {
   const decoded = Schema.decodeUnknownEither(UpdateCriterion)(body)
@@ -133,7 +156,11 @@ export const makeRequestHandler = (
         if (!live) return json(response, 503, { error: "JEV_API_KEY is not configured on the API server" })
         const decoded = Schema.decodeUnknownEither(CreateLive)(await readJson(request))
         if (Either.isLeft(decoded)) return json(response, 400, { error: "Invalid live session request" })
-        const session = await live.create(decoded.right.callId)
+        const session = await live.create(
+          decoded.right.callId,
+          decoded.right.intervalMs,
+          decoded.right.scoreEveryTurns,
+        )
         return session
           ? json(response, 201, session)
           : json(response, 404, { error: "Call not found or no criteria enabled" })
@@ -149,7 +176,11 @@ export const makeRequestHandler = (
         if (!live) return json(response, 503, { error: "JEV_API_KEY is not configured on the API server" })
         const decoded = Schema.decodeUnknownEither(ControlLive)(await readJson(request))
         if (Either.isLeft(decoded)) return json(response, 400, { error: "Invalid live control action" })
-        const session = await live.control(decodeURIComponent(liveControlMatch[1]!), decoded.right.action)
+        const session = await live.control(
+          decodeURIComponent(liveControlMatch[1]!),
+          decoded.right.action,
+          { intervalMs: decoded.right.intervalMs, scoreEveryTurns: decoded.right.scoreEveryTurns },
+        )
         return session ? json(response, 200, session) : json(response, 404, { error: "Live session not found" })
       }
       const runMatch = url.pathname.match(/^\/api\/runs\/([^/]+)$/)

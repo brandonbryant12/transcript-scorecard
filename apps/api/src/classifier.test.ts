@@ -30,6 +30,8 @@ describe("TypeSafe classifier adapter", () => {
       id: "call-test", customerName: "Fictional Customer", agentName: "Demo Agent",
       subject: "Test", startedAt: "2026-01-01T00:00:00Z", durationSeconds: 30,
       status: "pending", overallScore: null, error: null, evaluation: null,
+      latencyMs: null, inputTokens: null, outputTokens: null, estimatedCostUsd: null,
+      model: null, evaluatedAt: null,
       transcript: [
         { id: "turn-1", speaker: "customer", text: "This is frustrating.", startSeconds: 0 },
         { id: "turn-2", speaker: "employee", text: "I understand why, and I can fix it.", startSeconds: 4 },

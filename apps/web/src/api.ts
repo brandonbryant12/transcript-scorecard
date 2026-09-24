@@ -26,6 +26,11 @@ interface DashboardResponse {
   latestRun: Run | null;
 }
 
+export interface LivePacing {
+  intervalMs?: number;
+  scoreEveryTurns?: number;
+}
+
 const apiBase = import.meta.env.VITE_API_URL ?? "/api";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -111,7 +116,7 @@ export const api = {
   startBatch: () => request<Run>("/runs", { method: "POST", body: JSON.stringify({}) }).then(toBatchJob),
   batch: (id: string) => request<RunDetail>(`/runs/${encodeURIComponent(id)}`).then(toBatchJob),
   latestBatch: () => request<DashboardResponse>("/dashboard").then((dashboard) => dashboard.latestRun ? toBatchJob(dashboard.latestRun) : null),
-  createLive: (callId: string) => request<LiveSessionDetail>("/live", { method: "POST", body: JSON.stringify({ callId }) }),
+  createLive: (callId: string, pacing?: LivePacing) => request<LiveSessionDetail>("/live", { method: "POST", body: JSON.stringify({ callId, ...pacing }) }),
   live: (id: string) => request<LiveSessionDetail>(`/live/${encodeURIComponent(id)}`),
-  controlLive: (id: string, action: "start" | "pause" | "reset") => request<LiveSessionDetail>(`/live/${encodeURIComponent(id)}/control`, { method: "POST", body: JSON.stringify({ action }) }),
+  controlLive: (id: string, action: "start" | "pause" | "reset" | "pace", pacing?: LivePacing) => request<LiveSessionDetail>(`/live/${encodeURIComponent(id)}/control`, { method: "POST", body: JSON.stringify({ action, ...pacing }) }),
 };
