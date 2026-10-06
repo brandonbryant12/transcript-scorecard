@@ -15,6 +15,8 @@ import {
   revealLiveTurn,
   saveLiveSnapshot,
   setLiveStatus,
+  getCall,
+  saveEvaluation,
 } from "./repository"
 
 const makeRuntime = (filename: string) => ManagedRuntime.make(SqliteClient.layer({ filename }))
@@ -141,12 +143,18 @@ describe("live session persistence", () => {
         evaluation_json TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, error TEXT
       )`)
     }))
+    await legacyRuntime.runPromise(Effect.gen(function* () {
+      const sql = yield* SqlClient.SqlClient
+      yield* sql`INSERT INTO live_sessions (id, call_id, status, generation, criteria_json, created_at, updated_at)
+        VALUES ('legacy-jev', 'call-1001', 'ready', 1, '[]', '2026-01-01', '2026-01-01')`
+    }))
     await legacyRuntime.dispose()
 
     legacyRuntime = makeRuntime(legacyFilename)
     await legacyRuntime.runPromise(initializeDatabase)
     const created = await legacyRuntime.runPromise(createLiveSession("call-1001"))
-    expect(created).toMatchObject({ requestStartedAt: null, requestIndex: 0 })
+    expect(created).toMatchObject({ provider: "openai", requestStartedAt: null, requestIndex: 0 })
+    expect(await legacyRuntime.runPromise(getLiveSession("legacy-jev"))).toMatchObject({ provider: "jev" })
     await legacyRuntime.dispose()
   })
 
@@ -207,4 +215,24 @@ describe("live session persistence", () => {
     expect(reopened?.evaluation?.overallScore).toBe(88)
     expect(reopened?.snapshots).toHaveLength(2)
   })
+  it("keeps provider sessions and pricing separate and persists evaluation attribution", async () => {
+    const openai = await runtime.runPromise(createLiveSession("call-1001"))
+    const jev = await runtime.runPromise(createLiveSession("call-1001", undefined, undefined, "jev"))
+    expect(openai).toMatchObject({ provider: "openai", pricing: { inputUsdPerMillion: .10 } })
+    expect(jev).toMatchObject({ provider: "jev", pricing: { inputUsdPerMillion: .042 } })
+    expect(openai!.id).not.toBe(jev!.id)
+    await runtime.runPromise(saveLiveSnapshot(openai!.id, 1, 1, evaluation(80), 123, {
+      model: "gpt-6-luna", inputTokens: 100, outputTokens: 0, estimatedCostUsd: .00001,
+    }))
+    expect((await runtime.runPromise(getLiveSession(jev!.id)))!.snapshots).toHaveLength(0)
+    await runtime.runPromise(saveEvaluation({
+      provider: "openai", id: "test-evaluation", callId: "call-1001", runId: "live-test",
+      model: "gpt-6-luna", overallScore: 80, inputTokens: 100, outputTokens: 0,
+      latencyMs: 123, createdAt: new Date().toISOString(), criteria: evaluation(80).criteria,
+    }))
+    expect(await runtime.runPromise(getCall("call-1001"))).toMatchObject({
+      provider: "openai", estimatedCostUsd: .00001, evaluation: { provider: "openai", model: "gpt-6-luna" },
+    })
+  })
+
 })

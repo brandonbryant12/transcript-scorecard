@@ -1,26 +1,25 @@
 import { Effect } from "effect"
-import { classifyWithTypeSafe } from "./classifier"
+import { classifyTranscript } from "./classifier"
 import {
   finishRun,
   getCall,
   getRunCriteria,
+  getRun,
   markCallFailed,
   markCallProcessing,
   markRunStarted,
   saveEvaluation,
 } from "./repository"
 
-const publicError = (cause: unknown): string => {
-  if (!(cause instanceof Error)) return "Classification failed"
-  if (/401|403|api key|unauthorized/i.test(cause.message)) return "TypeSafe rejected the API credentials"
-  if (/429|rate/i.test(cause.message)) return "TypeSafe rate limit reached; try again shortly"
-  return cause.message.slice(0, 240)
-}
+import { requireProviderKey, publicProviderError, type ProviderCredentials } from "./providers"
 
-export const processRun = (runId: string, callIds: ReadonlyArray<string>, apiKey: string) =>
+export const processRun = (runId: string, callIds: ReadonlyArray<string>, credentials: ProviderCredentials) =>
   Effect.gen(function* () {
     yield* markRunStarted(runId)
     const criteria = yield* getRunCriteria(runId)
+    const run = yield* getRun(runId)
+    if (!run) return
+    const provider = run.provider
     yield* Effect.forEach(
       callIds,
       (callId) =>
@@ -28,10 +27,10 @@ export const processRun = (runId: string, callIds: ReadonlyArray<string>, apiKey
           yield* markCallProcessing(runId, callId)
           const call = yield* getCall(callId)
           if (!call) return yield* markCallFailed(runId, callId, "Call no longer exists")
-          const evaluation = yield* classifyWithTypeSafe(call, criteria, runId, apiKey)
+          const evaluation = yield* classifyTranscript(call, criteria, runId, requireProviderKey(credentials, provider), undefined, undefined, undefined, provider)
           yield* saveEvaluation(evaluation)
         }).pipe(
-          Effect.catchAll((cause) => markCallFailed(runId, callId, publicError(cause))),
+          Effect.catchAll((cause) => markCallFailed(runId, callId, publicProviderError(cause, provider))),
         ),
       { concurrency: 2 },
     )

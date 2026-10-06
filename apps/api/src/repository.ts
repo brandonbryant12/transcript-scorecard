@@ -14,14 +14,16 @@ import type {
   StartRunInput,
   TranscriptTurn,
   UpdateCriterionInput,
+  ScoringProvider,
 } from "@scorecard/domain"
 import {
   clampRevealIntervalMs,
   clampScoreEveryTurns,
   DEFAULT_REVEAL_INTERVAL_MS,
   DEFAULT_SCORE_EVERY_TURNS,
-  estimateSystemOneCostUsd,
-  SYSTEM_ONE_PRICING,
+  estimateProviderCostUsd,
+  DEFAULT_SCORING_PROVIDER,
+  providerPricing,
 } from "@scorecard/domain"
 import { Effect } from "effect"
 import { seedCalls, seedCriteria } from "./seed"
@@ -88,6 +90,13 @@ export const initializeDatabase = Effect.gen(function* () {
     )`,
   ]
   for (const statement of statements) yield* sql.unsafe(statement)
+  // Existing data came from JEV. New sessions and runs explicitly select a provider.
+  for (const table of ["evaluations", "runs", "live_sessions"]) {
+    const columns = rows(yield* sql.unsafe(`PRAGMA table_info(${table})`))
+    if (!columns.some(({ name }) => name === "provider")) {
+      yield* sql.unsafe(`ALTER TABLE ${table} ADD COLUMN provider TEXT NOT NULL DEFAULT 'jev'`)
+    }
+  }
   const liveColumns = rows(yield* sql.unsafe("PRAGMA table_info(live_sessions)"))
   if (!liveColumns.some(({ name }) => name === "request_started_at")) {
     yield* sql.unsafe("ALTER TABLE live_sessions ADD COLUMN request_started_at TEXT")
@@ -152,6 +161,7 @@ const criterionFromRow = (row: Row): Criterion => ({
 })
 
 const runFromRow = (row: Row): Run => ({
+  provider: String(row.provider) as ScoringProvider,
   id: String(row.id),
   status: String(row.status) as Run["status"],
   total: Number(row.total),
@@ -163,6 +173,7 @@ const runFromRow = (row: Row): Run => ({
 })
 
 const callSummaryFromRow = (row: Row): CallSummary => ({
+  provider: row.provider == null ? null : String(row.provider) as ScoringProvider,
   id: String(row.id),
   customerName: String(row.customer_name),
   agentName: String(row.agent_name),
@@ -178,7 +189,7 @@ const callSummaryFromRow = (row: Row): CallSummary => ({
   estimatedCostUsd:
     row.input_tokens == null || row.output_tokens == null
       ? null
-      : estimateSystemOneCostUsd(Number(row.input_tokens), Number(row.output_tokens)),
+      : estimateProviderCostUsd(String(row.provider) as ScoringProvider, Number(row.input_tokens), Number(row.output_tokens)),
   model: row.model == null ? null : String(row.model),
   evaluatedAt: row.evaluated_at == null ? null : String(row.evaluated_at),
 })
@@ -208,7 +219,7 @@ export const updateCriterion = (id: string, input: UpdateCriterionInput) =>
 
 export const listCalls = Effect.gen(function* () {
   const sql = yield* SqlClient.SqlClient
-  return rows(yield* sql`SELECT c.*, e.overall_score, e.latency_ms, e.input_tokens,
+  return rows(yield* sql`SELECT c.*, e.provider, e.overall_score, e.latency_ms, e.input_tokens,
       e.output_tokens, e.model, e.created_at evaluated_at
     FROM calls c LEFT JOIN evaluations e ON e.id = c.latest_evaluation_id
     ORDER BY c.started_at DESC`).map(callSummaryFromRow)
@@ -236,6 +247,7 @@ const evaluationFor = (evaluationId: string | null) =>
       evidence: row.evidence_json == null ? null : JSON.parse(String(row.evidence_json)),
     }))
     return {
+      provider: String(evaluationRow.provider) as ScoringProvider,
       id: String(evaluationRow.id),
       callId: String(evaluationRow.call_id),
       runId: String(evaluationRow.run_id),
@@ -252,7 +264,7 @@ const evaluationFor = (evaluationId: string | null) =>
 export const getCall = (id: string) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
-    const row = rows(yield* sql`SELECT c.*, e.overall_score, e.latency_ms, e.input_tokens,
+    const row = rows(yield* sql`SELECT c.*, e.provider, e.overall_score, e.latency_ms, e.input_tokens,
       e.output_tokens, e.model, e.created_at evaluated_at FROM calls c
       LEFT JOIN evaluations e ON e.id = c.latest_evaluation_id WHERE c.id = ${id}`)[0]
     if (!row) return null
@@ -297,8 +309,9 @@ export const createRun = (input: StartRunInput) =>
     if (!criteria.some(({ enabled }) => enabled)) return { error: "At least one criterion must be enabled" } as const
     const id = `run-${crypto.randomUUID()}`
     const createdAt = now()
-    yield* sql`INSERT INTO runs (id, status, total, completed, failed, created_at)
-      VALUES (${id}, 'queued', ${ids.length}, 0, 0, ${createdAt})`
+    const provider = input.provider ?? DEFAULT_SCORING_PROVIDER
+    yield* sql`INSERT INTO runs (id, provider, status, total, completed, failed, created_at)
+      VALUES (${id}, ${provider}, 'queued', ${ids.length}, 0, 0, ${createdAt})`
     for (const criterion of criteria) {
       yield* sql`INSERT INTO run_criteria
         (run_id, criterion_id, name, description, weight, levels_json, enabled, updated_at)
@@ -308,7 +321,7 @@ export const createRun = (input: StartRunInput) =>
     for (const callId of ids) {
       yield* sql`INSERT INTO run_calls (run_id, call_id, status) VALUES (${id}, ${callId}, 'pending')`
     }
-    return { run: { id, status: "queued", total: ids.length, completed: 0, failed: 0, createdAt, startedAt: null, completedAt: null } satisfies Run, callIds: ids } as const
+    return { run: { id, provider, status: "queued", total: ids.length, completed: 0, failed: 0, createdAt, startedAt: null, completedAt: null } satisfies Run, callIds: ids } as const
   })
 
 export const getRunCriteria = (runId: string) =>
@@ -351,10 +364,10 @@ export const saveEvaluation = (evaluation: Evaluation) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
     yield* sql`INSERT INTO evaluations
-      (id, call_id, run_id, overall_score, model, input_tokens, output_tokens, latency_ms, created_at)
+      (id, call_id, run_id, overall_score, model, input_tokens, output_tokens, latency_ms, created_at, provider)
       VALUES (${evaluation.id}, ${evaluation.callId}, ${evaluation.runId}, ${evaluation.overallScore},
         ${evaluation.model}, ${evaluation.inputTokens}, ${evaluation.outputTokens},
-        ${evaluation.latencyMs}, ${evaluation.createdAt})`
+        ${evaluation.latencyMs}, ${evaluation.createdAt}, ${evaluation.provider})`
     for (const result of evaluation.criteria) {
       yield* sql`INSERT INTO criterion_results
         (evaluation_id, criterion_id, criterion_name, criterion_description, weight, levels_json,
@@ -397,6 +410,7 @@ export const createLiveSession = (
   callId: string,
   intervalMs = DEFAULT_REVEAL_INTERVAL_MS,
   scoreEveryTurns = DEFAULT_SCORE_EVERY_TURNS,
+  provider: ScoringProvider = DEFAULT_SCORING_PROVIDER,
 ) =>
   Effect.gen(function* () {
     const sql = yield* SqlClient.SqlClient
@@ -407,9 +421,9 @@ export const createLiveSession = (
     const id = `live-${crypto.randomUUID()}`
     const timestamp = now()
     yield* sql`INSERT INTO live_sessions
-      (id, call_id, status, generation, criteria_json, reveal_interval_ms, score_every_turns,
+      (id, call_id, provider, status, generation, criteria_json, reveal_interval_ms, score_every_turns,
         created_at, updated_at)
-      VALUES (${id}, ${callId}, 'ready', 1, ${JSON.stringify(criteria)},
+      VALUES (${id}, ${callId}, ${provider}, 'ready', 1, ${JSON.stringify(criteria)},
         ${clampRevealIntervalMs(intervalMs)}, ${clampScoreEveryTurns(scoreEveryTurns)},
         ${timestamp}, ${timestamp})`
     return yield* getLiveSession(id)
@@ -457,13 +471,14 @@ export const getLiveSession = (id: string) =>
         snapshot.estimatedCostUsd !== null,
     )
     const hasUnknownCost = costedSnapshots.length !== snapshots.length
-    const totalInputTokens = costedSnapshots.reduce((sum, snapshot) => sum + snapshot.inputTokens!, 0)
-    const totalOutputTokens = costedSnapshots.reduce((sum, snapshot) => sum + snapshot.outputTokens!, 0)
+    const totalInputTokens = snapshots.reduce((sum, snapshot) => sum + (snapshot.inputTokens ?? 0), 0)
+    const totalOutputTokens = snapshots.reduce((sum, snapshot) => sum + (snapshot.outputTokens ?? 0), 0)
     const totalEstimatedCostUsd = costedSnapshots.reduce(
       (sum, snapshot) => sum + snapshot.estimatedCostUsd!,
       0,
     )
     return {
+      provider: String(row.provider) as ScoringProvider,
       id: String(row.id),
       callId: String(row.call_id),
       status: String(row.status) as LiveSessionDetail["status"],
@@ -488,7 +503,7 @@ export const getLiveSession = (id: string) =>
           : hasUnknownCost || String(row.status) === "failed"
             ? "partial"
             : "complete",
-      pricing: SYSTEM_ONE_PRICING,
+      pricing: providerPricing(String(row.provider) as ScoringProvider),
       transcript: allTurns.slice(0, revealed),
       evaluation: row.evaluation_json == null ? null : JSON.parse(String(row.evaluation_json)),
       snapshots,

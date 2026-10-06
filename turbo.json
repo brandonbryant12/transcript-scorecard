@@ -9,7 +9,7 @@
     "@scorecard/api#dev": {
       "cache": false,
       "persistent": true,
-      "passThroughEnv": ["JEV_API_KEY", "PORT", "SCORECARD_DB_PATH"]
+      "passThroughEnv": ["JEV_API_KEY", "OPENAI_API_KEY", "PORT", "SCORECARD_DB_PATH"]
     },
     "build": {
       "dependsOn": ["^build"],

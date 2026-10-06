@@ -1,5 +1,10 @@
 import { Schema } from "effect"
 
+export const ScoringProvider = Schema.Literal("openai", "jev")
+export type ScoringProvider = typeof ScoringProvider.Type
+export const DEFAULT_SCORING_PROVIDER: ScoringProvider = "openai"
+export const PROVIDER_LABELS = { openai: "OpenAI Decisions", jev: "JEV" } as const
+
 export const Speaker = Schema.Literal("employee", "customer")
 export type Speaker = typeof Speaker.Type
 
@@ -56,6 +61,7 @@ export const CriterionResult = Schema.Struct({
 export type CriterionResult = typeof CriterionResult.Type
 
 export const Evaluation = Schema.Struct({
+  provider: ScoringProvider,
   id: Schema.String,
   callId: Schema.String,
   runId: Schema.String,
@@ -71,6 +77,7 @@ export const Evaluation = Schema.Struct({
 export type Evaluation = typeof Evaluation.Type
 
 export const CallSummary = Schema.Struct({
+  provider: Schema.NullOr(ScoringProvider),
   id: Schema.String,
   customerName: Schema.String,
   agentName: Schema.String,
@@ -97,6 +104,7 @@ export const CallDetail = Schema.Struct({
 export type CallDetail = typeof CallDetail.Type
 
 export const Run = Schema.Struct({
+  provider: ScoringProvider,
   id: Schema.String,
   status: RunStatus,
   total: Schema.Number,
@@ -181,6 +189,22 @@ export const estimateSystemOneCostUsd = (inputTokens: number, outputTokens: numb
     outputTokens * SYSTEM_ONE_PRICING.outputUsdPerMillion) /
   1_000_000
 
+export const OPENAI_DECISIONS_PRICING = {
+  inputUsdPerMillion: 0.10,
+  outputUsdPerMillion: 0,
+  currency: "USD",
+  sourceUrl: "https://developers.openai.com/api/docs/guides/decisions#pricing-and-availability",
+  checkedAt: "2026-10-06",
+} as const
+
+export const providerPricing = (provider: ScoringProvider) =>
+  provider === "openai" ? OPENAI_DECISIONS_PRICING : SYSTEM_ONE_PRICING
+
+export const estimateProviderCostUsd = (provider: ScoringProvider, inputTokens: number, outputTokens: number) => {
+  const pricing = providerPricing(provider)
+  return (inputTokens * pricing.inputUsdPerMillion + outputTokens * pricing.outputUsdPerMillion) / 1_000_000
+}
+
 export const LiveSnapshot = Schema.Struct({
   sequence: Schema.Number,
   turnCount: Schema.Number,
@@ -222,6 +246,7 @@ export const clampScoreEveryTurns = (value: number): number =>
     : Math.min(MAX_SCORE_EVERY_TURNS, Math.max(MIN_SCORE_EVERY_TURNS, Math.round(value)))
 
 export const LiveSessionDetail = Schema.Struct({
+  provider: ScoringProvider,
   id: Schema.String,
   callId: Schema.String,
   status: LiveStatus,
@@ -265,6 +290,7 @@ export interface UpdateCriterionInput {
 }
 
 export interface StartRunInput {
+  readonly provider?: ScoringProvider
   readonly callIds?: ReadonlyArray<string>
 }
 

@@ -10,11 +10,13 @@ const config = await Effect.runPromise(
   Effect.all({
     port: Config.integer("PORT").pipe(Config.withDefault(3001)),
     filename: Config.string("SCORECARD_DB_PATH").pipe(Config.withDefault("./data/scorecard.sqlite")),
-    apiKey: Config.redacted("JEV_API_KEY").pipe(Config.option),
+    jevKey: Config.redacted("JEV_API_KEY").pipe(Config.option),
+    openaiKey: Config.redacted("OPENAI_API_KEY").pipe(Config.option),
   }),
 )
 const { port, filename } = config
-const apiKey = Option.getOrUndefined(config.apiKey)
+const jevKey = Option.getOrUndefined(config.jevKey)
+const openaiKey = Option.getOrUndefined(config.openaiKey)
 mkdirSync(dirname(filename), { recursive: true })
 const layer = SqliteClient.layer({ filename })
 const runtime = ManagedRuntime.make(layer)
@@ -23,7 +25,10 @@ await runtime.runPromise(initializeDatabase)
 
 let disposeLive = (): void => {}
 const server = createServer(
-  makeRequestHandler(runtime, apiKey ? Redacted.value(apiKey) : undefined, undefined, (dispose) => {
+  makeRequestHandler(runtime, {
+    jev: jevKey ? Redacted.value(jevKey) : undefined,
+    openai: openaiKey ? Redacted.value(openaiKey) : undefined,
+  }, undefined, (dispose) => {
     disposeLive = dispose
   }),
 )

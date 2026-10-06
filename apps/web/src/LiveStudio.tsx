@@ -23,7 +23,12 @@ import {
   REVEAL_INTERVAL_OPTIONS,
   SCORE_EVERY_TURNS_OPTIONS,
   type CallSignals,
+  type ScoringProvider,
+  PROVIDER_LABELS,
+  DEFAULT_SCORING_PROVIDER,
+  providerPricing,
 } from "@scorecard/domain";
+import { ProviderPicker } from "./ProviderPicker";
 import { api, type CallSummary, type Criterion, type LivePacing, type LiveSessionDetail } from "./api";
 
 function timecode(seconds: number) {
@@ -34,17 +39,25 @@ function scoreColor(score: number) {
   return score >= 85 ? "#1b8a77" : score >= 70 ? "#d18a31" : "#c25b56";
 }
 
-const sessionStorageKey = "acme-live-session-ids-v1";
+const sessionStorageKey = "acme-live-session-ids-v2";
+const sessionKey = (callId: string, provider: ScoringProvider) => `${provider}:${callId}`;
 
 function readSessionIds(): Record<string, string> {
-  try { return JSON.parse(localStorage.getItem(sessionStorageKey) ?? "{}") as Record<string, string>; }
-  catch { return {}; }
+  try {
+    const saved = localStorage.getItem(sessionStorageKey);
+    const value: unknown = JSON.parse(saved ?? localStorage.getItem("acme-live-session-ids-v1") ?? "{}");
+    const entries = value && typeof value === "object" && !Array.isArray(value)
+      ? Object.entries(value).filter((entry): entry is [string, string] => typeof entry[1] === "string") : [];
+    const ids = Object.fromEntries(saved === null ? entries.map(([callId, id]) => [sessionKey(callId, "jev"), id]) : entries);
+    if (saved === null) localStorage.setItem(sessionStorageKey, JSON.stringify(ids));
+    return ids;
+  } catch { return {}; }
 }
 
-function rememberSession(callId: string, sessionId: string | null) {
+function rememberSession(callId: string, provider: ScoringProvider, sessionId: string | null) {
   const ids = readSessionIds();
-  if (sessionId) ids[callId] = sessionId;
-  else delete ids[callId];
+  if (sessionId) ids[sessionKey(callId, provider)] = sessionId;
+  else delete ids[sessionKey(callId, provider)];
   localStorage.setItem(sessionStorageKey, JSON.stringify(ids));
 }
 
@@ -90,7 +103,7 @@ function SignalsPanel({ session }: { session: LiveSessionDetail | null }) {
   return <article className="panel signals-panel">
     <div className="signals-head">
       <span><HeartPulse size={15} />Customer signals</span>
-      <small>Raw TypeSafe probabilities · excluded from the weighted score</small>
+      <small>Raw provider probabilities · excluded from the weighted score</small>
     </div>
     {signals ? <>
       <div className="emotion-headline">
@@ -112,7 +125,7 @@ function SignalsPanel({ session }: { session: LiveSessionDetail | null }) {
           title={`Turn ${point.turnCount} · ${point.label}`}
         />)}
       </div> : null}
-      <div className="signal-kind noul-kind" title="A noul is a yes/no question. The model returns the probability that the answer is yes.">noul · P(yes)</div>
+      <div className="signal-kind noul-kind" title="Probability that the employee restated the problem.">Yes / no · P(yes)</div>
       <div className="noul-signal">
         <span><MessageSquareQuote size={13} />Restated the problem</span>
         <div><i style={{ width: `${Math.max((restated ?? 0) * 100, 1)}%` }} /></div>
@@ -122,7 +135,7 @@ function SignalsPanel({ session }: { session: LiveSessionDetail | null }) {
   </article>;
 }
 
-function TelemetryPanel({ session }: { session: LiveSessionDetail | null }) {
+function TelemetryPanel({ session, provider }: { session: LiveSessionDetail | null; provider: ScoringProvider }) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     if (!session?.requestStartedAt) return;
@@ -131,6 +144,7 @@ function TelemetryPanel({ session }: { session: LiveSessionDetail | null }) {
     return () => window.clearInterval(timer);
   }, [session?.requestStartedAt]);
 
+  const pricing = session?.pricing ?? providerPricing(provider);
   const completed = session?.snapshots.slice(-6) ?? [];
   const latencies = session?.snapshots.map((snapshot) => snapshot.latencyMs) ?? [];
   const average = latencies.length ? latencies.reduce((sum, latency) => sum + latency, 0) / latencies.length : null;
@@ -144,18 +158,18 @@ function TelemetryPanel({ session }: { session: LiveSessionDetail | null }) {
   const coverageLabel = !session ? "Awaiting first request" : session.costCoverage === "partial" ? "Partial usage coverage" : session.costCoverage === "none" ? "Usage unavailable" : "Complete usage coverage";
 
   return <article className={`panel telemetry-panel ${running !== null ? "in-flight" : ""}`}>
-    <div className="telemetry-heading"><span><Zap size={14} />Every TypeSafe API call</span><a href={session?.pricing.sourceUrl ?? "https://typesafe.ai/blog/introducing-system-one-models-and-jev"} target="_blank" rel="noreferrer" title="Open TypeSafe System One pricing source">Estimated at ${session?.pricing.inputUsdPerMillion ?? 0.042}/M input · output free</a></div>
+    <div className="telemetry-heading"><span><Zap size={14} />Every {PROVIDER_LABELS[provider]} API call</span><a href={pricing.sourceUrl} target="_blank" rel="noreferrer" title="Open provider pricing source">Estimated at ${pricing.inputUsdPerMillion}/M input · output free</a></div>
     <div className="telemetry-summary">
-      <div><small>{running !== null ? `Request #${session?.requestIndex} elapsed` : "Latest latency"}</small><strong>{running === null && last === null ? "—" : Math.round(running ?? last ?? 0)}{running !== null || last !== null ? <i>ms</i> : null}</strong><span>{running !== null ? "Live server-anchored timer" : last === null ? "Awaiting provider" : session?.status === "failed" ? "Failed provider call" : "SDK round trip"}</span></div>
+      <div><small>{running !== null ? `Request #${session?.requestIndex} elapsed` : "Latest latency"}</small><strong>{running === null && last === null ? "—" : Math.round(running ?? last ?? 0)}{running !== null || last !== null ? <i>ms</i> : null}</strong><span>{running !== null ? "Live server-anchored timer" : last === null ? "Awaiting provider" : session?.status === "failed" ? "Failed provider call" : "Provider round trip"}</span></div>
       <div><small>Latest est. cost</small><strong className="cost-value">{formatCost(latestCost)}</strong><span>{latestSnapshot?.inputTokens === null || !latestSnapshot ? "Usage unavailable" : `${latestSnapshot.inputTokens.toLocaleString()} input · ${(latestSnapshot.outputTokens ?? 0).toLocaleString()} output`}</span></div>
       <div><small>Session est. total</small><strong className="cost-value">{formatCost(totalCost)}</strong><span>{coverageLabel}</span></div>
     </div>
-    <div className="request-history" aria-label="Recent TypeSafe request latency, tokens, and estimated cost">
+    <div className="request-history" aria-label="Recent provider request latency, tokens, and estimated cost">
       {completed.map((snapshot) => <div key={snapshot.sequence}><span>#{snapshot.sequence}</span><strong>{snapshot.latencyMs}ms</strong><i>{snapshot.inputTokens === null ? "Tokens unavailable" : `${snapshot.inputTokens.toLocaleString()} in · ${(snapshot.outputTokens ?? 0).toLocaleString()} out`}</i><b>{formatCost(snapshot.estimatedCostUsd)}</b></div>)}
       {running !== null ? <div className="active"><span>#{session?.requestIndex}</span><strong>{Math.round(running)}ms</strong><i>Provider request in flight</i><b>Pending usage</b></div> : null}
       {!completed.length && running === null ? <p>No provider requests yet. Actual token usage and estimated cost will appear here.</p> : null}
     </div>
-    <div className="telemetry-stats"><span>Latency avg <b>{average === null ? "—" : `${Math.round(average)}ms`}</b></span><span title="95th percentile: all but the slowest 5% of calls came back faster than this.">P95 <b>{p95 === null ? "—" : `${Math.round(p95)}ms`}</b></span><span>Session tokens <b>{session ? `${session.totalInputTokens.toLocaleString()} in · ${session.totalOutputTokens.toLocaleString()} out` : "—"}</b></span><span title="Timings are measured on the server around the SDK call, so browser polling delay is not counted.">Polling excluded</span></div>
+    <div className="telemetry-stats"><span>Latency avg <b>{average === null ? "—" : `${Math.round(average)}ms`}</b></span><span title="95th percentile: all but the slowest 5% of calls came back faster than this.">P95 <b>{p95 === null ? "—" : `${Math.round(p95)}ms`}</b></span><span>Session tokens <b>{session ? `${session.totalInputTokens.toLocaleString()} in · ${session.totalOutputTokens.toLocaleString()} out` : "—"}</b></span><span title="Timings are measured on the server around the provider call, so browser polling delay is not counted.">Polling excluded</span></div>
   </article>;
 }
 
@@ -163,6 +177,8 @@ export function LiveStudio() {
   const [calls, setCalls] = useState<CallSummary[] | null>(null);
   const [criteria, setCriteria] = useState<Criterion[]>([]);
   const [selectedId, setSelectedId] = useState("");
+  const [provider, setProvider] = useState<ScoringProvider>(DEFAULT_SCORING_PROVIDER);
+  const [comparison, setComparison] = useState<LiveSessionDetail | null>(null);
   const [session, setSession] = useState<LiveSessionDetail | null>(null);
   const [busy, setBusy] = useState(false);
   const [paceMs, setPaceMs] = useState<number>(DEFAULT_REVEAL_INTERVAL_MS);
@@ -179,17 +195,29 @@ export function LiveStudio() {
       setCriteria(scorecard.filter((criterion) => criterion.enabled));
       const firstId = items[0]?.id ?? "";
       setSelectedId(firstId);
-      const savedSessionId = readSessionIds()[firstId];
-      if (savedSessionId) {
-        const request = ++selectionRequest.current;
-        try {
-          const restored = await api.live(savedSessionId);
-          if (current && request === selectionRequest.current) setSession(restored);
-        } catch { rememberSession(firstId, null); }
-      }
     }).catch((reason: Error) => { if (current) setError(reason.message); });
     return () => { current = false; };
   }, []);
+
+  useEffect(() => {
+    const request = ++selectionRequest.current;
+    setSession(null);
+    setError(null);
+    const saved = readSessionIds()[sessionKey(selectedId, provider)];
+    if (saved) void api.live(saved).then((restored) => {
+      if (request === selectionRequest.current && restored.provider === provider) setSession(restored);
+    }).catch(() => rememberSession(selectedId, provider, null));
+    return () => { selectionRequest.current += 1; };
+  }, [selectedId, provider]);
+
+  useEffect(() => {
+    let active = true;
+    setComparison(null);
+    const otherProvider = provider === "openai" ? "jev" : "openai";
+    const saved = readSessionIds()[sessionKey(selectedId, otherProvider)];
+    if (saved) void api.live(saved).then((other) => { if (active) setComparison(other); }).catch(() => {});
+    return () => { active = false; };
+  }, [selectedId, provider, session?.snapshots.length]);
 
   useEffect(() => {
     if (!session || busy || session.status === "completed" || session.status === "failed" || session.status === "ready" || (session.status === "paused" && !session.isProcessing)) return;
@@ -239,16 +267,16 @@ export function LiveStudio() {
     setError(null);
     try {
       let target = session;
-      if (!target || target.callId !== selectedId) {
-        target = await api.createLive(selectedId, { intervalMs: paceMs, scoreEveryTurns: scoreEvery });
-        rememberSession(selectedId, target.id);
+      if (!target || target.callId !== selectedId || target.provider !== provider) {
+        target = await api.createLive(selectedId, { intervalMs: paceMs, scoreEveryTurns: scoreEvery }, provider);
+        rememberSession(selectedId, provider, target.id);
       }
       if (action === "start" && (target.status === "completed" || target.status === "failed")) {
         target = await api.controlLive(target.id, "reset");
       }
       const updated = await api.controlLive(target.id, action, action === "start" ? { intervalMs: paceMs, scoreEveryTurns: scoreEvery } : undefined);
       setSession(updated);
-      rememberSession(selectedId, action === "reset" ? null : updated.id);
+      rememberSession(selectedId, provider, updated.id);
     } catch (reason) {
       setError((reason as Error).message);
     } finally {
@@ -267,21 +295,29 @@ export function LiveStudio() {
     if (pacing.intervalMs !== undefined) setPaceMs(pacing.intervalMs);
     if (pacing.scoreEveryTurns !== undefined) setScoreEvery(pacing.scoreEveryTurns);
     if (!session) return;
+    const request = selectionRequest.current;
     try {
-      setSession(await api.controlLive(session.id, "pace", pacing));
+      const updated = await api.controlLive(session.id, "pace", pacing);
+      if (request === selectionRequest.current) setSession(updated);
     } catch (reason) {
       setError((reason as Error).message);
     }
   };
 
-  const selectCall = (callId: string) => {
-    const request = ++selectionRequest.current;
-    setSelectedId(callId);
-    setSession(null);
-    setError(null);
-    const savedSessionId = readSessionIds()[callId];
-    if (savedSessionId) api.live(savedSessionId).then((restored) => { if (request === selectionRequest.current) setSession(restored); }).catch(() => rememberSession(callId, null));
+  const selectTarget = async (callId: string, nextProvider: ScoringProvider) => {
+    if (busy || (callId === selectedId && nextProvider === provider)) return;
+    setBusy(true);
+    try {
+      // Pause the old provider before switching so hidden sessions do not spend usage.
+      if (session?.status === "playing") await api.controlLive(session.id, "pause");
+      selectionRequest.current += 1;
+      setSession(null);
+      setSelectedId(callId);
+      setProvider(nextProvider);
+    } catch (reason) { setError((reason as Error).message); }
+    finally { setBusy(false); }
   };
+
 
   const statusLabel = !session ? "Ready" : session.status === "playing" && session.isProcessing ? "Live · scoring" : session.status.replace(/^./, (letter) => letter.toUpperCase());
   const isPlaying = session?.status === "playing";
@@ -305,11 +341,12 @@ export function LiveStudio() {
     </header>
     <ol className="studio-steps" aria-label="How this demo works">
       <li><b>1</b><span><strong>A real transcript replays</strong>One turn at a time, left</span></li>
-      <li><b>2</b><span><strong>Batches go to TypeSafe</strong>The call so far, scored against the rubric</span></li>
+      <li><b>2</b><span><strong>Batches go to {PROVIDER_LABELS[provider]}</strong>The call so far, scored against the rubric</span></li>
       <li><b>3</b><span><strong>Everything updates live</strong>Score, signals, latency and cost</span></li>
     </ol>
+    <ProviderPicker provider={provider} onChange={(value) => { void selectTarget(selectedId, value); }} disabled={busy} />
     <section className="studio-controls panel">
-      <label className="call-picker"><span>Replay a support call</span><div><select value={selectedId} onChange={(event) => selectCall(event.target.value)} disabled={!calls?.length || busy}>{calls?.map((call) => <option value={call.id} key={call.id}>{call.subject} · {call.customerName} · {call.agentName}</option>)}</select><ChevronDown size={16} /></div><small>{conversationDuration ? `${conversationDuration} conversation · accelerated replay` : "Loading conversation…"}</small></label>
+      <label className="call-picker"><span>Replay a support call</span><div><select value={selectedId} onChange={(event) => selectTarget(event.target.value, provider)} disabled={!calls?.length || busy}>{calls?.map((call) => <option value={call.id} key={call.id}>{call.subject} · {call.customerName} · {call.agentName}</option>)}</select><ChevronDown size={16} /></div><small>{conversationDuration ? `${conversationDuration} conversation · accelerated replay` : "Loading conversation…"}</small></label>
       <label className="call-picker pace-picker">
         <span>Turn pace</span>
         <div>
@@ -338,6 +375,7 @@ export function LiveStudio() {
       <div className="replay-progress"><div><span style={{ width: `${progress}%` }} /></div><small>{session ? `${session.revealedTurnCount} / ${session.totalTurns} turns · ${timecode(session.elapsedMs / 1000)} replay elapsed` : "Replay not started"}</small></div>
     </section>
     {error ? <div className="inline-error studio-error"><AlertCircle size={16} />{error}</div> : null}
+    <ProviderComparison session={session} other={comparison} />
     <section className="studio-grid">
       <article className="panel transcript-panel">
         <div className="studio-panel-head"><div><p className="eyebrow">Transcript stream</p><h2>{selectedCall?.subject ?? "Loading calls…"}</h2></div>{session ? <span className="clock"><Timer size={13} />{(session.elapsedMs / 1000).toFixed(1)}s</span> : null}</div>
@@ -354,7 +392,7 @@ export function LiveStudio() {
         </article>
         <div className="studio-insights">
           <article className="panel formula-card"><div className="formula-head"><span><Gauge size={15} />How the score is built</span><small title="Each criterion's score is multiplied by its weight; the total is divided by the sum of the weights.">Σ(weight × score) ÷ Σweight</small></div>{formula.terms.length ? <div className="formula-expression"><b>(</b>{formula.terms.map((term, index) => <span key={term.name}>{index > 0 ? <b>+</b> : null}<i>{term.weight} × {term.score === null ? "—" : term.score.toFixed(1)}</i></span>)}<b>) ÷ {formula.totalWeight}</b><strong>= {currentScore === null ? "—" : currentScore.toFixed(1)}</strong></div> : <p>Loading the active scorecard…</p>}</article>
-          <TelemetryPanel session={session} />
+          <TelemetryPanel session={session} provider={provider} />
         </div>
         <SignalsPanel session={session} />
         <div className="live-criteria">
@@ -365,10 +403,32 @@ export function LiveStudio() {
             const prior = previousSnapshot?.criteria.find((item) => item.criterionId === criterion.criterionId)?.normalizedScore;
             const delta = prior === undefined ? null : criterion.normalizedScore - prior;
             return <article className="panel live-criterion" key={criterion.criterionId}><div className="criterion-live-head"><div><span className="criterion-kicker">{criterion.weight}% weight</span><h3>{criterion.criterionName}</h3></div><div className="criterion-score"><strong style={{ color: scoreColor(criterion.normalizedScore) }}>{Math.round(criterion.normalizedScore)}</strong>{delta !== null ? <small className={delta >= 0 ? "up" : "down"}>{delta >= 0 ? "+" : ""}{delta.toFixed(0)}</small> : null}</div></div><p className="criterion-description">{criterion.criterionDescription}</p><details className="rubric-details"><summary>Rubric levels</summary><div className="rubric-levels">{criterion.levels.map((level, index) => <span key={level}>{index} · {level}</span>)}</div></details><Sparkline values={history} color={scoreColor(criterion.normalizedScore)} /><div className="confidence"><span>Confidence</span><div><i style={{ width: `${criterion.confidence * 100}%` }} /></div><strong>{Math.round(criterion.confidence * 100)}%</strong></div>{criterion.evidence ? <blockquote>“{criterion.evidence.text}”</blockquote> : <p className="waiting-evidence">Waiting for a supporting turn…</p>}</article>;
-          }) : <div className="panel criterion-wait"><Activity size={20} /><span>Criteria will update here as TypeSafe returns scored transcript snapshots.</span></div>}
+          }) : <div className="panel criterion-wait"><Activity size={20} /><span>Criteria will update here as the provider returns scored transcript snapshots.</span></div>}
         </div>
         {session?.status === "completed" ? <div className="completion-banner"><Check size={17} /><span><strong>Replay complete</strong>Final score uses the full transcript.</span></div> : null}
       </div>
     </section>
   </>;
+}
+
+function ProviderComparison({ session, other }: { session: LiveSessionDetail | null; other: LiveSessionDetail | null }) {
+  const latest = session?.snapshots.at(-1);
+  const matched = other?.snapshots.find((snapshot) => snapshot.turnCount === latest?.turnCount);
+  const rubric = (criteria: NonNullable<typeof latest>["criteria"]) => JSON.stringify(criteria.map(({ criterionId, criterionName, criterionDescription, weight, levels }) => ({ criterionId, criterionName, criterionDescription, weight, levels })));
+  const comparable = latest && matched && rubric(latest.criteria) === rubric(matched.criteria);
+  return <section className="panel provider-comparison" aria-label="Provider comparison">
+    <div><h2>Compare providers</h2><p>{comparable ? `Same transcript prefix: ${latest.turnCount} turns · same rubric` : "Replay this call with both providers. Scores align when the transcript prefix and rubric match."}</p></div>
+    {comparable && session && other ? <div className="comparison-scroll"><table>
+      <thead><tr><th scope="col">Measure</th><th scope="col">{PROVIDER_LABELS[session.provider]}</th><th scope="col">{PROVIDER_LABELS[other.provider]}</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Model</th><td>{latest.model}</td><td>{matched.model}</td></tr>
+        <tr><th scope="row">Weighted score</th><td>{latest.overallScore.toFixed(1)}</td><td>{matched.overallScore.toFixed(1)}</td></tr>
+        <tr><th scope="row">Request latency</th><td>{latest.latencyMs}ms</td><td>{matched.latencyMs}ms</td></tr>
+        <tr><th scope="row">Estimated request cost</th><td>{formatCost(latest.estimatedCostUsd)}</td><td>{formatCost(matched.estimatedCostUsd)}</td></tr>
+        {latest.criteria.map((criterion) => { const result = matched.criteria.find((item) => item.criterionId === criterion.criterionId)!;
+          return <tr key={criterion.criterionId}><th scope="row">{criterion.criterionName}</th><td>{criterion.normalizedScore.toFixed(1)} · {(criterion.confidence * 100).toFixed(0)}% confidence</td><td>{result.normalizedScore.toFixed(1)} · {(result.confidence * 100).toFixed(0)}% confidence</td></tr>; })}
+      </tbody>
+    </table></div> : null}
+    {session?.error ? <p className="inline-error">{PROVIDER_LABELS[session.provider]}: {session.error}</p> : null}
+  </section>;
 }

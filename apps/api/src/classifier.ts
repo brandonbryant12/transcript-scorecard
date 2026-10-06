@@ -6,8 +6,10 @@ import {
   type CallSignals,
   type Criterion,
   type Evaluation,
+  type ScoringProvider,
 } from "@scorecard/domain"
 import { Effect, Schema } from "effect"
+import { requestOpenAIDecision } from "./openai-decisions"
 
 export interface ProviderTimingHooks {
   readonly onStart?: (startedAt: string) => void | Promise<void>
@@ -39,7 +41,7 @@ const WireResult = Schema.Struct({
   answers: Schema.Record({ key: Schema.String, value: WireAnswer }),
 })
 
-export const classifyWithTypeSafe = (
+export const classifyTranscript = (
   call: CallDetail,
   criteria: ReadonlyArray<Criterion>,
   runId: string,
@@ -47,9 +49,10 @@ export const classifyWithTypeSafe = (
   fetchImplementation?: typeof fetch,
   liveContext?: { readonly revealedTurnCount: number; readonly totalTurns: number },
   providerTiming?: ProviderTimingHooks,
+  provider: ScoringProvider = "openai",
 ) =>
   Effect.tryPromise({
-    try: async () => {
+    try: async (signal) => {
       const enabled = criteria.filter((criterion) => criterion.enabled)
       if (enabled.length === 0) throw new Error("At least one scorecard criterion must be enabled")
 
@@ -108,19 +111,19 @@ export const classifyWithTypeSafe = (
         },
       )
 
-      const client = new TypeSafeClient({
+      const client = provider === "jev" ? new TypeSafeClient({
         apiKey,
         defaultModel: "jev-latest",
         logLevel: "warn",
         ...(fetchImplementation ? { fetch: fetchImplementation } : {}),
-      })
+      }) : null
       const requestStartedAt = new Date().toISOString()
       await providerTiming?.onStart?.(requestStartedAt)
       const providerStarted = performance.now()
       let rawResponse: unknown
       let providerLatencyMs = 0
       try {
-        rawResponse = await client.systemOne({
+        const request = {
           model: "jev-latest",
           state: {
             call: {
@@ -145,7 +148,10 @@ export const classifyWithTypeSafe = (
             },
           },
           questions: questions as Questions,
-        })
+        }
+        rawResponse = provider === "openai"
+          ? await requestOpenAIDecision(request.state, questions, apiKey, fetchImplementation ?? fetch, signal)
+          : await client!.systemOne(request)
       } finally {
         providerLatencyMs = Math.max(0, Math.round(performance.now() - providerStarted))
         await providerTiming?.onComplete?.(providerLatencyMs)
@@ -156,16 +162,19 @@ export const classifyWithTypeSafe = (
         const scoreAnswer = response.answers[`score__${criterion.id}`]
         const evidenceAnswer = response.answers[`evidence__${criterion.id}`]
         if (!scoreAnswer || scoreAnswer.type !== "score") {
-          throw new Error(`TypeSafe did not return a score for ${criterion.name}`)
+          throw new Error(`${provider === "openai" ? "OpenAI Decisions" : "JEV"} did not return a score for ${criterion.name}`)
         }
         if (scoreAnswer.score < 0 || scoreAnswer.score > criterion.levels.length - 1) {
-          throw new Error(`TypeSafe returned an out-of-range score for ${criterion.name}`)
+          throw new Error(`${provider === "openai" ? "OpenAI Decisions" : "JEV"} returned an out-of-range score for ${criterion.name}`)
         }
         if (scoreAnswer.confidence < 0 || scoreAnswer.confidence > 1) {
-          throw new Error(`TypeSafe returned invalid confidence for ${criterion.name}`)
+          throw new Error(`${provider === "openai" ? "OpenAI Decisions" : "JEV"} returned invalid confidence for ${criterion.name}`)
         }
         if (!evidenceAnswer || evidenceAnswer.type !== "choice") {
-          throw new Error(`TypeSafe did not return evidence for ${criterion.name}`)
+          throw new Error(`${provider === "openai" ? "OpenAI Decisions" : "JEV"} did not return evidence for ${criterion.name}`)
+        }
+        if (evidenceAnswer.choice !== "none" && !Object.hasOwn(evidenceOptions, evidenceAnswer.choice)) {
+          throw new Error("Provider returned an unknown evidence turn")
         }
         const turn = call.transcript.find(({ id }) => id === evidenceAnswer.choice)
         return {
@@ -201,6 +210,7 @@ export const classifyWithTypeSafe = (
           : null
 
       return {
+        provider,
         id: `evaluation-${crypto.randomUUID()}`,
         callId: call.id,
         runId,
@@ -228,3 +238,11 @@ export const classifyWithTypeSafe = (
     },
     catch: (cause) => (cause instanceof Error ? cause : new Error(String(cause))),
   })
+
+// Retain the explicit JEV adapter for existing callers and adapter tests.
+export const classifyWithTypeSafe = (
+  call: CallDetail, criteria: ReadonlyArray<Criterion>, runId: string, apiKey: string,
+  fetchImplementation?: typeof fetch,
+  liveContext?: { readonly revealedTurnCount: number; readonly totalTurns: number },
+  providerTiming?: ProviderTimingHooks,
+) => classifyTranscript(call, criteria, runId, apiKey, fetchImplementation, liveContext, providerTiming, "jev")

@@ -148,3 +148,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .score-orbit > div { padding: 12px; }
 .score-orbit span { font-size: 7px; letter-spacing: .6px; white-space: nowrap; }
 
+
+.provider-picker { display: flex; align-items: center; gap: 16px; margin: 0 0 20px; font-size: 13px; color: #536967; }
+.provider-picker > div { display: flex; padding: 4px; border: 1px solid #d9e3df; border-radius: 10px; background: #eef3f0; }
+.provider-picker button { padding: 9px 16px; border: 0; border-radius: 7px; background: transparent; color: #536967; font: inherit; cursor: pointer; }
+.provider-picker button.active { background: #143f52; color: white; }
+.provider-picker button:disabled { opacity: .55; cursor: wait; }
+.provider-picker button:focus-visible { outline: 2px solid #1a8077; outline-offset: 3px; }
+.provider-comparison { padding: 20px; margin-bottom: 22px; }
+.provider-comparison h2 { margin: 0 0 6px; font-size: 16px; }
+.provider-comparison p { margin: 0; font-size: 13px; color: #536967; }
+.comparison-scroll { overflow-x: auto; }
+.provider-comparison table { width: 100%; margin-top: 16px; border-collapse: collapse; font-size: 13px; text-align: left; }
+.provider-comparison th, .provider-comparison td { padding: 10px 12px; border-bottom: 1px solid #e3eae6; }
+.provider-comparison th { font-weight: 600; }
+@media (max-width: 600px) { .provider-picker { flex-wrap: wrap; gap: 8px; } }

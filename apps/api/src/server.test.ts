@@ -13,10 +13,11 @@ describe("scorecard API", () => {
   const runtime = ManagedRuntime.make(SqliteClient.layer({ filename: join(directory, "test.sqlite") }))
   let server: Server
   let baseUrl: string
+  const dispatched: string[] = []
 
   beforeAll(async () => {
     await runtime.runPromise(initializeDatabase)
-    server = createServer(makeRequestHandler(runtime, "test-key", () => {}))
+    server = createServer(makeRequestHandler(runtime, { openai: "openai-test-key", jev: "jev-test-key" }, (_runId, _ids, provider) => { dispatched.push(provider) }))
     await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve))
     const address = server.address()
     if (!address || typeof address === "string") throw new Error("Test server did not bind")
@@ -81,4 +82,59 @@ describe("scorecard API", () => {
     expect(session.totalTurns).toBeGreaterThanOrEqual(20)
     expect(session.transcript).toEqual([])
   })
+  it("defaults new live sessions and runs to OpenAI and accepts explicit JEV", async () => {
+    for (const provider of [undefined, "jev"]) {
+      const expected = provider ?? "openai"
+      const live = await fetch(`${baseUrl}/api/live`, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ callId: "call-1001", provider }),
+      })
+      expect(live.status).toBe(201)
+      expect(await live.json()).toMatchObject({ provider: expected })
+      const run = await fetch(`${baseUrl}/api/runs`, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ callIds: ["call-1001"], provider }),
+      })
+      expect(run.status).toBe(202)
+      const created = await run.json() as { id: string }
+      expect(created).toMatchObject({ provider: expected })
+      expect(await (await fetch(`${baseUrl}/api/runs/${created.id}`)).json()).toMatchObject({ provider: expected })
+      expect(dispatched.at(-1)).toBe(expected)
+    }
+  })
+
+  it("rejects unknown providers", async () => {
+    for (const route of ["live", "runs"]) {
+      const response = await fetch(`${baseUrl}/api/${route}`, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ callId: "call-1001", provider: "invalid" }),
+      })
+      expect(response.status).toBe(400)
+    }
+  })
+
+  it("requires only the selected provider key and still serves saved sessions", async () => {
+    const localServer = createServer(makeRequestHandler(runtime, { jev: "test-key" }, () => {}))
+    await new Promise<void>((resolve) => localServer.listen(0, "127.0.0.1", resolve))
+    const address = localServer.address()
+    if (!address || typeof address === "string") throw new Error("Server did not bind")
+    const url = `http://127.0.0.1:${address.port}`
+    try {
+      const missing = await fetch(`${url}/api/live`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ callId: "call-1001" }),
+      })
+      expect(missing.status).toBe(503)
+      expect(await missing.json()).toEqual({ error: "OPENAI_API_KEY is not configured on the API server" })
+      const supported = await fetch(`${url}/api/live`, {
+        method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ callId: "call-1001", provider: "jev" }),
+      })
+      expect(supported.status).toBe(201)
+      const created = await supported.json() as { id: string }
+      expect((await fetch(`${url}/api/live/${created.id}`)).status).toBe(200)
+      expect(await (await fetch(`${url}/api/health`)).json()).toMatchObject({ defaultProvider: "openai", providers: { openai: false, jev: true } })
+    } finally {
+      await new Promise<void>((resolve) => localServer.close(() => resolve()))
+    }
+  })
+
 })

@@ -2,6 +2,8 @@ import type { IncomingMessage, ServerResponse } from "node:http"
 import type { SqlClient } from "@effect/sql"
 import type { StartRunInput, UpdateCriterionInput } from "@scorecard/domain"
 import {
+  ScoringProvider,
+  DEFAULT_SCORING_PROVIDER,
   MAX_REVEAL_INTERVAL_MS,
   MAX_SCORE_EVERY_TURNS,
   MIN_REVEAL_INTERVAL_MS,
@@ -19,13 +21,14 @@ import {
 } from "./repository"
 import { processRun } from "./runner"
 import { makeLiveCoordinator } from "./live"
+import { type ProviderCredentials } from "./providers"
 
 interface ApiRuntime {
   readonly runPromise: <A, E>(effect: Effect.Effect<A, E, SqlClient.SqlClient>) => Promise<A>
   readonly runFork: <A, E>(effect: Effect.Effect<A, E, SqlClient.SqlClient>) => void
 }
 
-type Worker = (runId: string, callIds: ReadonlyArray<string>) => void
+type Worker = (runId: string, callIds: ReadonlyArray<string>, provider: ScoringProvider) => void
 
 const json = (response: ServerResponse, status: number, body: unknown): void => {
   response.writeHead(status, {
@@ -57,6 +60,7 @@ const UpdateCriterion = Schema.Struct({
   enabled: Schema.optional(Schema.Boolean),
 })
 const StartRun = Schema.Struct({
+  provider: Schema.optional(ScoringProvider),
   callIds: Schema.optional(Schema.Array(NonEmptyString)),
 })
 const RevealIntervalMs = Schema.Number.pipe(
@@ -69,6 +73,7 @@ const ScoreEveryTurns = Schema.Number.pipe(
   Schema.lessThanOrEqualTo(MAX_SCORE_EVERY_TURNS),
 )
 const CreateLive = Schema.Struct({
+  provider: Schema.optional(ScoringProvider),
   callId: NonEmptyString,
   intervalMs: Schema.optional(RevealIntervalMs),
   scoreEveryTurns: Schema.optional(ScoreEveryTurns),
@@ -95,28 +100,32 @@ const validateCriterion = (body: unknown): UpdateCriterionInput | string => {
 const validateRun = (body: unknown): StartRunInput | string => {
   const decoded = Schema.decodeUnknownEither(StartRun)(body)
   if (Either.isLeft(decoded)) return "Invalid run request"
-  return decoded.right.callIds === undefined ? {} : { callIds: decoded.right.callIds }
+  return {
+    ...(decoded.right.callIds === undefined ? {} : { callIds: decoded.right.callIds }),
+    ...(decoded.right.provider === undefined ? {} : { provider: decoded.right.provider }),
+  }
 }
 
 export const makeRequestHandler = (
   runtime: ApiRuntime,
-  apiKey: string | undefined,
+  credentials: ProviderCredentials,
   worker?: Worker,
   registerDispose?: (dispose: () => void) => void,
 ) => {
   const startWorker: Worker = worker ?? ((runId, callIds) => {
-    if (!apiKey) return
-    runtime.runFork(processRun(runId, callIds, apiKey))
+    runtime.runFork(processRun(runId, callIds, credentials))
   })
-  const live = apiKey ? makeLiveCoordinator(runtime, apiKey) : null
-  registerDispose?.(() => live?.dispose())
+  const live = makeLiveCoordinator(runtime, credentials)
+  registerDispose?.(() => live.dispose())
+  const configured = (provider: ScoringProvider) => Boolean(credentials[provider])
+  const missingKey = (provider: ScoringProvider) => ({ error: `${provider === "openai" ? "OPENAI_API_KEY" : "JEV_API_KEY"} is not configured on the API server` })
 
   return async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
     const method = request.method ?? "GET"
     const url = new URL(request.url ?? "/", "http://localhost")
     try {
       if (method === "GET" && url.pathname === "/api/health") {
-        return json(response, 200, { ok: true, classifierConfigured: Boolean(apiKey) })
+        return json(response, 200, { ok: true, classifierConfigured: configured(DEFAULT_SCORING_PROVIDER), defaultProvider: DEFAULT_SCORING_PROVIDER, providers: { openai: configured("openai"), jev: configured("jev") } })
       }
       if (method === "GET" && url.pathname === "/api/dashboard") {
         return json(response, 200, await runtime.runPromise(getDashboard))
@@ -144,22 +153,25 @@ export const makeRequestHandler = (
           : json(response, 404, { error: "Criterion not found" })
       }
       if (method === "POST" && url.pathname === "/api/runs") {
-        if (!apiKey) return json(response, 503, { error: "JEV_API_KEY is not configured on the API server" })
         const validated = validateRun(await readJson(request))
         if (typeof validated === "string") return json(response, 400, { error: validated })
+        const provider = validated.provider ?? DEFAULT_SCORING_PROVIDER
+        if (!configured(provider)) return json(response, 503, missingKey(provider))
         const created = await runtime.runPromise(createRun(validated))
         if ("error" in created) return json(response, 400, { error: created.error })
-        startWorker(created.run.id, created.callIds)
+        startWorker(created.run.id, created.callIds, created.run.provider)
         return json(response, 202, created.run)
       }
       if (method === "POST" && url.pathname === "/api/live") {
-        if (!live) return json(response, 503, { error: "JEV_API_KEY is not configured on the API server" })
         const decoded = Schema.decodeUnknownEither(CreateLive)(await readJson(request))
         if (Either.isLeft(decoded)) return json(response, 400, { error: "Invalid live session request" })
+        const provider = decoded.right.provider ?? DEFAULT_SCORING_PROVIDER
+        if (!configured(provider)) return json(response, 503, missingKey(provider))
         const session = await live.create(
           decoded.right.callId,
           decoded.right.intervalMs,
           decoded.right.scoreEveryTurns,
+          provider,
         )
         return session
           ? json(response, 201, session)
@@ -167,15 +179,16 @@ export const makeRequestHandler = (
       }
       const liveMatch = url.pathname.match(/^\/api\/live\/([^/]+)$/)
       if (method === "GET" && liveMatch) {
-        if (!live) return json(response, 503, { error: "JEV_API_KEY is not configured on the API server" })
         const session = await live.get(decodeURIComponent(liveMatch[1]!))
         return session ? json(response, 200, session) : json(response, 404, { error: "Live session not found" })
       }
       const liveControlMatch = url.pathname.match(/^\/api\/live\/([^/]+)\/control$/)
       if (method === "POST" && liveControlMatch) {
-        if (!live) return json(response, 503, { error: "JEV_API_KEY is not configured on the API server" })
         const decoded = Schema.decodeUnknownEither(ControlLive)(await readJson(request))
         if (Either.isLeft(decoded)) return json(response, 400, { error: "Invalid live control action" })
+        const existing = await live.get(decodeURIComponent(liveControlMatch[1]!))
+        if (!existing) return json(response, 404, { error: "Live session not found" })
+        if (decoded.right.action === "start" && !configured(existing.provider)) return json(response, 503, missingKey(existing.provider))
         const session = await live.control(
           decodeURIComponent(liveControlMatch[1]!),
           decoded.right.action,

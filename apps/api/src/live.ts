@@ -1,8 +1,9 @@
 import type { SqlClient } from "@effect/sql"
-import type { LiveSessionDetail } from "@scorecard/domain"
-import { clampRevealIntervalMs, estimateSystemOneCostUsd } from "@scorecard/domain"
+import type { LiveSessionDetail, ScoringProvider } from "@scorecard/domain"
+import { clampRevealIntervalMs, estimateProviderCostUsd } from "@scorecard/domain"
 import { Effect } from "effect"
-import { classifyWithTypeSafe } from "./classifier"
+import { classifyTranscript } from "./classifier"
+import { requireProviderKey, publicProviderError, type ProviderCredentials } from "./providers"
 import {
   beginLiveScoring,
   createLiveSession,
@@ -31,10 +32,7 @@ const readyToScore = (session: LiveSessionDetail): boolean => {
   return pending >= session.scoreEveryTurns || session.revealedTurnCount >= session.totalTurns
 }
 
-const publicError = (cause: unknown): string =>
-  cause instanceof Error ? cause.message.slice(0, 240) : "Live scoring failed"
-
-export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
+export const makeLiveCoordinator = (runtime: LiveRuntime, credentials: ProviderCredentials) => {
   const timers = new Map<string, NodeJS.Timeout>()
   const inFlight = new Set<string>()
   let disposed = false
@@ -54,6 +52,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
     inFlight.add(id)
     let generation: number | undefined
     let providerLatencyMs: number | null = null
+    let provider: ScoringProvider = "openai"
     try {
       const session = await runtime.runPromise(getLiveSession(id))
       if (!session || session.status === "failed" || session.status === "completed") {
@@ -63,6 +62,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
       if (!readyToScore(session)) return
       if (session.status !== "playing") return
 
+      provider = session.provider
       generation = session.generation
       const turnCount = session.revealedTurnCount
       const [call, criteria] = await Promise.all([
@@ -71,11 +71,11 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
       ])
       if (!call || !criteria) throw new Error("Live scoring data is unavailable")
       const evaluation = await Effect.runPromise(
-        classifyWithTypeSafe(
+        classifyTranscript(
           { ...call, transcript: session.transcript },
           criteria,
           `live:${id}:${generation}:${turnCount}`,
-          apiKey,
+          requireProviderKey(credentials, session.provider),
           undefined,
           { revealedTurnCount: turnCount, totalTurns: session.totalTurns },
           {
@@ -84,6 +84,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
               providerLatencyMs = latencyMs
             },
           },
+          session.provider,
         ),
       )
       const applied = await runtime.runPromise(
@@ -97,7 +98,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
             model: evaluation.model,
             inputTokens: evaluation.inputTokens,
             outputTokens: evaluation.outputTokens,
-            estimatedCostUsd: estimateSystemOneCostUsd(evaluation.inputTokens, evaluation.outputTokens),
+            estimatedCostUsd: estimateProviderCostUsd(session.provider, evaluation.inputTokens, evaluation.outputTokens),
           },
         ),
       )
@@ -108,7 +109,7 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
       }
     } catch (cause) {
       if (generation !== undefined) {
-        await runtime.runPromise(failLiveScoring(id, generation, publicError(cause), providerLatencyMs))
+        await runtime.runPromise(failLiveScoring(id, generation, publicProviderError(cause, provider), providerLatencyMs))
       }
     } finally {
       inFlight.delete(id)
@@ -128,8 +129,8 @@ export const makeLiveCoordinator = (runtime: LiveRuntime, apiKey: string) => {
   }
 
   return {
-    create: (callId: string, intervalMs?: number, scoreEveryTurns?: number) =>
-      runtime.runPromise(createLiveSession(callId, intervalMs, scoreEveryTurns)),
+    create: (callId: string, intervalMs?: number, scoreEveryTurns?: number, provider?: ScoringProvider) =>
+      runtime.runPromise(createLiveSession(callId, intervalMs, scoreEveryTurns, provider)),
     get: (id: string) => runtime.runPromise(getLiveSession(id)),
     control: async (
       id: string,

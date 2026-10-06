@@ -1,4 +1,4 @@
-import type { CallDetail, CallSummary, Criterion, LiveSessionDetail, Run, RunDetail } from "@scorecard/domain";
+import type { CallDetail, CallSummary, Criterion, LiveSessionDetail, Run, RunDetail, ScoringProvider } from "@scorecard/domain";
 
 export type { CallDetail, CallStatus, CallSummary, Criterion, LiveSessionDetail } from "@scorecard/domain";
 
@@ -11,6 +11,7 @@ export interface DashboardData {
 
 export interface BatchJob {
   id: string;
+  provider: ScoringProvider;
   status: Run["status"];
   total: number;
   processed: number;
@@ -49,6 +50,7 @@ function toBatchJob(run: Run | RunDetail): BatchJob {
   const results = "results" in run ? run.results : [];
   return {
     id: run.id,
+    provider: run.provider,
     status: run.status,
     total: run.total,
     processed: run.completed,
@@ -113,10 +115,10 @@ export const api = {
       body: JSON.stringify({ name: criterion.name, description: criterion.description, weight: criterion.weight, levels: criterion.levels, enabled: criterion.enabled }),
     }),
   )),
-  startBatch: () => request<Run>("/runs", { method: "POST", body: JSON.stringify({}) }).then(toBatchJob),
+  startBatch: (provider: ScoringProvider = "openai") => request<Run>("/runs", { method: "POST", body: JSON.stringify({ provider }) }).then(toBatchJob),
   batch: (id: string) => request<RunDetail>(`/runs/${encodeURIComponent(id)}`).then(toBatchJob),
   latestBatch: () => request<DashboardResponse>("/dashboard").then((dashboard) => dashboard.latestRun ? toBatchJob(dashboard.latestRun) : null),
-  createLive: (callId: string, pacing?: LivePacing) => request<LiveSessionDetail>("/live", { method: "POST", body: JSON.stringify({ callId, ...pacing }) }),
+  createLive: (callId: string, pacing?: LivePacing, provider: ScoringProvider = "openai") => request<LiveSessionDetail>("/live", { method: "POST", body: JSON.stringify({ callId, ...pacing, provider }) }),
   live: (id: string) => request<LiveSessionDetail>(`/live/${encodeURIComponent(id)}`),
   controlLive: (id: string, action: "start" | "pause" | "reset" | "pace", pacing?: LivePacing) => request<LiveSessionDetail>(`/live/${encodeURIComponent(id)}/control`, { method: "POST", body: JSON.stringify({ action, ...pacing }) }),
 };

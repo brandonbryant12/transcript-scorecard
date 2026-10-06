@@ -27,6 +27,7 @@ describe("TypeSafe classifier adapter", () => {
       }), { status: 200, headers: { "content-type": "application/json" } })
     }
     const call: CallDetail = {
+      provider: null,
       id: "call-test", customerName: "Fictional Customer", agentName: "Demo Agent",
       subject: "Test", startedAt: "2026-01-01T00:00:00Z", durationSeconds: 30,
       status: "pending", overallScore: null, error: null, evaluation: null,
@@ -63,6 +64,8 @@ describe("TypeSafe classifier adapter", () => {
     expect(Object.keys(requestBody?.questions as object)).toEqual([
       "score__empathy",
       "evidence__empathy",
+      "signal__restated",
+      "signal__emotion",
     ])
     expect(JSON.stringify(requestBody)).not.toContain("secret-never-serialized")
     expect(Date.parse(providerStartedAt!)).not.toBeNaN()
