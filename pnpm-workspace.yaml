@@ -2,6 +2,9 @@ packages:
   - "apps/*"
   - "packages/*"
 
+# Keep native SQLite installs and application scripts on the same Node ABI.
+useNodeVersion: 22.22.0
+
 onlyBuiltDependencies:
   - better-sqlite3
   - esbuild

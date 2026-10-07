@@ -24,7 +24,7 @@ The browser talks to the API over HTTP. `OPENAI_API_KEY` and `JEV_API_KEY` are a
 
 ## Run locally
 
-Prerequisites: Node.js 22 or newer and pnpm 10 or newer.
+Prerequisites: Node.js 22 or newer and pnpm 10 or newer. This workspace pins its application runtime to Node.js 22.22.0. pnpm downloads that version on first use and runs project scripts with it, even when your shell uses a different Node version. `.nvmrc` selects the same version for nvm users.
 
 ```bash
 git clone https://github.com/brandonbryant12/transcript-scorecard.git
@@ -37,6 +37,8 @@ pnpm dev
 ```
 
 If the provider keys are already exported in your shell, you can skip copying `.env.example`. The shell value takes precedence over `.env`.
+
+If SQLite reports a `NODE_MODULE_VERSION` mismatch after switching Node versions, stop the API watcher and run `pnpm rebuild better-sqlite3`, then restart `pnpm dev`. The rebuild and dev scripts use the pinned workspace runtime; existing SQLite data is preserved.
 
 Open [http://localhost:5173](http://localhost:5173). The API listens on [http://localhost:3001](http://localhost:3001). Choose a featured call, start the replay, and watch transcript turns and criterion scores arrive over time. You can pause, resume, or reset the replay without losing previously completed sessions.
 
