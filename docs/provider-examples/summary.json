@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-10-14T15:04:33.684Z",
+  "node": "v22.22.0",
+  "rounds": 10,
+  "call": { "id": "call-mock-001", "subject": "Locked out after password reset", "turns": 6 },
+  "summary": {
+    "openai": {
+      "model": "gpt-6-luna",
+      "inputTokens": { "n": 10, "min": 2832, "median": 2832, "mean": 2832, "max": 2832 },
+      "overallScore": { "n": 10, "min": 79.1, "median": 79.1, "mean": 79.1, "max": 79.1 },
+      "httpMs": { "n": 10, "min": 199, "median": 261.5, "mean": 368.1, "max": 934 },
+      "providerLatencyMs": { "n": 10, "min": 200, "median": 264.5, "mean": 370.1, "max": 935 },
+      "httpMsByRound": [ 299, 207, 201, 345, 224, 633, 200, 934, 199, 439 ]
+    },
+    "jev": {
+      "model": "jev-1.13.0",
+      "inputTokens": { "n": 10, "min": 2933, "median": 2933, "mean": 2933, "max": 2933 },
+      "overallScore": { "n": 10, "min": 82.6, "median": 83.05, "mean": 83, "max": 83.4 },
+      "httpMs": { "n": 10, "min": 143, "median": 168, "mean": 171.4, "max": 212 },
+      "providerLatencyMs": { "n": 10, "min": 145, "median": 169, "mean": 172.5, "max": 215 },
+      "httpMsByRound": [ 212, 169, 145, 156, 176, 191, 206, 167, 149, 143 ]
+    }
+  }
+}

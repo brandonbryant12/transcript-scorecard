@@ -1,0 +1,202 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "call": {
+      "subject": "Locked out after password reset",
+      "customer_name": "Sam Rivera",
+      "employee_name": "Priya Patel",
+      "transcript": [
+        {
+          "id": "turn-1",
+          "speaker": "employee",
+          "text": "ACME Support, this is Priya. How can I help?"
+        },
+        {
+          "id": "turn-2",
+          "speaker": "customer",
+          "text": "I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes."
+        },
+        {
+          "id": "turn-3",
+          "speaker": "employee",
+          "text": "That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?"
+        },
+        {
+          "id": "turn-4",
+          "speaker": "customer",
+          "text": "sam.rivera@example.com, and the phone ends in 4417."
+        },
+        {
+          "id": "turn-5",
+          "speaker": "employee",
+          "text": "Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417."
+        },
+        { "id": "turn-6", "speaker": "customer", "text": "Got the code and I'm in. Thank you!" }
+      ]
+    },
+    "evaluation_context": {
+      "purpose": "Quality assurance scorecard for a customer support employee",
+      "evidence_rule": "Base every judgment only on the supplied transcript"
+    }
+  },
+  "questions": {
+    "score__empathy": {
+      "type": "score",
+      "instructions": {
+        "task": "Evaluate the employee on Empathy & active listening.",
+        "definition": "Recognizes the customer’s emotion and responds to what they actually said.",
+        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      },
+      "criteria": [ "Dismissive", "Minimal acknowledgment", "Adequate", "Strong", "Exceptional" ]
+    },
+    "evidence__empathy": {
+      "type": "choice",
+      "instructions": {
+        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Empathy & active listening?",
+        "definition": "Recognizes the customer’s emotion and responds to what they actually said.",
+        "rubric": [ "Dismissive", "Minimal acknowledgment", "Adequate", "Strong", "Exceptional" ],
+        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      },
+      "criteria": {
+        "none": "No transcript turn provides direct evidence for the judgment.",
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
+      }
+    },
+    "score__accuracy": {
+      "type": "score",
+      "instructions": {
+        "task": "Evaluate the employee on Accuracy & policy alignment.",
+        "definition": "Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.",
+        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      },
+      "criteria": [
+        "Materially incorrect",
+        "Multiple gaps",
+        "Mostly accurate",
+        "Accurate",
+        "Precise and complete"
+      ]
+    },
+    "evidence__accuracy": {
+      "type": "choice",
+      "instructions": {
+        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Accuracy & policy alignment?",
+        "definition": "Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.",
+        "rubric": [
+          "Materially incorrect",
+          "Multiple gaps",
+          "Mostly accurate",
+          "Accurate",
+          "Precise and complete"
+        ],
+        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      },
+      "criteria": {
+        "none": "No transcript turn provides direct evidence for the judgment.",
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
+      }
+    },
+    "score__resolution": {
+      "type": "score",
+      "instructions": {
+        "task": "Evaluate the employee on Resolution quality.",
+        "definition": "Moves the issue to a clear resolution or a well-owned next step.",
+        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      },
+      "criteria": [
+        "Unresolved",
+        "Weak next step",
+        "Partial resolution",
+        "Resolved",
+        "Resolved with proactive follow-through"
+      ]
+    },
+    "evidence__resolution": {
+      "type": "choice",
+      "instructions": {
+        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Resolution quality?",
+        "definition": "Moves the issue to a clear resolution or a well-owned next step.",
+        "rubric": [
+          "Unresolved",
+          "Weak next step",
+          "Partial resolution",
+          "Resolved",
+          "Resolved with proactive follow-through"
+        ],
+        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      },
+      "criteria": {
+        "none": "No transcript turn provides direct evidence for the judgment.",
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
+      }
+    },
+    "score__communication": {
+      "type": "score",
+      "instructions": {
+        "task": "Evaluate the employee on Clear communication.",
+        "definition": "Uses concise, understandable language and confirms important details.",
+        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      },
+      "criteria": [ "Confusing", "Often unclear", "Understandable", "Clear", "Exceptionally clear" ]
+    },
+    "evidence__communication": {
+      "type": "choice",
+      "instructions": {
+        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Clear communication?",
+        "definition": "Uses concise, understandable language and confirms important details.",
+        "rubric": [ "Confusing", "Often unclear", "Understandable", "Clear", "Exceptionally clear" ],
+        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      },
+      "criteria": {
+        "none": "No transcript turn provides direct evidence for the judgment.",
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
+      }
+    },
+    "signal__restated": {
+      "type": "noul",
+      "instructions": {
+        "task": "Did the employee restate or summarise the customer's problem back to them in their own words?",
+        "guidance": "Judge only the employee's turns in the supplied transcript."
+      },
+      "criteria": {
+        "true": "The employee played the problem back, confirmed their understanding, or summarised the situation for the customer to confirm.",
+        "false": "The employee moved straight to questions, instructions, or a fix without reflecting the problem back."
+      }
+    },
+    "signal__emotion": {
+      "type": "choice",
+      "instructions": {
+        "task": "What is the customer's predominant emotional state in the most recent part of the call?",
+        "guidance": "Weigh the customer's latest turns most heavily; judge the customer, never the employee."
+      },
+      "criteria": {
+        "frustrated": "Annoyed or exasperated with the employee, the product, or having to repeat themselves.",
+        "anxious": "Worried about consequences, under time pressure, or uneasy about risk.",
+        "skeptical": "Doubting what the employee has told them, or pressing for proof of a claim.",
+        "cooperative": "Engaged and working the problem with the employee, without notable distress.",
+        "reassured": "Calm and confident the issue is handled or in good hands.",
+        "neutral": "Matter-of-fact exchange with no clear emotional colour."
+      }
+    }
+  }
+}

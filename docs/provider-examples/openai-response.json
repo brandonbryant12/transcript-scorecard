@@ -1,0 +1,139 @@
+{
+  "model": "gpt-6-luna",
+  "answers": [
+    {
+      "type": "score",
+      "name": "score__empathy",
+      "score": 3.34,
+      "probabilities": [
+        { "value": 0, "label": "Dismissive", "probability": 0 },
+        { "value": 1, "label": "Minimal acknowledgment", "probability": 0 },
+        { "value": 2, "label": "Adequate", "probability": 0.01 },
+        { "value": 3, "label": "Strong", "probability": 0.64 },
+        { "value": 4, "label": "Exceptional", "probability": 0.35 }
+      ],
+      "confidence": 0.7
+    },
+    {
+      "type": "choice",
+      "name": "evidence__empathy",
+      "choice": "turn-3",
+      "probabilities": [
+        { "value": "none", "probability": 0 },
+        { "value": "turn-1", "probability": 0 },
+        { "value": "turn-2", "probability": 0.04 },
+        { "value": "turn-3", "probability": 0.95 },
+        { "value": "turn-4", "probability": 0.01 },
+        { "value": "turn-5", "probability": 0 },
+        { "value": "turn-6", "probability": 0 }
+      ],
+      "confidence": 0.94
+    },
+    {
+      "type": "score",
+      "name": "score__accuracy",
+      "score": 3.03,
+      "probabilities": [
+        { "value": 0, "label": "Materially incorrect", "probability": 0 },
+        { "value": 1, "label": "Multiple gaps", "probability": 0.01 },
+        { "value": 2, "label": "Mostly accurate", "probability": 0.23 },
+        { "value": 3, "label": "Accurate", "probability": 0.48 },
+        { "value": 4, "label": "Precise and complete", "probability": 0.28 }
+      ],
+      "confidence": 0.56
+    },
+    {
+      "type": "choice",
+      "name": "evidence__accuracy",
+      "choice": "turn-5",
+      "probabilities": [
+        { "value": "none", "probability": 0.01 },
+        { "value": "turn-1", "probability": 0.01 },
+        { "value": "turn-2", "probability": 0.01 },
+        { "value": "turn-3", "probability": 0.01 },
+        { "value": "turn-4", "probability": 0.01 },
+        { "value": "turn-5", "probability": 0.95 },
+        { "value": "turn-6", "probability": 0 }
+      ],
+      "confidence": 0.94
+    },
+    {
+      "type": "score",
+      "name": "score__resolution",
+      "score": 3.13,
+      "probabilities": [
+        { "value": 0, "label": "Unresolved", "probability": 0 },
+        { "value": 1, "label": "Weak next step", "probability": 0 },
+        { "value": 2, "label": "Partial resolution", "probability": 0 },
+        { "value": 3, "label": "Resolved", "probability": 0.87 },
+        { "value": 4, "label": "Resolved with proactive follow-through", "probability": 0.13 }
+      ],
+      "confidence": 0.89
+    },
+    {
+      "type": "choice",
+      "name": "evidence__resolution",
+      "choice": "turn-5",
+      "probabilities": [
+        { "value": "none", "probability": 0 },
+        { "value": "turn-1", "probability": 0.01 },
+        { "value": "turn-2", "probability": 0 },
+        { "value": "turn-3", "probability": 0 },
+        { "value": "turn-4", "probability": 0 },
+        { "value": "turn-5", "probability": 0.99 },
+        { "value": "turn-6", "probability": 0 }
+      ],
+      "confidence": 0.99
+    },
+    {
+      "type": "score",
+      "name": "score__communication",
+      "score": 3.17,
+      "probabilities": [
+        { "value": 0, "label": "Confusing", "probability": 0 },
+        { "value": 1, "label": "Often unclear", "probability": 0 },
+        { "value": 2, "label": "Understandable", "probability": 0.01 },
+        { "value": 3, "label": "Clear", "probability": 0.81 },
+        { "value": 4, "label": "Exceptionally clear", "probability": 0.18 }
+      ],
+      "confidence": 0.84
+    },
+    {
+      "type": "choice",
+      "name": "evidence__communication",
+      "choice": "turn-5",
+      "probabilities": [
+        { "value": "none", "probability": 0.01 },
+        { "value": "turn-1", "probability": 0 },
+        { "value": "turn-2", "probability": 0.01 },
+        { "value": "turn-3", "probability": 0.13 },
+        { "value": "turn-4", "probability": 0.01 },
+        { "value": "turn-5", "probability": 0.83 },
+        { "value": "turn-6", "probability": 0.01 }
+      ],
+      "confidence": 0.8
+    },
+    { "type": "predicate", "name": "signal__restated", "probability": 0.1 },
+    {
+      "type": "choice",
+      "name": "signal__emotion",
+      "choice": "reassured",
+      "probabilities": [
+        { "value": "frustrated", "probability": 0.03 },
+        { "value": "anxious", "probability": 0 },
+        { "value": "skeptical", "probability": 0.01 },
+        { "value": "cooperative", "probability": 0.17 },
+        { "value": "reassured", "probability": 0.78 },
+        { "value": "neutral", "probability": 0.01 }
+      ],
+      "confidence": 0.74
+    }
+  ],
+  "usage": {
+    "input_tokens": 2832,
+    "input_tokens_details": { "cached_tokens": 0, "cache_write_tokens": 0 },
+    "output_tokens": 0,
+    "output_tokens_details": { "reasoning_tokens": 0 },
+    "total_tokens": 2832
+  }
+}

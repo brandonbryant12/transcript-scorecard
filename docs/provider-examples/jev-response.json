@@ -1,0 +1,128 @@
+{
+  "model": "jev-1.13.0",
+  "answers": {
+    "score__empathy": {
+      "type": "score",
+      "score": 2.99,
+      "confidence": 0.93,
+      "legend": {
+        "0": "Dismissive",
+        "1": "Minimal acknowledgment",
+        "2": "Adequate",
+        "3": "Strong",
+        "4": "Exceptional"
+      },
+      "probabilities": { "0": 0, "1": 0, "2": 0.05, "3": 0.91, "4": 0.04 }
+    },
+    "evidence__empathy": {
+      "type": "choice",
+      "choice": "turn-3",
+      "confidence": 1,
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 1,
+        "turn-4": 0,
+        "turn-5": 0,
+        "turn-6": 0
+      }
+    },
+    "score__accuracy": {
+      "type": "score",
+      "score": 3.34,
+      "confidence": 0.46,
+      "legend": {
+        "0": "Materially incorrect",
+        "1": "Multiple gaps",
+        "2": "Mostly accurate",
+        "3": "Accurate",
+        "4": "Precise and complete"
+      },
+      "probabilities": { "0": 0, "1": 0.04, "2": 0.07, "3": 0.39, "4": 0.5 }
+    },
+    "evidence__accuracy": {
+      "type": "choice",
+      "choice": "turn-5",
+      "confidence": 0.91,
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 0.08,
+        "turn-4": 0,
+        "turn-5": 0.92,
+        "turn-6": 0
+      }
+    },
+    "score__resolution": {
+      "type": "score",
+      "score": 3.2,
+      "confidence": 0.82,
+      "legend": {
+        "0": "Unresolved",
+        "1": "Weak next step",
+        "2": "Partial resolution",
+        "3": "Resolved",
+        "4": "Resolved with proactive follow-through"
+      },
+      "probabilities": { "0": 0, "1": 0, "2": 0, "3": 0.79, "4": 0.21 }
+    },
+    "evidence__resolution": {
+      "type": "choice",
+      "choice": "turn-5",
+      "confidence": 1,
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 0,
+        "turn-4": 0,
+        "turn-5": 1,
+        "turn-6": 0
+      }
+    },
+    "score__communication": {
+      "type": "score",
+      "score": 3.8,
+      "confidence": 0.83,
+      "legend": {
+        "0": "Confusing",
+        "1": "Often unclear",
+        "2": "Understandable",
+        "3": "Clear",
+        "4": "Exceptionally clear"
+      },
+      "probabilities": { "0": 0, "1": 0, "2": 0, "3": 0.2, "4": 0.8 }
+    },
+    "evidence__communication": {
+      "type": "choice",
+      "choice": "turn-5",
+      "confidence": 0.92,
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 0.07,
+        "turn-4": 0,
+        "turn-5": 0.93,
+        "turn-6": 0
+      }
+    },
+    "signal__restated": { "type": "noul", "noul": 0.57 },
+    "signal__emotion": {
+      "type": "choice",
+      "choice": "reassured",
+      "confidence": 0.99,
+      "probabilities": {
+        "frustrated": 0,
+        "anxious": 0,
+        "skeptical": 0,
+        "cooperative": 0.01,
+        "reassured": 0.99,
+        "neutral": 0
+      }
+    }
+  },
+  "usage": { "input_tokens": 2933, "output_tokens": 478 }
+}

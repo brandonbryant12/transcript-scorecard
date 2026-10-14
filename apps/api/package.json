@@ -8,6 +8,7 @@
     "build": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "start": "tsx --env-file-if-exists=../../.env src/main.ts",
+    "provider-examples": "tsx --env-file-if-exists=../../.env scripts/provider-examples.ts",
     "test": "vitest run"
   },
   "dependencies": {
