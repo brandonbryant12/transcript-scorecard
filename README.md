@@ -62,7 +62,7 @@ Cost estimates use each provider's published input rate: OpenAI Decisions $0.10/
 
 ## Provider API examples
 
-These are real requests and responses from scoring one short, fictional call with both providers through the app's own adapter (`classifyTranscript`). They were captured on 2026-10-14. Each request asks 10 questions: a `score` and an `evidence__` choice for each of the four rubric criteria, plus the restated-problem and customer-emotion signals. The requests match what batch review sends; live replay requests add `assessment_stage`, `revealed_turns`, `total_turns`, and provisional-scoring guidance to `evaluation_context`. The full, unabridged payloads are in [`docs/provider-examples/`](docs/provider-examples/).
+These are real requests and responses from scoring one short, fictional call with both providers through the app's own adapter (`classifyTranscript`). They were captured on 2026-10-14. Each request asks 10 questions: a `score` and an `evidence__` choice for each of the four rubric criteria, plus the restated-problem and customer-emotion signals. The requests match what batch review sends; live replay requests add `assessment_stage`, `revealed_turns`, `total_turns`, and provisional-scoring guidance to `evaluation_context`. The exact payloads are below and in [`docs/provider-examples/`](docs/provider-examples/).
 
 ### Mock transcript
 
@@ -115,9 +115,47 @@ curl https://api.typesafe.ai/v1/systemone \
   --data-binary @docs/provider-examples/jev-request.json
 ```
 
-Request, abridged to three of the ten questions:
+Shape, from the SDK's `SystemOneRequestPayload` and `SystemOneResult` types:
 
-```jsonc
+```ts
+type Json = string | number | boolean | null | Json[] | { [key: string]: Json }
+type Entry = string | { [key: string]: Json } | Json[] | null // text, a JSON object or array, or null
+
+// Request body
+interface SystemOneRequest {
+  model: string // "jev-latest"
+  state: Entry // here { call, evaluation_context }
+  questions: Record<string, Question> // answers come back under the same names
+}
+
+type Question =
+  | { type: "score"; instructions?: Entry; criteria: [Entry, Entry, ...Entry[]] } // ordered rubric; index = score
+  | { type: "choice"; instructions?: Entry; criteria: Record<string, Entry> } // label → description
+  | { type: "noul"; instructions?: Entry; criteria?: { true?: Entry; false?: Entry } | null } // yes/no
+
+// Response body
+interface SystemOneResult {
+  model: string // resolved model, e.g. "jev-1.13.0"
+  answers: Record<string, Answer> // keyed by question name
+  usage: { input_tokens: number; output_tokens: number }
+}
+
+type Answer =
+  | {
+      type: "score"
+      score: number // expected score; may fall between rubric levels
+      confidence: number
+      legend: Record<string, Entry> // "0" … "n-1" → rubric level
+      probabilities: Record<string, number> // "0" … "n-1" → probability
+    }
+  | { type: "choice"; choice: string; confidence: number; probabilities: Record<string, number> }
+  | { type: "noul"; noul: number } // probability of yes
+```
+
+<details>
+<summary>Exact request body (all 10 questions)</summary>
+
+```json
 {
   "model": "jev-latest",
   "state": {
@@ -126,8 +164,32 @@ Request, abridged to three of the ten questions:
       "customer_name": "Sam Rivera",
       "employee_name": "Priya Patel",
       "transcript": [
-        { "id": "turn-1", "speaker": "employee", "text": "ACME Support, this is Priya. How can I help?" }
-        // turn-2 … turn-6, as in the transcript above
+        {
+          "id": "turn-1",
+          "speaker": "employee",
+          "text": "ACME Support, this is Priya. How can I help?"
+        },
+        {
+          "id": "turn-2",
+          "speaker": "customer",
+          "text": "I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes."
+        },
+        {
+          "id": "turn-3",
+          "speaker": "employee",
+          "text": "That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?"
+        },
+        {
+          "id": "turn-4",
+          "speaker": "customer",
+          "text": "sam.rivera@example.com, and the phone ends in 4417."
+        },
+        {
+          "id": "turn-5",
+          "speaker": "employee",
+          "text": "Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417."
+        },
+        { "id": "turn-6", "speaker": "customer", "text": "Got the code and I'm in. Thank you!" }
       ]
     },
     "evaluation_context": {
@@ -155,8 +217,117 @@ Request, abridged to three of the ten questions:
       },
       "criteria": {
         "none": "No transcript turn provides direct evidence for the judgment.",
-        "turn-1": "Employee: ACME Support, this is Priya. How can I help?"
-        // one option per transcript turn, through turn-6
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
+      }
+    },
+    "score__accuracy": {
+      "type": "score",
+      "instructions": {
+        "task": "Evaluate the employee on Accuracy & policy alignment.",
+        "definition": "Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.",
+        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      },
+      "criteria": [
+        "Materially incorrect",
+        "Multiple gaps",
+        "Mostly accurate",
+        "Accurate",
+        "Precise and complete"
+      ]
+    },
+    "evidence__accuracy": {
+      "type": "choice",
+      "instructions": {
+        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Accuracy & policy alignment?",
+        "definition": "Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.",
+        "rubric": [
+          "Materially incorrect",
+          "Multiple gaps",
+          "Mostly accurate",
+          "Accurate",
+          "Precise and complete"
+        ],
+        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      },
+      "criteria": {
+        "none": "No transcript turn provides direct evidence for the judgment.",
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
+      }
+    },
+    "score__resolution": {
+      "type": "score",
+      "instructions": {
+        "task": "Evaluate the employee on Resolution quality.",
+        "definition": "Moves the issue to a clear resolution or a well-owned next step.",
+        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      },
+      "criteria": [
+        "Unresolved",
+        "Weak next step",
+        "Partial resolution",
+        "Resolved",
+        "Resolved with proactive follow-through"
+      ]
+    },
+    "evidence__resolution": {
+      "type": "choice",
+      "instructions": {
+        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Resolution quality?",
+        "definition": "Moves the issue to a clear resolution or a well-owned next step.",
+        "rubric": [
+          "Unresolved",
+          "Weak next step",
+          "Partial resolution",
+          "Resolved",
+          "Resolved with proactive follow-through"
+        ],
+        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      },
+      "criteria": {
+        "none": "No transcript turn provides direct evidence for the judgment.",
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
+      }
+    },
+    "score__communication": {
+      "type": "score",
+      "instructions": {
+        "task": "Evaluate the employee on Clear communication.",
+        "definition": "Uses concise, understandable language and confirms important details.",
+        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      },
+      "criteria": [ "Confusing", "Often unclear", "Understandable", "Clear", "Exceptionally clear" ]
+    },
+    "evidence__communication": {
+      "type": "choice",
+      "instructions": {
+        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Clear communication?",
+        "definition": "Uses concise, understandable language and confirms important details.",
+        "rubric": [ "Confusing", "Often unclear", "Understandable", "Clear", "Exceptionally clear" ],
+        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      },
+      "criteria": {
+        "none": "No transcript turn provides direct evidence for the judgment.",
+        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
+        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
+        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
+        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
+        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
+        "turn-6": "Customer: Got the code and I'm in. Thank you!"
       }
     },
     "signal__restated": {
@@ -169,15 +340,32 @@ Request, abridged to three of the ten questions:
         "true": "The employee played the problem back, confirmed their understanding, or summarised the situation for the customer to confirm.",
         "false": "The employee moved straight to questions, instructions, or a fix without reflecting the problem back."
       }
+    },
+    "signal__emotion": {
+      "type": "choice",
+      "instructions": {
+        "task": "What is the customer's predominant emotional state in the most recent part of the call?",
+        "guidance": "Weigh the customer's latest turns most heavily; judge the customer, never the employee."
+      },
+      "criteria": {
+        "frustrated": "Annoyed or exasperated with the employee, the product, or having to repeat themselves.",
+        "anxious": "Worried about consequences, under time pressure, or uneasy about risk.",
+        "skeptical": "Doubting what the employee has told them, or pressing for proof of a claim.",
+        "cooperative": "Engaged and working the problem with the employee, without notable distress.",
+        "reassured": "Calm and confident the issue is handled or in good hands.",
+        "neutral": "Matter-of-fact exchange with no clear emotional colour."
+      }
     }
-    // score__ and evidence__ for accuracy, resolution, and communication; signal__emotion
   }
 }
 ```
 
-Response, abridged to the same three answers (212 ms):
+</details>
 
-```jsonc
+<details>
+<summary>Exact response body (212 ms)</summary>
+
+```json
 {
   "model": "jev-1.13.0",
   "answers": {
@@ -185,21 +373,130 @@ Response, abridged to the same three answers (212 ms):
       "type": "score",
       "score": 2.99,
       "confidence": 0.93,
-      "legend": { "0": "Dismissive", "1": "Minimal acknowledgment", "2": "Adequate", "3": "Strong", "4": "Exceptional" },
+      "legend": {
+        "0": "Dismissive",
+        "1": "Minimal acknowledgment",
+        "2": "Adequate",
+        "3": "Strong",
+        "4": "Exceptional"
+      },
       "probabilities": { "0": 0, "1": 0, "2": 0.05, "3": 0.91, "4": 0.04 }
     },
     "evidence__empathy": {
       "type": "choice",
       "choice": "turn-3",
       "confidence": 1,
-      "probabilities": { "none": 0, "turn-1": 0, "turn-2": 0, "turn-3": 1, "turn-4": 0, "turn-5": 0, "turn-6": 0 }
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 1,
+        "turn-4": 0,
+        "turn-5": 0,
+        "turn-6": 0
+      }
     },
-    "signal__restated": { "type": "noul", "noul": 0.57 }
-    // 7 more answers, keyed by question name
+    "score__accuracy": {
+      "type": "score",
+      "score": 3.34,
+      "confidence": 0.46,
+      "legend": {
+        "0": "Materially incorrect",
+        "1": "Multiple gaps",
+        "2": "Mostly accurate",
+        "3": "Accurate",
+        "4": "Precise and complete"
+      },
+      "probabilities": { "0": 0, "1": 0.04, "2": 0.07, "3": 0.39, "4": 0.5 }
+    },
+    "evidence__accuracy": {
+      "type": "choice",
+      "choice": "turn-5",
+      "confidence": 0.91,
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 0.08,
+        "turn-4": 0,
+        "turn-5": 0.92,
+        "turn-6": 0
+      }
+    },
+    "score__resolution": {
+      "type": "score",
+      "score": 3.2,
+      "confidence": 0.82,
+      "legend": {
+        "0": "Unresolved",
+        "1": "Weak next step",
+        "2": "Partial resolution",
+        "3": "Resolved",
+        "4": "Resolved with proactive follow-through"
+      },
+      "probabilities": { "0": 0, "1": 0, "2": 0, "3": 0.79, "4": 0.21 }
+    },
+    "evidence__resolution": {
+      "type": "choice",
+      "choice": "turn-5",
+      "confidence": 1,
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 0,
+        "turn-4": 0,
+        "turn-5": 1,
+        "turn-6": 0
+      }
+    },
+    "score__communication": {
+      "type": "score",
+      "score": 3.8,
+      "confidence": 0.83,
+      "legend": {
+        "0": "Confusing",
+        "1": "Often unclear",
+        "2": "Understandable",
+        "3": "Clear",
+        "4": "Exceptionally clear"
+      },
+      "probabilities": { "0": 0, "1": 0, "2": 0, "3": 0.2, "4": 0.8 }
+    },
+    "evidence__communication": {
+      "type": "choice",
+      "choice": "turn-5",
+      "confidence": 0.92,
+      "probabilities": {
+        "none": 0,
+        "turn-1": 0,
+        "turn-2": 0,
+        "turn-3": 0.07,
+        "turn-4": 0,
+        "turn-5": 0.93,
+        "turn-6": 0
+      }
+    },
+    "signal__restated": { "type": "noul", "noul": 0.57 },
+    "signal__emotion": {
+      "type": "choice",
+      "choice": "reassured",
+      "confidence": 0.99,
+      "probabilities": {
+        "frustrated": 0,
+        "anxious": 0,
+        "skeptical": 0,
+        "cooperative": 0.01,
+        "reassured": 0.99,
+        "neutral": 0
+      }
+    }
   },
   "usage": { "input_tokens": 2933, "output_tokens": 478 }
 }
 ```
+
+</details>
 
 ### OpenAI Decisions request and response
 
@@ -210,15 +507,62 @@ curl https://api.openai.com/v1/decisions \
   --data-binary @docs/provider-examples/openai-request.json
 ```
 
-The adapter in `apps/api/src/openai-decisions.ts` translates the JEV question set into the Decisions contract. `input` carries the same `state` object as a JSON string, questions become an ordered array with a `name`, score `criteria` become `levels`, and `noul` questions become `predicate` questions with the yes and no descriptions appended to the instructions.
+The adapter in `apps/api/src/openai-decisions.ts` translates the JEV question set into the Decisions contract. `input` carries the same `state` object as a JSON string, questions become an ordered array with a `name`, question instructions are serialized to strings, score `criteria` become `levels`, and `noul` questions become `predicate` questions with the yes and no descriptions appended to the instructions.
 
-Request, abridged to the same three questions:
+Shape of the fields this app sends and receives. The adapter validates `model`, `answers`, `usage.input_tokens`, and `usage.output_tokens`; the other `usage` fields are as returned in this capture. No refusals occurred here.
 
-```jsonc
+```ts
+// Request body, as this app sends it
+interface DecisionsRequest {
+  model: string // "gpt-6-luna"
+  input: string // the content to judge; this app sends JSON.stringify(state)
+  questions: Question[] // answers come back in the same order
+}
+
+type Question =
+  | { type: "score"; name: string; instructions: string; levels: { label: string }[] } // ordered; index = score
+  | { type: "choice"; name: string; instructions: string; choices: { value: string; description: string }[] }
+  | { type: "predicate"; name: string; instructions: string } // yes/no
+
+// Response body
+interface DecisionsResponse {
+  model: string
+  answers: Answer[] // one per question, in question order
+  usage: {
+    input_tokens: number
+    input_tokens_details: { cached_tokens: number; cache_write_tokens: number }
+    output_tokens: number
+    output_tokens_details: { reasoning_tokens: number }
+    total_tokens: number
+  }
+}
+
+type Answer =
+  | {
+      type: "score"
+      name: string | null
+      score: number // expected score; may fall between rubric levels
+      confidence: number
+      probabilities: { value: number; label: string; probability: number }[]
+    }
+  | {
+      type: "choice"
+      name: string | null
+      choice: string
+      confidence: number
+      probabilities: { value: string; probability: number }[]
+    }
+  | { type: "predicate"; name: string | null; probability: number } // probability of yes
+  | { type: "refusal"; name: string | null } // the app fails the scoring request
+```
+
+<details>
+<summary>Exact request body (all 10 questions)</summary>
+
+```json
 {
   "model": "gpt-6-luna",
-  // The JEV request's state object, serialized with JSON.stringify
-  "input": "{\"call\":{\"subject\":\"Locked out after password reset\",\"customer_name\":\"Sam Rivera\",…},\"evaluation_context\":{…}}",
+  "input": "{\"call\":{\"subject\":\"Locked out after password reset\",\"customer_name\":\"Sam Rivera\",\"employee_name\":\"Priya Patel\",\"transcript\":[{\"id\":\"turn-1\",\"speaker\":\"employee\",\"text\":\"ACME Support, this is Priya. How can I help?\"},{\"id\":\"turn-2\",\"speaker\":\"customer\",\"text\":\"I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.\"},{\"id\":\"turn-3\",\"speaker\":\"employee\",\"text\":\"That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?\"},{\"id\":\"turn-4\",\"speaker\":\"customer\",\"text\":\"sam.rivera@example.com, and the phone ends in 4417.\"},{\"id\":\"turn-5\",\"speaker\":\"employee\",\"text\":\"Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.\"},{\"id\":\"turn-6\",\"speaker\":\"customer\",\"text\":\"Got the code and I'm in. Thank you!\"}]},\"evaluation_context\":{\"purpose\":\"Quality assurance scorecard for a customer support employee\",\"evidence_rule\":\"Base every judgment only on the supplied transcript\"}}",
   "questions": [
     {
       "type": "score",
@@ -235,26 +579,213 @@ Request, abridged to the same three questions:
     {
       "type": "choice",
       "name": "evidence__empathy",
-      "instructions": "{\"task\":\"Which single transcript turn contains the most relevant employee behavior for assessing Empathy & active listening?\",…}",
+      "instructions": "{\"task\":\"Which single transcript turn contains the most relevant employee behavior for assessing Empathy & active listening?\",\"definition\":\"Recognizes the customer’s emotion and responds to what they actually said.\",\"rubric\":[\"Dismissive\",\"Minimal acknowledgment\",\"Adequate\",\"Strong\",\"Exceptional\"],\"guidance\":\"Choose none only when no turn contains relevant employee behavior.\"}",
       "choices": [
-        { "value": "none", "description": "No transcript turn provides direct evidence for the judgment." },
-        { "value": "turn-1", "description": "Employee: ACME Support, this is Priya. How can I help?" }
-        // one choice per transcript turn, through turn-6
+        {
+          "value": "none",
+          "description": "No transcript turn provides direct evidence for the judgment."
+        },
+        {
+          "value": "turn-1",
+          "description": "Employee: ACME Support, this is Priya. How can I help?"
+        },
+        {
+          "value": "turn-2",
+          "description": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes."
+        },
+        {
+          "value": "turn-3",
+          "description": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?"
+        },
+        {
+          "value": "turn-4",
+          "description": "Customer: sam.rivera@example.com, and the phone ends in 4417."
+        },
+        {
+          "value": "turn-5",
+          "description": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417."
+        },
+        { "value": "turn-6", "description": "Customer: Got the code and I'm in. Thank you!" }
+      ]
+    },
+    {
+      "type": "score",
+      "name": "score__accuracy",
+      "instructions": "{\"task\":\"Evaluate the employee on Accuracy & policy alignment.\",\"definition\":\"Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.\",\"guidance\":\"Judge only behavior supported by this call. Use the full ordered rubric.\"}",
+      "levels": [
+        { "label": "Materially incorrect" },
+        { "label": "Multiple gaps" },
+        { "label": "Mostly accurate" },
+        { "label": "Accurate" },
+        { "label": "Precise and complete" }
+      ]
+    },
+    {
+      "type": "choice",
+      "name": "evidence__accuracy",
+      "instructions": "{\"task\":\"Which single transcript turn contains the most relevant employee behavior for assessing Accuracy & policy alignment?\",\"definition\":\"Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.\",\"rubric\":[\"Materially incorrect\",\"Multiple gaps\",\"Mostly accurate\",\"Accurate\",\"Precise and complete\"],\"guidance\":\"Choose none only when no turn contains relevant employee behavior.\"}",
+      "choices": [
+        {
+          "value": "none",
+          "description": "No transcript turn provides direct evidence for the judgment."
+        },
+        {
+          "value": "turn-1",
+          "description": "Employee: ACME Support, this is Priya. How can I help?"
+        },
+        {
+          "value": "turn-2",
+          "description": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes."
+        },
+        {
+          "value": "turn-3",
+          "description": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?"
+        },
+        {
+          "value": "turn-4",
+          "description": "Customer: sam.rivera@example.com, and the phone ends in 4417."
+        },
+        {
+          "value": "turn-5",
+          "description": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417."
+        },
+        { "value": "turn-6", "description": "Customer: Got the code and I'm in. Thank you!" }
+      ]
+    },
+    {
+      "type": "score",
+      "name": "score__resolution",
+      "instructions": "{\"task\":\"Evaluate the employee on Resolution quality.\",\"definition\":\"Moves the issue to a clear resolution or a well-owned next step.\",\"guidance\":\"Judge only behavior supported by this call. Use the full ordered rubric.\"}",
+      "levels": [
+        { "label": "Unresolved" },
+        { "label": "Weak next step" },
+        { "label": "Partial resolution" },
+        { "label": "Resolved" },
+        { "label": "Resolved with proactive follow-through" }
+      ]
+    },
+    {
+      "type": "choice",
+      "name": "evidence__resolution",
+      "instructions": "{\"task\":\"Which single transcript turn contains the most relevant employee behavior for assessing Resolution quality?\",\"definition\":\"Moves the issue to a clear resolution or a well-owned next step.\",\"rubric\":[\"Unresolved\",\"Weak next step\",\"Partial resolution\",\"Resolved\",\"Resolved with proactive follow-through\"],\"guidance\":\"Choose none only when no turn contains relevant employee behavior.\"}",
+      "choices": [
+        {
+          "value": "none",
+          "description": "No transcript turn provides direct evidence for the judgment."
+        },
+        {
+          "value": "turn-1",
+          "description": "Employee: ACME Support, this is Priya. How can I help?"
+        },
+        {
+          "value": "turn-2",
+          "description": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes."
+        },
+        {
+          "value": "turn-3",
+          "description": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?"
+        },
+        {
+          "value": "turn-4",
+          "description": "Customer: sam.rivera@example.com, and the phone ends in 4417."
+        },
+        {
+          "value": "turn-5",
+          "description": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417."
+        },
+        { "value": "turn-6", "description": "Customer: Got the code and I'm in. Thank you!" }
+      ]
+    },
+    {
+      "type": "score",
+      "name": "score__communication",
+      "instructions": "{\"task\":\"Evaluate the employee on Clear communication.\",\"definition\":\"Uses concise, understandable language and confirms important details.\",\"guidance\":\"Judge only behavior supported by this call. Use the full ordered rubric.\"}",
+      "levels": [
+        { "label": "Confusing" },
+        { "label": "Often unclear" },
+        { "label": "Understandable" },
+        { "label": "Clear" },
+        { "label": "Exceptionally clear" }
+      ]
+    },
+    {
+      "type": "choice",
+      "name": "evidence__communication",
+      "instructions": "{\"task\":\"Which single transcript turn contains the most relevant employee behavior for assessing Clear communication?\",\"definition\":\"Uses concise, understandable language and confirms important details.\",\"rubric\":[\"Confusing\",\"Often unclear\",\"Understandable\",\"Clear\",\"Exceptionally clear\"],\"guidance\":\"Choose none only when no turn contains relevant employee behavior.\"}",
+      "choices": [
+        {
+          "value": "none",
+          "description": "No transcript turn provides direct evidence for the judgment."
+        },
+        {
+          "value": "turn-1",
+          "description": "Employee: ACME Support, this is Priya. How can I help?"
+        },
+        {
+          "value": "turn-2",
+          "description": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes."
+        },
+        {
+          "value": "turn-3",
+          "description": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?"
+        },
+        {
+          "value": "turn-4",
+          "description": "Customer: sam.rivera@example.com, and the phone ends in 4417."
+        },
+        {
+          "value": "turn-5",
+          "description": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417."
+        },
+        { "value": "turn-6", "description": "Customer: Got the code and I'm in. Thank you!" }
       ]
     },
     {
       "type": "predicate",
       "name": "signal__restated",
       "instructions": "{\"task\":\"Did the employee restate or summarise the customer's problem back to them in their own words?\",\"guidance\":\"Judge only the employee's turns in the supplied transcript.\"}\nYes: The employee played the problem back, confirmed their understanding, or summarised the situation for the customer to confirm.\nNo: The employee moved straight to questions, instructions, or a fix without reflecting the problem back."
+    },
+    {
+      "type": "choice",
+      "name": "signal__emotion",
+      "instructions": "{\"task\":\"What is the customer's predominant emotional state in the most recent part of the call?\",\"guidance\":\"Weigh the customer's latest turns most heavily; judge the customer, never the employee.\"}",
+      "choices": [
+        {
+          "value": "frustrated",
+          "description": "Annoyed or exasperated with the employee, the product, or having to repeat themselves."
+        },
+        {
+          "value": "anxious",
+          "description": "Worried about consequences, under time pressure, or uneasy about risk."
+        },
+        {
+          "value": "skeptical",
+          "description": "Doubting what the employee has told them, or pressing for proof of a claim."
+        },
+        {
+          "value": "cooperative",
+          "description": "Engaged and working the problem with the employee, without notable distress."
+        },
+        {
+          "value": "reassured",
+          "description": "Calm and confident the issue is handled or in good hands."
+        },
+        {
+          "value": "neutral",
+          "description": "Matter-of-fact exchange with no clear emotional colour."
+        }
+      ]
     }
-    // 7 more questions, in the same order as the JEV request
   ]
 }
 ```
 
-Response, abridged to the same three answers (299 ms):
+</details>
 
-```jsonc
+<details>
+<summary>Exact response body (299 ms)</summary>
+
+```json
 {
   "model": "gpt-6-luna",
   "answers": [
@@ -286,8 +817,105 @@ Response, abridged to the same three answers (299 ms):
       ],
       "confidence": 0.94
     },
-    { "type": "predicate", "name": "signal__restated", "probability": 0.1 }
-    // 7 more answers, in question order
+    {
+      "type": "score",
+      "name": "score__accuracy",
+      "score": 3.03,
+      "probabilities": [
+        { "value": 0, "label": "Materially incorrect", "probability": 0 },
+        { "value": 1, "label": "Multiple gaps", "probability": 0.01 },
+        { "value": 2, "label": "Mostly accurate", "probability": 0.23 },
+        { "value": 3, "label": "Accurate", "probability": 0.48 },
+        { "value": 4, "label": "Precise and complete", "probability": 0.28 }
+      ],
+      "confidence": 0.56
+    },
+    {
+      "type": "choice",
+      "name": "evidence__accuracy",
+      "choice": "turn-5",
+      "probabilities": [
+        { "value": "none", "probability": 0.01 },
+        { "value": "turn-1", "probability": 0.01 },
+        { "value": "turn-2", "probability": 0.01 },
+        { "value": "turn-3", "probability": 0.01 },
+        { "value": "turn-4", "probability": 0.01 },
+        { "value": "turn-5", "probability": 0.95 },
+        { "value": "turn-6", "probability": 0 }
+      ],
+      "confidence": 0.94
+    },
+    {
+      "type": "score",
+      "name": "score__resolution",
+      "score": 3.13,
+      "probabilities": [
+        { "value": 0, "label": "Unresolved", "probability": 0 },
+        { "value": 1, "label": "Weak next step", "probability": 0 },
+        { "value": 2, "label": "Partial resolution", "probability": 0 },
+        { "value": 3, "label": "Resolved", "probability": 0.87 },
+        { "value": 4, "label": "Resolved with proactive follow-through", "probability": 0.13 }
+      ],
+      "confidence": 0.89
+    },
+    {
+      "type": "choice",
+      "name": "evidence__resolution",
+      "choice": "turn-5",
+      "probabilities": [
+        { "value": "none", "probability": 0 },
+        { "value": "turn-1", "probability": 0.01 },
+        { "value": "turn-2", "probability": 0 },
+        { "value": "turn-3", "probability": 0 },
+        { "value": "turn-4", "probability": 0 },
+        { "value": "turn-5", "probability": 0.99 },
+        { "value": "turn-6", "probability": 0 }
+      ],
+      "confidence": 0.99
+    },
+    {
+      "type": "score",
+      "name": "score__communication",
+      "score": 3.17,
+      "probabilities": [
+        { "value": 0, "label": "Confusing", "probability": 0 },
+        { "value": 1, "label": "Often unclear", "probability": 0 },
+        { "value": 2, "label": "Understandable", "probability": 0.01 },
+        { "value": 3, "label": "Clear", "probability": 0.81 },
+        { "value": 4, "label": "Exceptionally clear", "probability": 0.18 }
+      ],
+      "confidence": 0.84
+    },
+    {
+      "type": "choice",
+      "name": "evidence__communication",
+      "choice": "turn-5",
+      "probabilities": [
+        { "value": "none", "probability": 0.01 },
+        { "value": "turn-1", "probability": 0 },
+        { "value": "turn-2", "probability": 0.01 },
+        { "value": "turn-3", "probability": 0.13 },
+        { "value": "turn-4", "probability": 0.01 },
+        { "value": "turn-5", "probability": 0.83 },
+        { "value": "turn-6", "probability": 0.01 }
+      ],
+      "confidence": 0.8
+    },
+    { "type": "predicate", "name": "signal__restated", "probability": 0.1 },
+    {
+      "type": "choice",
+      "name": "signal__emotion",
+      "choice": "reassured",
+      "probabilities": [
+        { "value": "frustrated", "probability": 0.03 },
+        { "value": "anxious", "probability": 0 },
+        { "value": "skeptical", "probability": 0.01 },
+        { "value": "cooperative", "probability": 0.17 },
+        { "value": "reassured", "probability": 0.78 },
+        { "value": "neutral", "probability": 0.01 }
+      ],
+      "confidence": 0.74
+    }
   ],
   "usage": {
     "input_tokens": 2832,
@@ -298,6 +926,8 @@ Response, abridged to the same three answers (299 ms):
   }
 }
 ```
+
+</details>
 
 The adapter validates this response and converts it back to the JEV answer shape, so both providers share the scoring, evidence, and signal logic.
 
