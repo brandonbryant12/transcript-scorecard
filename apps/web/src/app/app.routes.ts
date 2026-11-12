@@ -35,6 +35,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/runs/runs').then((m) => m.Runs),
   },
   {
+    path: 'spend',
+    title: 'Spend · Scorecard',
+    loadComponent: () => import('./features/spend/spend').then((m) => m.Spend),
+  },
+  {
     path: 'scorecard',
     title: 'Scorecard editor · Scorecard',
     loadComponent: () =>

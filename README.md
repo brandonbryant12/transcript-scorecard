@@ -46,15 +46,16 @@ If SQLite reports a `NODE_MODULE_VERSION` mismatch after switching Node versions
 
 The web app (`apps/web`) has one page per feature under `apps/web/src/app/features`:
 
-| Page | What it does |
-| --- | --- |
+| Page                                  | What it does                                                                                                                                                                                                     |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Live studio (`/live`, the start page) | Replay a stored call one turn at a time with a chosen provider, reveal pace and scoring cadence; watch the score, coverage, skills, customer journey, coaching and per-request telemetry update as turns arrive. |
-| Practice call (`/practice`) | Speak as the support employee to an AI customer played by a real-time voice model, optionally with the camera on; the call is transcribed and scored live. Needs `GEMINI_API_KEY`. |
-| Calls (`/calls`) | The call library with each call's latest evaluation; open a call for coaching, evidence by turn and the evaluations from each provider. |
-| Coach review (`/coach-review`) | Rate a call on the same scorecard yourself. The AI's evaluation stays hidden until you submit. |
-| Validation (`/validation`) | Agreement between coaches and each provider, with the human-vs-human baseline and the calls where they disagree. |
-| Runs (`/runs`) | Score every call with one provider and compare runs on score, cost, latency and agreement with coaches. |
-| Scorecard (`/scorecard`) | Edit skills, weights, rubric levels and behaviours, and publish them as a new immutable version. |
+| Practice call (`/practice`)           | Speak as the support employee to an AI customer played by a real-time voice model, optionally with the camera on; the call is transcribed and scored live. Needs `GEMINI_API_KEY`.                               |
+| Calls (`/calls`)                      | The call library with each call's latest evaluation; open a call for coaching, evidence by turn and the evaluations from each provider.                                                                          |
+| Coach review (`/coach-review`)        | Rate a call on the same scorecard yourself. The AI's evaluation stays hidden until you submit.                                                                                                                   |
+| Validation (`/validation`)            | Agreement between coaches and each provider, with the human-vs-human baseline and the calls where they disagree.                                                                                                 |
+| Runs (`/runs`)                        | Score every call with one provider and compare runs on score, cost, latency and agreement with coaches.                                                                                                          |
+| Spend (`/spend`)                      | What the decision APIs have cost: totals for all time, today and the last 7 days, the price list, spending by provider, kind of work and day, and the latest requests.                                           |
+| Scorecard (`/scorecard`)              | Edit skills, weights, rubric levels and behaviours, and publish them as a new immutable version.                                                                                                                 |
 
 ## How scoring works
 
@@ -83,11 +84,11 @@ The tunable constants live in `SCORING_METHOD` (`packages/domain/src/method.ts`)
 
 All three providers take a shared input and a set of typed questions and return probabilities. Each has an adapter under `apps/api/src/decisions/adapters` that translates a neutral question set to its wire format; output is not billed by any of them.
 
-| Provider | Model | Endpoint | Key | USD per 1M input tokens | Media |
-| --- | --- | --- | --- | --- | --- |
-| Gemini Decisions | `gemini-decision-1` | `https://generativelanguage.googleapis.com/v1beta/decisions` | `GEMINI_API_KEY` | 0.10 | Audio and images |
-| OpenAI Decisions | `gpt-6-luna` | `https://api.openai.com/v1/decisions` | `OPENAI_API_KEY` | 0.10 | Text only |
-| TypeSafe JEV | `jev-latest` | `https://api.typesafe.ai/v1/systemone` | `JEV_API_KEY` | 0.042 | Text only |
+| Provider         | Model               | Endpoint                                                     | Key              | USD per 1M input tokens | Media            |
+| ---------------- | ------------------- | ------------------------------------------------------------ | ---------------- | ----------------------- | ---------------- |
+| Gemini Decisions | `gemini-decision-1` | `https://generativelanguage.googleapis.com/v1beta/decisions` | `GEMINI_API_KEY` | 0.10                    | Audio and images |
+| OpenAI Decisions | `gpt-6-luna`        | `https://api.openai.com/v1/decisions`                        | `OPENAI_API_KEY` | 0.10                    | Text only        |
+| TypeSafe JEV     | `jev-latest`        | `https://api.typesafe.ai/v1/systemone`                       | `JEV_API_KEY`    | 0.042                   | Text only        |
 
 Prices, documentation links and the dates they were checked are in `packages/domain/src/providers.ts`. One real request and response per provider for the same six-turn call is in [docs/provider-examples/](docs/provider-examples/), with a `summary.json` of question count, tokens and round-trip time; regenerate them with `pnpm --filter @scorecard/api provider-examples`.
 
@@ -95,20 +96,24 @@ Prices, documentation links and the dates they were checked are in `packages/dom
 
 Taken on 2026-11-11 from one development machine against the live APIs. Each line is a single run, not a benchmark; latency includes the network path from that machine.
 
-| What | Provider | Requests | Questions | Input tokens | Cost | Latency |
-| --- | --- | --- | --- | --- | --- | --- |
-| One 28-turn call scored in full | Gemini | 1 | 289 | 28.8K | about $0.003 | 1,044 ms |
-| Batch of the 9 seeded calls | Gemini | 11 | 2,081 | 213K | about $0.021 | P50 801 ms, P95 1,660 ms |
-| Batch of the 9 seeded calls | JEV | 11 | 2,081 | 161K | about $0.007 | P50 200 ms, P95 433 ms |
-| Batch of 12 calls (the 9 seeded calls and 3 earlier stream calls) | OpenAI | 14 | 2,310 | 463K | about $0.046 | P50 724 ms, P95 1,381 ms |
-| Live replay of `call-1001` (24 turns), scoring every 2 turns | Gemini | 12 | 506 | 56.6K | about $0.006 | average 364 ms, P95 550 ms |
-| Voice practice call, 6 turns, per-turn audio | Gemini | 13 | 227 | 27.9K | about $0.003 | audio-clip requests 540 to 850 ms |
-| `stream-demo` script, 10 turns | JEV | 6 | 228 | 20.8K | about $0.001 | average 114 ms, P95 184 ms |
+| What                                                              | Provider | Requests | Questions | Input tokens | Cost         | Latency                           |
+| ----------------------------------------------------------------- | -------- | -------- | --------- | ------------ | ------------ | --------------------------------- |
+| One 28-turn call scored in full                                   | Gemini   | 1        | 289       | 28.8K        | about $0.003 | 1,044 ms                          |
+| Batch of the 9 seeded calls                                       | Gemini   | 11       | 2,081     | 213K         | about $0.021 | P50 801 ms, P95 1,660 ms          |
+| Batch of the 9 seeded calls                                       | JEV      | 11       | 2,081     | 161K         | about $0.007 | P50 200 ms, P95 433 ms            |
+| Batch of 12 calls (the 9 seeded calls and 3 earlier stream calls) | OpenAI   | 14       | 2,310     | 463K         | about $0.046 | P50 724 ms, P95 1,381 ms          |
+| Live replay of `call-1001` (24 turns), scoring every 2 turns      | Gemini   | 12       | 506       | 56.6K        | about $0.006 | average 364 ms, P95 550 ms        |
+| Voice practice call, 6 turns, per-turn audio                      | Gemini   | 13       | 227       | 27.9K        | about $0.003 | audio-clip requests 540 to 850 ms |
+| `stream-demo` script, 10 turns                                    | JEV      | 6        | 228       | 20.8K        | about $0.001 | average 114 ms, P95 184 ms        |
 
 - Average overall score on the 9 seeded calls: 68.8 with Gemini, 69.2 with JEV and 60.9 with OpenAI.
 - In the practice call each audio-clip request was 500 to 1,100 input tokens.
 - For the identical 77-question request in `docs/provider-examples`, OpenAI reported 15,218 input tokens, Gemini 7,845 and JEV 6,081, with round trips of 454 ms, 615 ms and 245 ms. At the same list price, OpenAI therefore cost about twice as much as Gemini for the same work in these runs.
 - An earlier single-request probe of 357 questions took 444 ms on JEV and 1,188 ms on OpenAI.
+
+### Spending
+
+Every request to a decision API is a row in the `provider_requests` ledger, with its tokens as the provider reported them and a cost estimated at the list price in force when it was made. `GET /api/spend` and the Spend page sum that ledger: totals for all time, today and the last 7 days (today and the six days before it), the same totals by provider, by kind of work (batch run, live replay, stream, practice call) and by day, the 50 latest requests, and the price list in use. Days are UTC calendar days. Failed requests are counted but report no tokens and cost nothing. Every cost is an estimate (tokens times list price), not an invoice. The practice call's real-time voice model (Gemini Live) is not included, and neither are requests sent by the `provider-examples` script, which does not write to the ledger.
 
 ## Real-time sources
 
@@ -191,20 +196,21 @@ pnpm workspaces and Turborepo run the tasks; every task depends on `@scorecard/d
 
 The API (`apps/api/src`) is ESM. Request bodies and parameters are validated with Zod schemas from `@scorecard/domain` through Nest's `StandardSchemaValidationPipe`, so the web app and the API share one definition of every input.
 
-| Module | Owns |
-| --- | --- |
-| `database` | The TypeORM data source, migrations (run on startup) and seeding. |
-| `decisions` | Provider keys and the default provider (`CredentialsService`), the three adapters, and `DecisionClient`, the one entry point for asking questions. |
-| `scorecards` | The active scorecard and publishing new immutable versions. |
-| `calls` | The call library, call detail with the latest evaluation per provider, and calls created by streams. |
-| `scoring` | Question planning and `ScoringEngine`: one pass plans the questions, asks them (requests split at 300 questions; one request per media clip), folds the answers into the readings and composes the evaluation. |
-| `evaluations` | Storing evaluations with their flat skill and behaviour rows. |
-| `runs` | Batch runs (two calls at a time, final stage) and the per-request ledger shared with live sessions. |
-| `live` | `LiveCoordinator` (replay timers, stream ingest, one pass in flight per session, SSE), session storage and the in-memory media store. |
-| `practice` | The practice-call WebSocket gateway, turn and clip segmentation, scenarios, and the `RealtimeModel` interface with its Gemini Live implementation. |
-| `reviews` | Coach reviews and the review queue. |
-| `validation` | The validation report. |
-| `health`, `common` | `GET /api/health` and the filter that maps provider failures to HTTP 502 or 503. |
+| Module             | Owns                                                                                                                                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `database`         | The TypeORM data source, migrations (run on startup) and seeding.                                                                                                                                              |
+| `decisions`        | Provider keys and the default provider (`CredentialsService`), the three adapters, and `DecisionClient`, the one entry point for asking questions.                                                             |
+| `scorecards`       | The active scorecard and publishing new immutable versions.                                                                                                                                                    |
+| `calls`            | The call library, call detail with the latest evaluation per provider, and calls created by streams.                                                                                                           |
+| `scoring`          | Question planning and `ScoringEngine`: one pass plans the questions, asks them (requests split at 300 questions; one request per media clip), folds the answers into the readings and composes the evaluation. |
+| `evaluations`      | Storing evaluations with their flat skill and behaviour rows.                                                                                                                                                  |
+| `runs`             | Batch runs (two calls at a time, final stage) and the per-request ledger shared with live sessions.                                                                                                            |
+| `spend`            | `GET /api/spend`: the request ledger summed across runs by provider, kind of work and day, with the price list. Read-only.                                                                                     |
+| `live`             | `LiveCoordinator` (replay timers, stream ingest, one pass in flight per session, SSE), session storage and the in-memory media store.                                                                          |
+| `practice`         | The practice-call WebSocket gateway, turn and clip segmentation, scenarios, and the `RealtimeModel` interface with its Gemini Live implementation.                                                             |
+| `reviews`          | Coach reviews and the review queue.                                                                                                                                                                            |
+| `validation`       | The validation report.                                                                                                                                                                                         |
+| `health`, `common` | `GET /api/health` and the filter that maps provider failures to HTTP 502 or 503.                                                                                                                               |
 
 ### Domain package
 
@@ -214,17 +220,17 @@ The API (`apps/api/src`) is ESM. Request bodies and parameters are validated wit
 
 Entities live next to the module that owns them (`apps/api/src/**/*.entity.ts`); the full list is `apps/api/src/database/entities.ts`.
 
-| Table | Holds |
-| --- | --- |
-| `scorecards` | One row per scorecard. |
-| `scorecard_versions` | Immutable scorecard definitions. Publishing an edit adds the next version; runs, evaluations and reviews record the version they used. |
-| `calls` | Call metadata and transcript; `source` is `seed` or `stream`. |
-| `scoring_runs`, `run_calls` | A batch or live run (provider, scorecard version, method version, status) and its calls. |
-| `provider_requests` | One row per provider API call: stage, turn count, question count, tokens, latency, estimated cost and success. |
-| `evaluations` | One row per scoring pass, provisional or final, with headline numbers and the full evaluation document. |
-| `skill_results`, `behavior_results` | The evaluation flattened to one row per skill and per behaviour, for querying. |
-| `live_sessions` | Source, pacing, reveal progress, status and the raw readings gathered so far. |
-| `coach_reviews`, `coach_skill_ratings`, `coach_behavior_labels` | Coach reviews (one per coach per call) and their ratings and labels. |
+| Table                                                           | Holds                                                                                                                                  |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `scorecards`                                                    | One row per scorecard.                                                                                                                 |
+| `scorecard_versions`                                            | Immutable scorecard definitions. Publishing an edit adds the next version; runs, evaluations and reviews record the version they used. |
+| `calls`                                                         | Call metadata and transcript; `source` is `seed` or `stream`.                                                                          |
+| `scoring_runs`, `run_calls`                                     | A batch or live run (provider, scorecard version, method version, status) and its calls.                                               |
+| `provider_requests`                                             | One row per provider API call: stage, turn count, question count, tokens, latency, estimated cost and success.                         |
+| `evaluations`                                                   | One row per scoring pass, provisional or final, with headline numbers and the full evaluation document.                                |
+| `skill_results`, `behavior_results`                             | The evaluation flattened to one row per skill and per behaviour, for querying.                                                         |
+| `live_sessions`                                                 | Source, pacing, reveal progress, status and the raw readings gathered so far.                                                          |
+| `coach_reviews`, `coach_skill_ratings`, `coach_behavior_labels` | Coach reviews (one per coach per call) and their ratings and labels.                                                                   |
 
 ### Migrations
 
@@ -245,28 +251,29 @@ Both scripts build the API first and run the TypeORM CLI against the compiled da
 
 Every route is under `/api`. Inputs are validated against the Zod schemas named in the controllers.
 
-| Method | Path | Purpose |
-| --- | --- | --- |
-| GET | `/api/health` | Which providers have a key, the default provider, and whether the practice call is available. Keys never leave the server. |
-| GET | `/api/scorecard` | The active scorecard version and the version history. |
-| PUT | `/api/scorecard` | Publish a scorecard definition as the next version. |
-| GET | `/api/calls` | Every call with its latest final evaluation. |
-| GET | `/api/calls/:id?provider=` | One call with transcript and evaluation (that provider's latest, or the most recent). |
-| GET | `/api/runs` | Runs with metrics: requests, questions, tokens, cost, latency P50 and P95, agreement with coaches. |
-| POST | `/api/runs` | Start a batch run. Body `{"provider"?, "callIds"?}`. Returns 202 at once; follow it with `GET /api/runs/:id`. |
-| GET | `/api/runs/:id` | One run with per-call results. |
-| POST | `/api/live` | Create a replay session. Body `{"callId", "provider"?, "intervalMs"?, "scoreEveryTurns"?}`. |
-| POST | `/api/live/stream` | Create a stream session. Body `{"subject", "customerName", "agentName", "provider"?, "scoreEveryTurns"?}`. |
-| GET | `/api/live/:id` | The session now. |
-| GET | `/api/live/:id/events` | Server-Sent Events: the session on connect and after every change. |
-| POST | `/api/live/:id/turns` | Append a turn to an open stream. 409 if the session is not an open stream. |
-| POST | `/api/live/:id/control` | `{"action": "start" \| "pause" \| "reset" \| "pace" \| "end", "intervalMs"?, "scoreEveryTurns"?}`. `end` closes a stream's input; the others drive a replay. |
-| GET | `/api/practice/scenarios` | Practice scenarios (the customer's private brief stays on the server). |
-| WebSocket | `/api/practice` | The practice call (see [Practice call](#practice-call)). |
-| GET | `/api/reviews/queue` | Calls to review next. |
-| GET | `/api/reviews?callId=` | Reviews of one call. |
-| PUT | `/api/reviews` | Save or submit the coach's review of a call. |
-| GET | `/api/validation` | The validation report. |
+| Method    | Path                       | Purpose                                                                                                                                                                                                                            |
+| --------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET       | `/api/health`              | Which providers have a key, the default provider, and whether the practice call is available. Keys never leave the server.                                                                                                         |
+| GET       | `/api/scorecard`           | The active scorecard version and the version history.                                                                                                                                                                              |
+| PUT       | `/api/scorecard`           | Publish a scorecard definition as the next version.                                                                                                                                                                                |
+| GET       | `/api/calls`               | Every call with its latest final evaluation.                                                                                                                                                                                       |
+| GET       | `/api/calls/:id?provider=` | One call with transcript and evaluation (that provider's latest, or the most recent).                                                                                                                                              |
+| GET       | `/api/runs`                | Runs with metrics: requests, questions, tokens, cost, latency P50 and P95, agreement with coaches.                                                                                                                                 |
+| POST      | `/api/runs`                | Start a batch run. Body `{"provider"?, "callIds"?}`. Returns 202 at once; follow it with `GET /api/runs/:id`.                                                                                                                      |
+| GET       | `/api/runs/:id`            | One run with per-call results.                                                                                                                                                                                                     |
+| GET       | `/api/spend?days=`         | Spending summed from the request ledger: price list, totals (all time, today, last 7 days), by provider, by kind of work, by day (the `days` most recent UTC days with activity, 1 to 365, default 30) and the 50 latest requests. |
+| POST      | `/api/live`                | Create a replay session. Body `{"callId", "provider"?, "intervalMs"?, "scoreEveryTurns"?}`.                                                                                                                                        |
+| POST      | `/api/live/stream`         | Create a stream session. Body `{"subject", "customerName", "agentName", "provider"?, "scoreEveryTurns"?}`.                                                                                                                         |
+| GET       | `/api/live/:id`            | The session now.                                                                                                                                                                                                                   |
+| GET       | `/api/live/:id/events`     | Server-Sent Events: the session on connect and after every change.                                                                                                                                                                 |
+| POST      | `/api/live/:id/turns`      | Append a turn to an open stream. 409 if the session is not an open stream.                                                                                                                                                         |
+| POST      | `/api/live/:id/control`    | `{"action": "start" \| "pause" \| "reset" \| "pace" \| "end", "intervalMs"?, "scoreEveryTurns"?}`. `end` closes a stream's input; the others drive a replay.                                                                       |
+| GET       | `/api/practice/scenarios`  | Practice scenarios (the customer's private brief stays on the server).                                                                                                                                                             |
+| WebSocket | `/api/practice`            | The practice call (see [Practice call](#practice-call)).                                                                                                                                                                           |
+| GET       | `/api/reviews/queue`       | Calls to review next.                                                                                                                                                                                                              |
+| GET       | `/api/reviews?callId=`     | Reviews of one call.                                                                                                                                                                                                               |
+| PUT       | `/api/reviews`             | Save or submit the coach's review of a call.                                                                                                                                                                                       |
+| GET       | `/api/validation`          | The validation report.                                                                                                                                                                                                             |
 
 Errors use Nest's standard body:
 
@@ -280,13 +287,13 @@ On a validation failure `message` is a list such as `["subject: Too small: expec
 
 Read by the API from the environment or from the repository-root `.env` (environment wins). They are validated at startup, and a bad value stops the process with a message naming the variable.
 
-| Variable | Default | Meaning |
-| --- | --- | --- |
-| `GEMINI_API_KEY` | unset | Gemini Decisions, and the Gemini Live voice model for practice calls. |
-| `OPENAI_API_KEY` | unset | OpenAI Decisions. |
-| `JEV_API_KEY` | unset | TypeSafe JEV. |
-| `PORT` | `3001` | API port. The web dev server's proxy (`apps/web/proxy.conf.json`) expects 3001. |
-| `SCORECARD_DB_PATH` | `./data/scorecard.sqlite` | SQLite file, relative to `apps/api`. `:memory:` gives a throwaway database. |
+| Variable            | Default                   | Meaning                                                                         |
+| ------------------- | ------------------------- | ------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`    | unset                     | Gemini Decisions, and the Gemini Live voice model for practice calls.           |
+| `OPENAI_API_KEY`    | unset                     | OpenAI Decisions.                                                               |
+| `JEV_API_KEY`       | unset                     | TypeSafe JEV.                                                                   |
+| `PORT`              | `3001`                    | API port. The web dev server's proxy (`apps/web/proxy.conf.json`) expects 3001. |
+| `SCORECARD_DB_PATH` | `./data/scorecard.sqlite` | SQLite file, relative to `apps/api`. `:memory:` gives a throwaway database.     |
 
 An empty key counts as not configured. The `stream-demo` script also reads `SCORECARD_API` (default `http://127.0.0.1:3001`), `SCORECARD_PROVIDER`, `STREAM_PACE_MS` and `STREAM_SCORE_EVERY`.
 
@@ -294,17 +301,17 @@ An empty key counts as not configured. The `stream-demo` script also reads `SCOR
 
 From the repository root:
 
-| Command | What it does |
-| --- | --- |
-| `pnpm dev` | Domain package in watch mode, API with `nest start --watch`, web dev server. |
-| `pnpm build` | Build every package. |
-| `pnpm typecheck` | Type-check every package. |
-| `pnpm test` | Unit tests (Vitest in the API and domain package, the Angular test runner in the web app). |
-| `pnpm format` | Prettier over the source and test files. |
-| `pnpm --filter @scorecard/api test:e2e` | API end-to-end tests. |
-| `pnpm --filter @scorecard/api lint` | oxlint with type-aware rules. |
-| `pnpm --filter @scorecard/api stream-demo` | Stream a fictional ten-turn call into a running API and print each scoring pass and the final coaching. Flags: `--api`, `--provider`, `--pace-ms` (default 1000), `--score-every` (default 2). |
-| `pnpm --filter @scorecard/api practice-demo` | Run a voice practice call from the command line with synthesised employee speech (macOS `say`), against a running API with `GEMINI_API_KEY`. Flags: `--provider`, `--scenario`, `--frames`, `--api`. |
+| Command                                          | What it does                                                                                                                                                                                                                                                                |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm dev`                                       | Domain package in watch mode, API with `nest start --watch`, web dev server.                                                                                                                                                                                                |
+| `pnpm build`                                     | Build every package.                                                                                                                                                                                                                                                        |
+| `pnpm typecheck`                                 | Type-check every package.                                                                                                                                                                                                                                                   |
+| `pnpm test`                                      | Unit tests (Vitest in the API and domain package, the Angular test runner in the web app).                                                                                                                                                                                  |
+| `pnpm format`                                    | Prettier over the source and test files.                                                                                                                                                                                                                                    |
+| `pnpm --filter @scorecard/api test:e2e`          | API end-to-end tests.                                                                                                                                                                                                                                                       |
+| `pnpm --filter @scorecard/api lint`              | oxlint with type-aware rules.                                                                                                                                                                                                                                               |
+| `pnpm --filter @scorecard/api stream-demo`       | Stream a fictional ten-turn call into a running API and print each scoring pass and the final coaching. Flags: `--api`, `--provider`, `--pace-ms` (default 1000), `--score-every` (default 2).                                                                              |
+| `pnpm --filter @scorecard/api practice-demo`     | Run a voice practice call from the command line with synthesised employee speech (macOS `say`), against a running API with `GEMINI_API_KEY`. Flags: `--provider`, `--scenario`, `--frames`, `--api`.                                                                        |
 | `pnpm --filter @scorecard/api provider-examples` | Send one real request per configured provider for a six-turn call and rewrite `docs/provider-examples/`. Needs a built API (`pnpm --filter @scorecard/api build`) and costs well under a cent per provider. Name providers to limit it: `... provider-examples jev openai`. |
 
 Example:

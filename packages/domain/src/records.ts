@@ -139,6 +139,113 @@ export const StartRunSchema = z.strictObject({
 export type StartRunInput = z.infer<typeof StartRunSchema>;
 
 // ---------------------------------------------------------------------------
+// Spending: the request ledger summed across runs
+// ---------------------------------------------------------------------------
+
+// The kind of work a request was made for. batch: a batch run. replay: a live replay of a
+// stored call. stream: a call streamed in over the ingest API. practice: a voice practice
+// call (a stream whose call subject starts with "Practice").
+export type SpendKind = 'batch' | 'replay' | 'stream' | 'practice';
+export const SPEND_KINDS: ReadonlyArray<SpendKind> = ['batch', 'replay', 'stream', 'practice'];
+
+export interface SpendTotals {
+  readonly requests: number;
+  // Failed requests are counted here and in `requests`; they report no tokens and cost nothing.
+  readonly failedRequests: number;
+  readonly questions: number;
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+  // Each request's cost was estimated from its reported tokens at the list price in force
+  // when it was made, so a later price change does not rewrite past spending.
+  readonly estimatedCostUsd: number;
+}
+
+// One line of the price list in use now.
+export interface SpendPrice {
+  readonly provider: ScoringProvider;
+  readonly label: string;
+  readonly model: string;
+  readonly inputUsdPerMillion: number;
+  readonly outputUsdPerMillion: number;
+  readonly sourceUrl: string;
+  readonly checkedAt: string;
+}
+
+export interface SpendProviderLine extends SpendTotals {
+  readonly provider: ScoringProvider;
+}
+
+export interface SpendKindLine extends SpendTotals {
+  readonly kind: SpendKind;
+}
+
+export interface SpendDayLine extends SpendTotals {
+  // A UTC calendar day, YYYY-MM-DD.
+  readonly day: string;
+}
+
+export interface SpendLedgerRow {
+  readonly id: number;
+  readonly startedAt: string;
+  readonly runId: string;
+  readonly callId: string;
+  readonly provider: ScoringProvider;
+  // null when the request failed before the provider named a model.
+  readonly model: string | null;
+  readonly kind: SpendKind;
+  readonly subject: string | null;
+  readonly questionCount: number;
+  readonly inputTokens: number;
+  readonly outputTokens: number;
+  readonly latencyMs: number;
+  readonly estimatedCostUsd: number;
+  readonly ok: boolean;
+}
+
+export interface SpendSummary {
+  readonly generatedAt: string;
+  // Today's UTC date; days are UTC calendar days throughout.
+  readonly today: string;
+  // How many active days `byDay` was asked for.
+  readonly days: number;
+  readonly prices: ReadonlyArray<SpendPrice>;
+  readonly totals: {
+    readonly allTime: SpendTotals;
+    readonly today: SpendTotals;
+    // Today and the six UTC days before it.
+    readonly last7Days: SpendTotals;
+  };
+  // All time, one line per provider and per kind, in a fixed order, zeros included.
+  readonly byProvider: ReadonlyArray<SpendProviderLine>;
+  readonly byKind: ReadonlyArray<SpendKindLine>;
+  // The most recent `days` days that had any request, newest first.
+  readonly byDay: ReadonlyArray<SpendDayLine>;
+  // The most recent ledger rows, newest first.
+  readonly recent: ReadonlyArray<SpendLedgerRow>;
+  // Spending this summary does not see, in plain words.
+  readonly excluded: ReadonlyArray<string>;
+}
+
+export const DEFAULT_SPEND_DAYS = 30;
+export const MAX_SPEND_DAYS = 365;
+
+// `?days=` on GET /api/spend. Query values arrive as strings, so only plain digits are
+// accepted before the range check: "7" passes, "7.5", "1e2" and "" do not.
+export const SpendDaysSchema = z
+  .string({ error: 'days must be given once' })
+  .regex(/^\d+$/, 'days must be a whole number')
+  .transform(Number)
+  .pipe(
+    z
+      .number()
+      .int()
+      .min(1, 'days must be at least 1')
+      .max(MAX_SPEND_DAYS, `days must be at most ${MAX_SPEND_DAYS}`),
+  )
+  .optional()
+  .transform((days) => days ?? DEFAULT_SPEND_DAYS);
+
+// ---------------------------------------------------------------------------
 // Live sessions
 // ---------------------------------------------------------------------------
 

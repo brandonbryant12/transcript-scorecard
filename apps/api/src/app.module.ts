@@ -12,6 +12,7 @@ import { PracticeModule } from './practice/practice.module.js';
 import { ReviewsModule } from './reviews/reviews.module.js';
 import { RunsModule } from './runs/runs.module.js';
 import { ScorecardsModule } from './scorecards/scorecards.module.js';
+import { SpendModule } from './spend/spend.module.js';
 import { ValidationModule } from './validation/validation.module.js';
 
 @Module({
@@ -27,6 +28,7 @@ import { ValidationModule } from './validation/validation.module.js';
     ScorecardsModule,
     CallsModule,
     RunsModule,
+    SpendModule,
     LiveModule,
     PracticeModule,
     ReviewsModule,

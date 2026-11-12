@@ -12,6 +12,7 @@ import {
   MAX_SCORE_EVERY_TURNS,
   MIN_REVEAL_INTERVAL_MS,
   MIN_SCORE_EVERY_TURNS,
+  SpendDaysSchema,
   StartRunSchema,
 } from './records.js';
 import { sentimentToValence } from './signals.js';
@@ -93,5 +94,22 @@ describe('estimateProviderCostUsd', () => {
   it('prices input tokens per million', () => {
     expect(estimateProviderCostUsd('gemini', 1_000_000, 0)).toBeCloseTo(0.1);
     expect(estimateProviderCostUsd('jev', 1_000_000, 500)).toBeCloseTo(0.042);
+  });
+});
+
+describe('SpendDaysSchema', () => {
+  it('defaults to 30 days when the parameter is missing', () => {
+    expect(SpendDaysSchema.parse(undefined)).toBe(30);
+  });
+
+  it('accepts whole numbers from 1 to 365, given as query strings', () => {
+    expect(SpendDaysSchema.parse('1')).toBe(1);
+    expect(SpendDaysSchema.parse('7')).toBe(7);
+    expect(SpendDaysSchema.parse('365')).toBe(365);
+  });
+
+  it('rejects anything else', () => {
+    for (const value of ['0', '366', '7.5', '-1', '1e2', '', 'abc', ' 7'])
+      expect(SpendDaysSchema.safeParse(value).success, value).toBe(false);
   });
 });

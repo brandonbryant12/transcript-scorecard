@@ -16,6 +16,7 @@ const NAV_ITEMS: readonly NavItem[] = [
   { path: '/coach-review', label: 'Coach review', hint: 'Capture ground truth' },
   { path: '/validation', label: 'Validation', hint: 'AI against coaches' },
   { path: '/runs', label: 'Runs', hint: 'Batch scoring and cost' },
+  { path: '/spend', label: 'Spend', hint: 'Model API spending ledger' },
   { path: '/scorecard', label: 'Scorecard', hint: 'Skills and behaviours' },
 ];
 

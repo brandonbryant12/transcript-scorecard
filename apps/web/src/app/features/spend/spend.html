@@ -1,0 +1,258 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Model API cost</p>
+    <h1>Spend</h1>
+    <p>
+      Every request to a decision API is logged with the tokens the provider reported. This is that
+      ledger summed across batch runs, live replays, streams and practice calls.
+    </p>
+  </div>
+  <button type="button" class="btn" (click)="reload()">Refresh</button>
+</header>
+
+@if (loadError(); as message) {
+  <app-state-message kind="error" title="Could not load spending" [detail]="message">
+    <button type="button" class="btn" (click)="reload()">Try again</button>
+  </app-state-message>
+} @else if (data(); as summary) {
+  <div class="notice estimate" role="note">
+    <div class="stack-tight">
+      <p>
+        <strong>All costs are estimates</strong>: each request's reported token counts times the
+        provider's list price at the time of the request, not an invoice.
+      </p>
+      @for (note of summary.excluded; track note) {
+        <p>{{ note }}</p>
+      }
+    </div>
+  </div>
+
+  <section class="stats" aria-label="Spending totals">
+    @for (item of headline(); track item.label) {
+      <div class="panel panel-body stat">
+        <span class="field-label">{{ item.label }}</span>
+        <strong class="numeric">{{ item.totals.estimatedCostUsd | usd }}</strong>
+        <span>
+          {{ item.totals.requests | number }}
+          {{ item.totals.requests === 1 ? 'request' : 'requests' }}
+          @if (item.totals.failedRequests > 0) {
+            ({{ item.totals.failedRequests | number }} failed)
+          }
+          · {{ item.totals.inputTokens | number }} input tokens
+        </span>
+      </div>
+    }
+  </section>
+
+  <section class="panel" aria-labelledby="prices-title">
+    <div class="panel-head">
+      <h2 id="prices-title">Price list</h2>
+      <span class="muted small">USD per million tokens, as recorded in the domain package</span>
+    </div>
+    <div class="table-scroll">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Provider</th>
+            <th scope="col">Model</th>
+            <th scope="col" class="num">Input</th>
+            <th scope="col" class="num">Output</th>
+            <th scope="col">Checked</th>
+            <th scope="col">Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (price of summary.prices; track price.provider) {
+            <tr>
+              <th scope="row">{{ price.label }}</th>
+              <td>
+                <code>{{ price.model }}</code>
+              </td>
+              <td class="num">{{ rate(price.inputUsdPerMillion) }}</td>
+              <td class="num">
+                {{
+                  price.outputUsdPerMillion === 0 ? 'Not billed' : rate(price.outputUsdPerMillion)
+                }}
+              </td>
+              <td class="numeric">{{ price.checkedAt }}</td>
+              <td>
+                <a [href]="price.sourceUrl" target="_blank" rel="noopener noreferrer">
+                  Pricing source
+                </a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  @if (summary.totals.allTime.requests === 0) {
+    <section class="panel">
+      <app-state-message
+        title="Nothing spent yet"
+        detail="Spending appears here as soon as a run, replay, stream or practice call has sent a request to a provider."
+      />
+    </section>
+  } @else {
+    <section class="panel" aria-labelledby="provider-title">
+      <div class="panel-head">
+        <h2 id="provider-title">By provider</h2>
+        <span class="muted small">All time</span>
+      </div>
+      <div class="table-scroll">
+        <table class="table">
+          <thead>
+            <ng-container *ngTemplateOutlet="totalsHead; context: { $implicit: 'Provider' }" />
+          </thead>
+          <tbody>
+            @for (line of summary.byProvider; track line.provider) {
+              <tr [class.idle]="line.requests === 0">
+                <th scope="row">{{ line.provider | providerLabel }}</th>
+                <ng-container *ngTemplateOutlet="totalsCells; context: { $implicit: line }" />
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="kind-title">
+      <div class="panel-head">
+        <h2 id="kind-title">By kind of work</h2>
+        <span class="muted small">All time</span>
+      </div>
+      <div class="table-scroll">
+        <table class="table">
+          <thead>
+            <ng-container *ngTemplateOutlet="totalsHead; context: { $implicit: 'Kind' }" />
+          </thead>
+          <tbody>
+            @for (line of summary.byKind; track line.kind) {
+              <tr [class.idle]="line.requests === 0">
+                <th scope="row">{{ kindLabels[line.kind] }}</th>
+                <ng-container *ngTemplateOutlet="totalsCells; context: { $implicit: line }" />
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="day-title">
+      <div class="panel-head">
+        <h2 id="day-title">By day</h2>
+        <span class="muted small">
+          The {{ summary.days }} most recent days with any request, newest first. Days run from
+          midnight to midnight UTC.
+        </span>
+      </div>
+      <div class="table-scroll">
+        <table class="table">
+          <thead>
+            <ng-container *ngTemplateOutlet="totalsHead; context: { $implicit: 'Day (UTC)' }" />
+          </thead>
+          <tbody>
+            @for (line of summary.byDay; track line.day) {
+              <tr>
+                <th scope="row" class="numeric">
+                  {{ line.day | date: 'EEE d MMM y' : 'UTC' }}
+                </th>
+                <ng-container *ngTemplateOutlet="totalsCells; context: { $implicit: line }" />
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="recent-title">
+      <div class="panel-head">
+        <h2 id="recent-title">Recent requests</h2>
+        <span class="muted small">
+          The {{ summary.recent.length }} most recent ledger rows, in your local time
+        </span>
+      </div>
+      <div class="table-scroll">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Provider</th>
+              <th scope="col">Model</th>
+              <th scope="col">Kind</th>
+              <th scope="col">Call</th>
+              <th scope="col" class="num">Questions</th>
+              <th scope="col" class="num">Input</th>
+              <th scope="col" class="num">Output</th>
+              <th scope="col" class="num">Latency</th>
+              <th scope="col" class="num">Est. cost</th>
+              <th scope="col">Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of summary.recent; track row.id) {
+              <tr>
+                <td class="numeric nowrap">{{ row.startedAt | date: 'MMM d, HH:mm:ss' }}</td>
+                <td class="nowrap">{{ row.provider | providerLabel }}</td>
+                <td>
+                  @if (row.model) {
+                    <code>{{ row.model }}</code>
+                  } @else {
+                    <span class="muted">—</span>
+                  }
+                </td>
+                <td class="nowrap">{{ kindLabels[row.kind] }}</td>
+                <td class="subject">{{ row.subject ?? row.callId }}</td>
+                <td class="num">{{ row.questionCount | number }}</td>
+                <td class="num">{{ row.inputTokens | number }}</td>
+                <td class="num">{{ row.outputTokens | number }}</td>
+                <td class="num">{{ row.latencyMs | number }} ms</td>
+                <td class="num">{{ row.estimatedCostUsd | usd }}</td>
+                <td>
+                  <span class="chip" [class.chip-good]="row.ok" [class.chip-bad]="!row.ok">
+                    {{ row.ok ? 'OK' : 'Failed' }}
+                  </span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+} @else {
+  <app-state-message kind="loading" title="Loading spending" />
+}
+
+<ng-template #totalsHead let-first>
+  <tr>
+    <th scope="col">{{ first }}</th>
+    <th scope="col" class="num">Requests</th>
+    <th scope="col" class="num">Failed</th>
+    <th scope="col" class="num">Questions</th>
+    <th scope="col" class="num">Input tokens</th>
+    <th scope="col" class="num">Output tokens</th>
+    <th scope="col" class="num">Est. cost</th>
+    <th scope="col" class="num">Share</th>
+  </tr>
+</ng-template>
+
+<ng-template #totalsCells let-line>
+  <td class="num">{{ line.requests | number }}</td>
+  <td class="num" [class.tone-bad]="line.failedRequests > 0">
+    {{ line.failedRequests | number }}
+  </td>
+  <td class="num">{{ line.questions | number }}</td>
+  <td class="num">{{ line.inputTokens | number }}</td>
+  <td class="num">{{ line.outputTokens | number }}</td>
+  <td class="num">{{ line.estimatedCostUsd | usd }}</td>
+  <td class="num">
+    @let fraction = share(line);
+    @if (fraction !== null) {
+      {{ fraction | percent: '1.0-1' }}
+    } @else {
+      <span class="muted">—</span>
+    }
+  </td>
+</ng-template>
