@@ -1,0 +1,698 @@
+{
+  "ranAt": "2026-11-11T21:05:32.599Z",
+  "model": "gemini-decision-1",
+  "sequences": {
+    "02": {
+      "emotions": [
+        "neutral",
+        "angry",
+        "calm",
+        "happy",
+        "fearful",
+        "sad"
+      ],
+      "bounds": [
+        [
+          0,
+          3.64
+        ],
+        [
+          4.24,
+          8.14
+        ],
+        [
+          8.74,
+          12.88
+        ],
+        [
+          13.48,
+          17.18
+        ],
+        [
+          17.78,
+          21.59
+        ],
+        [
+          22.19,
+          25.92
+        ]
+      ],
+      "totalSeconds": 26.52,
+      "perClip": {
+        "requests": 6,
+        "ms": [
+          581,
+          354,
+          385,
+          484,
+          346,
+          356
+        ],
+        "tokens": {
+          "text": 1526,
+          "audio": 701
+        }
+      },
+      "wholeByTime": {
+        "ms": 763,
+        "tokens": {
+          "text": 1539,
+          "audio": 799
+        },
+        "meanAbsSentimentDiff": 0.401,
+        "meanAbsIrritatedDiff": 0.114,
+        "irritatedSpread": 0.7
+      },
+      "wholeByOrdinal": {
+        "ms": 1026,
+        "tokens": {
+          "text": 1443,
+          "audio": 799
+        },
+        "meanAbsSentimentDiff": 0.432,
+        "meanAbsIrritatedDiff": 0.073,
+        "irritatedSpread": 0.62
+      },
+      "labelledClips": {
+        "ms": 638,
+        "tokens": {
+          "text": 1520,
+          "audio": 701
+        },
+        "meanAbsSentimentDiff": 0.279,
+        "meanAbsIrritatedDiff": 0.119,
+        "irritatedSpread": 0.78
+      },
+      "referenceIrritatedSpread": 0.65,
+      "table": [
+        {
+          "emotion": "neutral",
+          "perClip": {
+            "sentiment": 1.992649280423223,
+            "irritated": 0.23434999849834046
+          },
+          "wholeByTime": {
+            "sentiment": 1.8016349771800926,
+            "irritated": 0.12584470450106147
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.8805461517792872,
+            "irritated": 0.15054256712965872
+          },
+          "labelledClips": {
+            "sentiment": 1.9151288031989262,
+            "irritated": 0.1342360133710063
+          }
+        },
+        {
+          "emotion": "angry",
+          "perClip": {
+            "sentiment": 0.8521259368249916,
+            "irritated": 0.7767772752825015
+          },
+          "wholeByTime": {
+            "sentiment": 1.1035482723863321,
+            "irritated": 0.8285719040285832
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.1981507823920252,
+            "irritated": 0.7734800159506549
+          },
+          "labelledClips": {
+            "sentiment": 0.8710141546754822,
+            "irritated": 0.9142817375642892
+          }
+        },
+        {
+          "emotion": "calm",
+          "perClip": {
+            "sentiment": 1.8376596153668967,
+            "irritated": 0.12756121167563023
+          },
+          "wholeByTime": {
+            "sentiment": 1.7586361338015388,
+            "irritated": 0.160151501266712
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.7714348956491721,
+            "irritated": 0.20449267818489225
+          },
+          "labelledClips": {
+            "sentiment": 1.905945120725587,
+            "irritated": 0.1306393864727
+          }
+        },
+        {
+          "emotion": "happy",
+          "perClip": {
+            "sentiment": 2.596096761918812,
+            "irritated": 0.1742091841654286
+          },
+          "wholeByTime": {
+            "sentiment": 1.7717667335481833,
+            "irritated": 0.5306458014389744
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.7647956915576302,
+            "irritated": 0.3582342621096692
+          },
+          "labelledClips": {
+            "sentiment": 1.5477292325907566,
+            "irritated": 0.4807840394513445
+          }
+        },
+        {
+          "emotion": "fearful",
+          "perClip": {
+            "sentiment": 0.9977517406731184,
+            "irritated": 0.5710583019354635
+          },
+          "wholeByTime": {
+            "sentiment": 1.6428125192715426,
+            "irritated": 0.6512593828157293
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.6482456594341661,
+            "irritated": 0.5859617453808498
+          },
+          "labelledClips": {
+            "sentiment": 1.0644536428616505,
+            "irritated": 0.6687936110121202
+          }
+        },
+        {
+          "emotion": "sad",
+          "perClip": {
+            "sentiment": 1.1018827797067716,
+            "irritated": 0.34014015799193437
+          },
+          "wholeByTime": {
+            "sentiment": 1.5193248247772773,
+            "irritated": 0.39280079546061525
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.687869108770467,
+            "irritated": 0.263095754952938
+          },
+          "labelledClips": {
+            "sentiment": 1.4989957302372594,
+            "irritated": 0.27103896744348965
+          }
+        }
+      ]
+    },
+    "01": {
+      "emotions": [
+        "neutral",
+        "angry",
+        "calm",
+        "fearful",
+        "disgust",
+        "sad"
+      ],
+      "bounds": [
+        [
+          0,
+          3.3
+        ],
+        [
+          3.9,
+          8.01
+        ],
+        [
+          8.61,
+          12.31
+        ],
+        [
+          12.91,
+          17.92
+        ],
+        [
+          18.52,
+          22.82
+        ],
+        [
+          23.42,
+          27.22
+        ]
+      ],
+      "totalSeconds": 27.82,
+      "perClip": {
+        "requests": 6,
+        "ms": [
+          419,
+          328,
+          370,
+          351,
+          376,
+          332
+        ],
+        "tokens": {
+          "text": 1532,
+          "audio": 749
+        }
+      },
+      "wholeByTime": {
+        "ms": 705,
+        "tokens": {
+          "text": 1541,
+          "audio": 836
+        },
+        "meanAbsSentimentDiff": 0.305,
+        "meanAbsIrritatedDiff": 0.077,
+        "irritatedSpread": 0.56
+      },
+      "wholeByOrdinal": {
+        "ms": 586,
+        "tokens": {
+          "text": 1445,
+          "audio": 836
+        },
+        "meanAbsSentimentDiff": 0.287,
+        "meanAbsIrritatedDiff": 0.107,
+        "irritatedSpread": 0.68
+      },
+      "labelledClips": {
+        "ms": 629,
+        "tokens": {
+          "text": 1526,
+          "audio": 749
+        },
+        "meanAbsSentimentDiff": 0.154,
+        "meanAbsIrritatedDiff": 0.05,
+        "irritatedSpread": 0.64
+      },
+      "referenceIrritatedSpread": 0.67,
+      "table": [
+        {
+          "emotion": "neutral",
+          "perClip": {
+            "sentiment": 1.9385449329259539,
+            "irritated": 0.2307929795137024
+          },
+          "wholeByTime": {
+            "sentiment": 1.6766606160122932,
+            "irritated": 0.25842636773219774
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.7321377112292804,
+            "irritated": 0.1769142892722481
+          },
+          "labelledClips": {
+            "sentiment": 1.849660657564886,
+            "irritated": 0.18576945977447157
+          }
+        },
+        {
+          "emotion": "angry",
+          "perClip": {
+            "sentiment": 0.6830927602059175,
+            "irritated": 0.8277073921907537
+          },
+          "wholeByTime": {
+            "sentiment": 0.7487816075834045,
+            "irritated": 0.8224038744787155
+          },
+          "wholeByOrdinal": {
+            "sentiment": 0.8188244083958498,
+            "irritated": 0.8531344583157604
+          },
+          "labelledClips": {
+            "sentiment": 0.9599803936205523,
+            "irritated": 0.8270495593494981
+          }
+        },
+        {
+          "emotion": "calm",
+          "perClip": {
+            "sentiment": 1.8803326808228393,
+            "irritated": 0.2079846968619572
+          },
+          "wholeByTime": {
+            "sentiment": 1.4033953566911375,
+            "irritated": 0.35643798807891636
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.5371032275813648,
+            "irritated": 0.25731191747182114
+          },
+          "labelledClips": {
+            "sentiment": 1.8200831755996416,
+            "irritated": 0.2556588470383415
+          }
+        },
+        {
+          "emotion": "fearful",
+          "perClip": {
+            "sentiment": 0.7820781061273444,
+            "irritated": 0.727426153320778
+          },
+          "wholeByTime": {
+            "sentiment": 0.8090679564206772,
+            "irritated": 0.6448293038895847
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.041198318024354,
+            "irritated": 0.5923165806454899
+          },
+          "labelledClips": {
+            "sentiment": 0.9354404514352931,
+            "irritated": 0.6417019755669985
+          }
+        },
+        {
+          "emotion": "disgust",
+          "perClip": {
+            "sentiment": 0.7827848063366057,
+            "irritated": 0.8787149777841211
+          },
+          "wholeByTime": {
+            "sentiment": 1.3787644999047963,
+            "irritated": 0.739848493915812
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.2304116052563727,
+            "irritated": 0.5937224795636269
+          },
+          "labelledClips": {
+            "sentiment": 0.9469182297499098,
+            "irritated": 0.7610868657604829
+          }
+        },
+        {
+          "emotion": "sad",
+          "perClip": {
+            "sentiment": 1.878340748112572,
+            "irritated": 0.23928170150964556
+          },
+          "wholeByTime": {
+            "sentiment": 1.4738825431309113,
+            "irritated": 0.29746212257036925
+          },
+          "wholeByOrdinal": {
+            "sentiment": 1.546970616717668,
+            "irritated": 0.33376477690484074
+          },
+          "labelledClips": {
+            "sentiment": 1.69689497361877,
+            "irritated": 0.23456575748163147
+          }
+        }
+      ]
+    }
+  },
+  "contextFraming": {
+    "sentence": "Kids are talking by the door.",
+    "prior": "[turn-1] EMPLOYEE: Thanks for holding. I've checked, and the earliest the technician can come is Thursday.",
+    "rows": [
+      {
+        "actor": "01",
+        "emotion": "neutral",
+        "audio_only": {
+          "sentiment": 1.9215173824561764,
+          "irritated": 0.27369151990803553,
+          "tokens": {
+            "text": 262,
+            "audio": 103
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.7687904873651261,
+          "irritated": 0.15010293042668074,
+          "tokens": {
+            "text": 358,
+            "audio": 103
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 1.4454457088030896,
+          "irritated": 0.3200497607911901,
+          "tokens": {
+            "text": 336,
+            "audio": 103
+          }
+        },
+        "speaker_only": {
+          "sentiment": 1.7422461243759007,
+          "irritated": 0.2640996590962998,
+          "tokens": {
+            "text": 282,
+            "audio": 103
+          }
+        }
+      },
+      {
+        "actor": "01",
+        "emotion": "angry",
+        "audio_only": {
+          "sentiment": 0.7842750846938015,
+          "irritated": 0.7886692297686918,
+          "tokens": {
+            "text": 264,
+            "audio": 128
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.135853638234095,
+          "irritated": 0.3138643486787324,
+          "tokens": {
+            "text": 360,
+            "audio": 128
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 0.7518319702632075,
+          "irritated": 0.8420499921539798,
+          "tokens": {
+            "text": 338,
+            "audio": 128
+          }
+        },
+        "speaker_only": {
+          "sentiment": 0.6685283157944695,
+          "irritated": 0.8680124387585992,
+          "tokens": {
+            "text": 284,
+            "audio": 128
+          }
+        }
+      },
+      {
+        "actor": "01",
+        "emotion": "fearful",
+        "audio_only": {
+          "sentiment": 0.7521690532066205,
+          "irritated": 0.6720659078188894,
+          "tokens": {
+            "text": 266,
+            "audio": 156
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.207309304093776,
+          "irritated": 0.18325025229071965,
+          "tokens": {
+            "text": 362,
+            "audio": 156
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 0.9835938643052715,
+          "irritated": 0.4993503849969916,
+          "tokens": {
+            "text": 340,
+            "audio": 156
+          }
+        },
+        "speaker_only": {
+          "sentiment": 0.7589269747348782,
+          "irritated": 0.5790209068148874,
+          "tokens": {
+            "text": 286,
+            "audio": 156
+          }
+        }
+      },
+      {
+        "actor": "01",
+        "emotion": "happy",
+        "audio_only": {
+          "sentiment": 0.9577263849472177,
+          "irritated": 0.7338081795076469,
+          "tokens": {
+            "text": 262,
+            "audio": 112
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.3093529468608012,
+          "irritated": 0.4500455885581012,
+          "tokens": {
+            "text": 358,
+            "audio": 112
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 1.0978951056166393,
+          "irritated": 0.6219660417361166,
+          "tokens": {
+            "text": 336,
+            "audio": 112
+          }
+        },
+        "speaker_only": {
+          "sentiment": 0.9336489893583395,
+          "irritated": 0.8297302629564568,
+          "tokens": {
+            "text": 282,
+            "audio": 112
+          }
+        }
+      },
+      {
+        "actor": "02",
+        "emotion": "neutral",
+        "audio_only": {
+          "sentiment": 1.9759940797478643,
+          "irritated": 0.23116061527261034,
+          "tokens": {
+            "text": 262,
+            "audio": 111
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.759233904633956,
+          "irritated": 0.13104233268251897,
+          "tokens": {
+            "text": 358,
+            "audio": 111
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 1.5965829177077584,
+          "irritated": 0.13353641713092473,
+          "tokens": {
+            "text": 336,
+            "audio": 111
+          }
+        },
+        "speaker_only": {
+          "sentiment": 1.7639243843210404,
+          "irritated": 0.12470951834932287,
+          "tokens": {
+            "text": 282,
+            "audio": 111
+          }
+        }
+      },
+      {
+        "actor": "02",
+        "emotion": "angry",
+        "audio_only": {
+          "sentiment": 0.9735153173372083,
+          "irritated": 0.7563829061365116,
+          "tokens": {
+            "text": 262,
+            "audio": 118
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.0435379467450612,
+          "irritated": 0.6753615773256506,
+          "tokens": {
+            "text": 358,
+            "audio": 118
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 0.7920618990626769,
+          "irritated": 0.9019932889187354,
+          "tokens": {
+            "text": 336,
+            "audio": 118
+          }
+        },
+        "speaker_only": {
+          "sentiment": 0.6692144808193055,
+          "irritated": 0.8816544446358573,
+          "tokens": {
+            "text": 282,
+            "audio": 118
+          }
+        }
+      },
+      {
+        "actor": "02",
+        "emotion": "fearful",
+        "audio_only": {
+          "sentiment": 1.028051965171181,
+          "irritated": 0.7132637581380765,
+          "tokens": {
+            "text": 262,
+            "audio": 116
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.2569913505241601,
+          "irritated": 0.28997994686545114,
+          "tokens": {
+            "text": 358,
+            "audio": 116
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 0.9598467668866669,
+          "irritated": 0.4594995495953143,
+          "tokens": {
+            "text": 336,
+            "audio": 116
+          }
+        },
+        "speaker_only": {
+          "sentiment": 0.8851671631266028,
+          "irritated": 0.49285272929191354,
+          "tokens": {
+            "text": 282,
+            "audio": 116
+          }
+        }
+      },
+      {
+        "actor": "02",
+        "emotion": "happy",
+        "audio_only": {
+          "sentiment": 2.4252181009694818,
+          "irritated": 0.19833814618294787,
+          "tokens": {
+            "text": 262,
+            "audio": 113
+          }
+        },
+        "lane_context": {
+          "sentiment": 1.7422597798180512,
+          "irritated": 0.11033978229748341,
+          "tokens": {
+            "text": 358,
+            "audio": 113
+          }
+        },
+        "prior_turns_only": {
+          "sentiment": 1.6600098693863123,
+          "irritated": 0.13215585926189818,
+          "tokens": {
+            "text": 336,
+            "audio": 113
+          }
+        },
+        "speaker_only": {
+          "sentiment": 2.338319108645586,
+          "irritated": 0.1476810916117459,
+          "tokens": {
+            "text": 282,
+            "audio": 113
+          }
+        }
+      }
+    ]
+  }
+}

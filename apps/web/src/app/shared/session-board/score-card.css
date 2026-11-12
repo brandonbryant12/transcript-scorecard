@@ -1,0 +1,29 @@
+:host {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-5);
+}
+
+.score {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-1);
+}
+
+.score strong {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.score span {
+  color: var(--muted);
+  font-size: var(--text-lg);
+}

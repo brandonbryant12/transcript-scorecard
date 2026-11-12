@@ -1,0 +1,532 @@
+{
+  "ranAt": "2026-11-11T21:13:25.044Z",
+  "model": "gemini-decision-1",
+  "wording": [
+    {
+      "label": "2 of 6 away",
+      "frames": [
+        "attentive",
+        "attentive",
+        "away_screen",
+        "away_screen",
+        "attentive",
+        "engaged"
+      ],
+      "answers": {
+        "project": {
+          "confidence": 0.6744408215633084,
+          "noul": 0.3255591784366916,
+          "type": "noul"
+        },
+        "most_frames": {
+          "confidence": 0.8879085595930416,
+          "noul": 0.1120914404069584,
+          "type": "noul"
+        },
+        "any_frame": {
+          "confidence": 0.5223083056438054,
+          "noul": 0.4776916943561946,
+          "type": "noul"
+        },
+        "every_frame": {
+          "confidence": 0.8762878969968217,
+          "noul": 0.12371210300317828,
+          "type": "noul"
+        }
+      }
+    },
+    {
+      "label": "0 of 6 away",
+      "frames": [
+        "attentive",
+        "attentive",
+        "engaged",
+        "attentive",
+        "flat",
+        "engaged"
+      ],
+      "answers": {
+        "most_frames": {
+          "confidence": 0.8928796530313092,
+          "noul": 0.1071203469686908,
+          "type": "noul"
+        },
+        "any_frame": {
+          "confidence": 0.8449661830047747,
+          "noul": 0.1550338169952253,
+          "type": "noul"
+        },
+        "project": {
+          "confidence": 0.8810455104715793,
+          "noul": 0.11895448952842072,
+          "type": "noul"
+        },
+        "every_frame": {
+          "confidence": 0.8963705596009373,
+          "noul": 0.10362944039906273,
+          "type": "noul"
+        }
+      }
+    },
+    {
+      "label": "5 of 6 away",
+      "frames": [
+        "away_screen",
+        "down_phone",
+        "away_screen",
+        "attentive",
+        "down_phone",
+        "away_screen"
+      ],
+      "answers": {
+        "project": {
+          "confidence": 0.6244809362791365,
+          "noul": 0.6244809362791365,
+          "type": "noul"
+        },
+        "every_frame": {
+          "confidence": 0.738713435114166,
+          "noul": 0.261286564885834,
+          "type": "noul"
+        },
+        "any_frame": {
+          "confidence": 0.7787600048505486,
+          "noul": 0.7787600048505486,
+          "type": "noul"
+        },
+        "most_frames": {
+          "confidence": 0.5562885505107387,
+          "noul": 0.5562885505107387,
+          "type": "noul"
+        }
+      }
+    },
+    {
+      "label": "6 of 6 away",
+      "frames": [
+        "away_screen",
+        "down_phone",
+        "away_screen",
+        "slumped",
+        "down_phone",
+        "away_screen"
+      ],
+      "answers": {
+        "most_frames": {
+          "confidence": 0.747973158036542,
+          "noul": 0.747973158036542,
+          "type": "noul"
+        },
+        "every_frame": {
+          "confidence": 0.7397782762798478,
+          "noul": 0.7397782762798478,
+          "type": "noul"
+        },
+        "project": {
+          "confidence": 0.763744813487721,
+          "noul": 0.763744813487721,
+          "type": "noul"
+        },
+        "any_frame": {
+          "confidence": 0.8364597764565581,
+          "noul": 0.8364597764565581,
+          "type": "noul"
+        }
+      }
+    }
+  ],
+  "pixelSize": [
+    {
+      "width": 160,
+      "height": 90,
+      "bytes": 2431,
+      "low": {
+        "tokens": 264,
+        "away": 0.7375877983223192,
+        "ms": 759
+      },
+      "medium": {
+        "tokens": 527,
+        "away": 0.7497336385293997,
+        "ms": 766
+      },
+      "high": {
+        "tokens": 1100,
+        "away": 0.8216475440480931,
+        "ms": 751
+      }
+    },
+    {
+      "width": 320,
+      "height": 180,
+      "bytes": 5896,
+      "low": {
+        "tokens": 264,
+        "away": 0.850015713362627,
+        "ms": 599
+      },
+      "medium": {
+        "tokens": 527,
+        "away": 0.8062200469244062,
+        "ms": 803
+      },
+      "high": {
+        "tokens": 1100,
+        "away": 0.8933401277768519,
+        "ms": 1116
+      }
+    },
+    {
+      "width": 640,
+      "height": 360,
+      "bytes": 14489,
+      "low": {
+        "tokens": 264,
+        "away": 0.7960580812976021,
+        "ms": 649
+      },
+      "medium": {
+        "tokens": 527,
+        "away": 0.775337400233142,
+        "ms": 724
+      },
+      "high": {
+        "tokens": 1100,
+        "away": 0.8558964667981123,
+        "ms": 1222
+      }
+    },
+    {
+      "width": 1280,
+      "height": 720,
+      "bytes": 30707,
+      "low": {
+        "tokens": 264,
+        "away": 0.8927712368923528,
+        "ms": 596
+      },
+      "medium": {
+        "tokens": 527,
+        "away": 0.8834943265481373,
+        "ms": 735
+      },
+      "high": {
+        "tokens": 1100,
+        "away": 0.8583088493161061,
+        "ms": 583
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "bytes": 55581,
+      "low": {
+        "tokens": 264,
+        "away": 0.8986719811184802,
+        "ms": 703
+      },
+      "medium": {
+        "tokens": 527,
+        "away": 0.857213814264571,
+        "ms": 653
+      },
+      "high": {
+        "tokens": 1100,
+        "away": 0.8584547070439694,
+        "ms": 1626
+      }
+    }
+  ],
+  "videoTurn": [
+    {
+      "label": "mp4 low",
+      "bytes": 50459,
+      "status": 200,
+      "ms": 673,
+      "tokens": {
+        "text": 677,
+        "image": 462,
+        "audio": 35
+      },
+      "answers": {
+        "away_any": {
+          "confidence": 0.7452358730490578,
+          "noul": 0.7452358730490578,
+          "type": "noul"
+        },
+        "away_project": {
+          "confidence": 0.6241353764859043,
+          "noul": 0.37586462351409566,
+          "type": "noul"
+        },
+        "away_0_2": {
+          "confidence": 0.5906404659073208,
+          "noul": 0.4093595340926792,
+          "type": "noul"
+        },
+        "away_2_4": {
+          "confidence": 0.8368479924603165,
+          "noul": 0.8368479924603165,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4187135394310543,
+          "score": 3.015392515100312,
+          "probabilities": {
+            "0": 0.012240274266248985,
+            "1": 0.09729548831071251,
+            "2": 0.17200922491057016,
+            "3": 0.2997414730814139,
+            "4": 0.4187135394310543
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "away_4_6": {
+          "confidence": 0.8931058640812941,
+          "noul": 0.10689413591870592,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "label": "mp4 medium",
+      "bytes": 50459,
+      "status": 200,
+      "ms": 366,
+      "tokens": {
+        "text": 677,
+        "image": 462,
+        "audio": 35
+      },
+      "answers": {
+        "away_2_4": {
+          "confidence": 0.8368479924603165,
+          "noul": 0.8368479924603165,
+          "type": "noul"
+        },
+        "away_project": {
+          "confidence": 0.6241353764859043,
+          "noul": 0.37586462351409566,
+          "type": "noul"
+        },
+        "away_0_2": {
+          "confidence": 0.5906404659073208,
+          "noul": 0.4093595340926792,
+          "type": "noul"
+        },
+        "away_any": {
+          "confidence": 0.7452358730490578,
+          "noul": 0.7452358730490578,
+          "type": "noul"
+        },
+        "away_4_6": {
+          "confidence": 0.8931058640812941,
+          "noul": 0.10689413591870592,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4187135394310543,
+          "score": 3.015392515100312,
+          "probabilities": {
+            "0": 0.012240274266248985,
+            "1": 0.09729548831071251,
+            "2": 0.17200922491057016,
+            "3": 0.2997414730814139,
+            "4": 0.4187135394310543
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "label": "mp4 high",
+      "bytes": 50459,
+      "status": 200,
+      "ms": 832,
+      "tokens": {
+        "text": 677,
+        "image": 1848,
+        "audio": 35
+      },
+      "answers": {
+        "away_project": {
+          "confidence": 0.6043604441936905,
+          "noul": 0.39563955580630944,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4737124730472472,
+          "score": 3.162505976586516,
+          "probabilities": {
+            "0": 0.005722193206181003,
+            "1": 0.07321159816415547,
+            "2": 0.14761672051387692,
+            "3": 0.2997370150685394,
+            "4": 0.4737124730472472
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "away_0_2": {
+          "confidence": 0.7108148124216704,
+          "noul": 0.2891851875783295,
+          "type": "noul"
+        },
+        "away_4_6": {
+          "confidence": 0.8778728722536973,
+          "noul": 0.12212712774630273,
+          "type": "noul"
+        },
+        "away_2_4": {
+          "confidence": 0.8872829392956149,
+          "noul": 0.8872829392956149,
+          "type": "noul"
+        },
+        "away_any": {
+          "confidence": 0.7243421757088526,
+          "noul": 0.7243421757088526,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "label": "mp4 unspecified",
+      "bytes": 50459,
+      "status": 200,
+      "ms": 340,
+      "tokens": {
+        "text": 677,
+        "image": 462,
+        "audio": 35
+      },
+      "answers": {
+        "away_any": {
+          "confidence": 0.7452358730490578,
+          "noul": 0.7452358730490578,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4187135394310543,
+          "score": 3.015392515100312,
+          "probabilities": {
+            "0": 0.012240274266248985,
+            "1": 0.09729548831071251,
+            "2": 0.17200922491057016,
+            "3": 0.2997414730814139,
+            "4": 0.4187135394310543
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "away_project": {
+          "confidence": 0.6241353764859043,
+          "noul": 0.37586462351409566,
+          "type": "noul"
+        },
+        "away_0_2": {
+          "confidence": 0.5906404659073208,
+          "noul": 0.4093595340926792,
+          "type": "noul"
+        },
+        "away_4_6": {
+          "confidence": 0.8931058640812941,
+          "noul": 0.10689413591870592,
+          "type": "noul"
+        },
+        "away_2_4": {
+          "confidence": 0.8368479924603165,
+          "noul": 0.8368479924603165,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "label": "webm (VP9) low",
+      "bytes": 159481,
+      "status": 200,
+      "ms": 1032,
+      "tokens": {
+        "text": 677,
+        "image": 462,
+        "audio": 35
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.4400339724930599,
+          "score": 3.1357007349878723,
+          "probabilities": {
+            "0": 0.006227484617925671,
+            "1": 0.06115011329173467,
+            "2": 0.16335055706794133,
+            "3": 0.32923787252933845,
+            "4": 0.4400339724930599
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "away_project": {
+          "confidence": 0.7105864207676756,
+          "noul": 0.28941357923232436,
+          "type": "noul"
+        },
+        "away_any": {
+          "confidence": 0.5902374030722641,
+          "noul": 0.5902374030722641,
+          "type": "noul"
+        },
+        "away_4_6": {
+          "confidence": 0.9010630632843503,
+          "noul": 0.09893693671564976,
+          "type": "noul"
+        },
+        "away_0_2": {
+          "confidence": 0.7003410527689551,
+          "noul": 0.29965894723104486,
+          "type": "noul"
+        },
+        "away_2_4": {
+          "confidence": 0.8222985311044316,
+          "noul": 0.8222985311044316,
+          "type": "noul"
+        }
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+.state {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  color: var(--muted);
+  text-align: center;
+}
+
+.state strong {
+  color: var(--navy);
+  font-size: var(--text-lg);
+}
+
+.state span {
+  max-width: 52ch;
+}
+
+.state.error strong {
+  color: var(--bad);
+}
+
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--line);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

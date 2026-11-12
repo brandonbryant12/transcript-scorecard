@@ -1,0 +1,58 @@
+<p class="headline">{{ coaching().headline }}</p>
+
+@for (flag of coaching().flags; track flag.behaviorId) {
+  <div class="notice notice-error flag" role="alert">
+    <div class="stack-tight">
+      <span class="eyebrow flag-eyebrow">Critical behaviour</span>
+      <app-coach-point [point]="flag" />
+    </div>
+  </div>
+}
+
+<div class="columns">
+  <section aria-label="Strengths">
+    <h3 class="tone-good">Strengths</h3>
+    <ul>
+      @for (point of coaching().strengths; track point.behaviorId) {
+        <li class="point point-good"><app-coach-point [point]="point" /></li>
+      } @empty {
+        <li class="muted small">Nothing detected yet.</li>
+      }
+    </ul>
+  </section>
+
+  <section aria-label="Opportunities">
+    <h3 class="tone-warn">Opportunities</h3>
+    <ul>
+      @for (point of coaching().opportunities; track point.behaviorId) {
+        <li class="point point-warn"><app-coach-point [point]="point" /></li>
+      } @empty {
+        <li class="muted small">No missed or problem behaviours.</li>
+      }
+    </ul>
+  </section>
+</div>
+
+@if (coaching().focus; as focus) {
+  <section class="focus" aria-label="Focus skill">
+    <span class="eyebrow">Focus next</span>
+    <p>
+      <strong>{{ focus.skillName }}</strong> is at <em>{{ focus.levelLabel }}</em>. To reach
+      <em>{{ focus.nextLevelLabel }}</em>:
+    </p>
+    <p class="target">{{ focus.nextLevelDescription }}</p>
+  </section>
+}
+
+@if (coaching().reviewReasons.length > 0) {
+  <section class="notice notice-warn" aria-label="Why a person should review this">
+    <div class="stack-tight">
+      <strong>Worth a human look</strong>
+      <ul class="reasons">
+        @for (reason of coaching().reviewReasons; track reason) {
+          <li>{{ reason }}</li>
+        }
+      </ul>
+    </div>
+  </section>
+}

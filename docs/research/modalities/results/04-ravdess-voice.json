@@ -1,0 +1,2539 @@
+{
+  "ranAt": "2026-11-11T21:01:43.871Z",
+  "model": "gemini-decision-1",
+  "source": "RAVDESS (CC BY-NC-SA 4.0), actors 01 and 02, statement 01, strong intensity (neutral: normal)",
+  "sentence": "Kids are talking by the door.",
+  "textOnlyBaseline": {
+    "sentiment_plain": {
+      "confidence": 0.7055897881408016,
+      "score": 1.7588189002990609,
+      "probabilities": {
+        "0": 0.03008147090020489,
+        "1": 0.2259191459513467,
+        "2": 0.7055897881408016,
+        "3": 0.031918201964476436,
+        "4": 0.006491393043170382
+      },
+      "legend": {
+        "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+        "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+        "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+        "3": "Positive: satisfied, relieved or appreciative",
+        "4": "Very positive: delighted or openly grateful"
+      },
+      "type": "score"
+    }
+  },
+  "questions": {
+    "sentiment_voice": {
+      "type": "score",
+      "instructions": "Listen to the attached audio clip of the CUSTOMER. Judging by the sound of their voice (tone, pace and emphasis) rather than the words, how does the customer feel?",
+      "criteria": [
+        "Very negative: angry, hostile, or threatening to leave or escalate",
+        "Negative: frustrated, worried, doubtful or dissatisfied",
+        "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+        "Positive: satisfied, relieved or appreciative",
+        "Very positive: delighted or openly grateful"
+      ]
+    },
+    "acted_emotion": {
+      "type": "choice",
+      "instructions": "Listen to the attached audio clip. Judging only by the sound of the voice, which emotion is the speaker expressing?",
+      "criteria": {
+        "angry": "Angry or hostile.",
+        "calm": "Calm and relaxed.",
+        "disgust": "Disgusted or contemptuous.",
+        "fearful": "Afraid or panicked.",
+        "happy": "Happy or cheerful.",
+        "neutral": "Neutral, no particular feeling.",
+        "sad": "Sad or dejected.",
+        "surprised": "Surprised or astonished."
+      }
+    },
+    "delivery": {
+      "type": "score",
+      "instructions": "Listen to the attached audio clip of the EMPLOYEE. Rate \"Vocal delivery\": How the employee sounds: calm, warm and steady rather than rushed, flat or irritated. Judge only how the employee sounds in this clip, not the words they chose. Choose the level whose description fits best.",
+      "criteria": [
+        "Abrasive: Sounds irritated, sarcastic or condescending.",
+        "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+        "Neutral: Even and professional, without warmth.",
+        "Warm: Calm, friendly and unhurried.",
+        "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+      ]
+    },
+    "calm_pace": {
+      "type": "noul",
+      "instructions": "Listen to the attached audio clip of the EMPLOYEE. Is this statement true of how they sound in the clip? Statement: The employee speaks at a calm, unhurried pace in a warm tone."
+    },
+    "irritated_tone": {
+      "type": "noul",
+      "instructions": "Listen to the attached audio clip of the EMPLOYEE. Is this statement true of how they sound in the clip? Statement: The employee sounds irritated, impatient or condescending."
+    }
+  },
+  "rows": [
+    {
+      "file": "03-01-01-01-01-01-01.wav",
+      "actor": "01",
+      "emotion": "neutral",
+      "seconds": 3.3,
+      "rmsDb": -48,
+      "audioOnly": {
+        "ms": 524,
+        "tokens": {
+          "text": 650,
+          "audio": 103
+        },
+        "answers": {
+          "acted_emotion": {
+            "confidence": 0.2988060974684965,
+            "choice": "neutral",
+            "probabilities": {
+              "neutral": 0.2988060974684965,
+              "angry": 0.1635823989053583,
+              "surprised": 0.05329922129119564,
+              "sad": 0.03663149427486762,
+              "happy": 0.18180320642298442,
+              "calm": 0.20005563817821734,
+              "fearful": 0.030859992867085104,
+              "disgust": 0.034961950591795014
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.4166367577023573,
+            "score": 2.4310203609190486,
+            "probabilities": {
+              "0": 0.055088415099545686,
+              "1": 0.1323384060103063,
+              "2": 0.26748700147474636,
+              "3": 0.4166367577023573,
+              "4": 0.12844941971304435
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.6069759860676451,
+            "noul": 0.6069759860676451,
+            "type": "noul"
+          },
+          "irritated_tone": {
+            "confidence": 0.7581375801341954,
+            "noul": 0.2418624198658046,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.587692330173335,
+            "score": 1.9463452037139586,
+            "probabilities": {
+              "0": 0.06336311679878005,
+              "1": 0.1636497961356987,
+              "2": 0.587692330173335,
+              "3": 0.13386828033715573,
+              "4": 0.051426476555030666
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 334,
+        "tokens": {
+          "text": 693,
+          "audio": 103
+        },
+        "answers": {
+          "acted_emotion": {
+            "confidence": 0.566950929902959,
+            "choice": "neutral",
+            "probabilities": {
+              "happy": 0.04639715603139073,
+              "angry": 0.10199478166875518,
+              "neutral": 0.566950929902959,
+              "calm": 0.17956963206319604,
+              "fearful": 0.020521845444580016,
+              "sad": 0.025623138587219173,
+              "disgust": 0.03866695197271361,
+              "surprised": 0.02027556432918637
+            },
+            "type": "choice"
+          },
+          "calm_pace": {
+            "confidence": 0.5926176396130443,
+            "noul": 0.4073823603869557,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6835931808179719,
+            "score": 1.792858382250834,
+            "probabilities": {
+              "0": 0.03859181371148752,
+              "1": 0.21051522937748077,
+              "2": 0.6835931808179719,
+              "3": 0.05404231313482955,
+              "4": 0.013257462958230139
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "delivery": {
+            "confidence": 0.40110361747351586,
+            "score": 2.49194931438414,
+            "probabilities": {
+              "0": 0.04732224093589999,
+              "1": 0.11837258627382928,
+              "2": 0.28127017278862815,
+              "3": 0.40110361747351586,
+              "4": 0.15193138252812674
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.7808532924044216,
+            "noul": 0.21914670759557842,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "calm"
+    },
+    {
+      "file": "03-01-01-01-01-01-02.wav",
+      "actor": "02",
+      "emotion": "neutral",
+      "seconds": 3.64,
+      "rmsDb": -43.8,
+      "audioOnly": {
+        "ms": 480,
+        "tokens": {
+          "text": 650,
+          "audio": 111
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.6649185453689781,
+            "noul": 0.3350814546310219,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5512079664536141,
+            "score": 1.9583521128752572,
+            "probabilities": {
+              "0": 0.07546398825100938,
+              "1": 0.15862167470394622,
+              "2": 0.5512079664536141,
+              "3": 0.161510977101638,
+              "4": 0.05319539348979219
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.7487684689984339,
+            "noul": 0.25123153100156614,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.36556593537051163,
+            "score": 2.326886508638781,
+            "probabilities": {
+              "0": 0.07182798695447286,
+              "1": 0.168725050074868,
+              "2": 0.2570302289741062,
+              "3": 0.36556593537051163,
+              "4": 0.13685079862604144
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.28672643013580734,
+            "choice": "happy",
+            "probabilities": {
+              "happy": 0.28672643013580734,
+              "fearful": 0.03482768182711082,
+              "calm": 0.15301908144531745,
+              "surprised": 0.08552265920949266,
+              "angry": 0.08406388757742837,
+              "sad": 0.0451884673744677,
+              "disgust": 0.03704143134865284,
+              "neutral": 0.27361036108172276
+            },
+            "type": "choice"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 372,
+        "tokens": {
+          "text": 693,
+          "audio": 111
+        },
+        "answers": {
+          "sentiment_voice": {
+            "confidence": 0.7359241541463715,
+            "score": 1.8493575404757474,
+            "probabilities": {
+              "0": 0.03161349381447106,
+              "1": 0.1659755651537695,
+              "2": 0.7359241541463715,
+              "3": 0.05441348051231713,
+              "4": 0.01207330637307085
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.8488660938874126,
+            "noul": 0.1511339061125874,
+            "type": "noul"
+          },
+          "calm_pace": {
+            "confidence": 0.5573711558606559,
+            "noul": 0.5573711558606559,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.6197489694657361,
+            "choice": "neutral",
+            "probabilities": {
+              "happy": 0.06517297456245333,
+              "surprised": 0.022108782684974473,
+              "neutral": 0.6197489694657361,
+              "fearful": 0.015159696214802069,
+              "angry": 0.03853689563047979,
+              "calm": 0.19608871980818607,
+              "sad": 0.017240256402791313,
+              "disgust": 0.025943705230576816
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.4167148365291648,
+            "score": 2.558921510847228,
+            "probabilities": {
+              "0": 0.05679779696428645,
+              "1": 0.12696437892798923,
+              "2": 0.20813966399124667,
+              "3": 0.4167148365291648,
+              "4": 0.19138332358731278
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "neutral"
+    },
+    {
+      "file": "03-01-02-02-01-01-01.wav",
+      "actor": "01",
+      "emotion": "calm",
+      "seconds": 3.7,
+      "rmsDb": -52.3,
+      "audioOnly": {
+        "ms": 479,
+        "tokens": {
+          "text": 650,
+          "audio": 113
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.6156211095648867,
+            "noul": 0.3843788904351133,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6015642916840346,
+            "score": 1.8750498376313007,
+            "probabilities": {
+              "0": 0.06506790357760718,
+              "1": 0.18194874101823713,
+              "2": 0.6015642916840346,
+              "3": 0.11570374163549005,
+              "4": 0.035715322084631095
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "delivery": {
+            "confidence": 0.44702359478450454,
+            "score": 2.495485558859502,
+            "probabilities": {
+              "0": 0.04416098436987586,
+              "1": 0.11975408408174168,
+              "2": 0.2607923283156325,
+              "3": 0.44702359478450454,
+              "4": 0.12826900844824543
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.2896736348389676,
+            "choice": "neutral",
+            "probabilities": {
+              "happy": 0.1327847518390585,
+              "sad": 0.09285229349533114,
+              "angry": 0.1220727578269282,
+              "calm": 0.23944991651251155,
+              "surprised": 0.03848082827243899,
+              "fearful": 0.04777785292267815,
+              "neutral": 0.2896736348389676,
+              "disgust": 0.03690796429208597
+            },
+            "type": "choice"
+          },
+          "irritated_tone": {
+            "confidence": 0.7604944903502385,
+            "noul": 0.23950550964976147,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 357,
+        "tokens": {
+          "text": 693,
+          "audio": 113
+        },
+        "answers": {
+          "delivery": {
+            "confidence": 0.4070869343842222,
+            "score": 2.5240250753921805,
+            "probabilities": {
+              "0": 0.04701223809598685,
+              "1": 0.12560746745155218,
+              "2": 0.25200831774249655,
+              "3": 0.4070869343842222,
+              "4": 0.1682850423257421
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.8104153405916211,
+            "noul": 0.18958465940837885,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.5379119768429035,
+            "choice": "neutral",
+            "probabilities": {
+              "calm": 0.22202755984239844,
+              "angry": 0.07319207343918888,
+              "fearful": 0.026491126173111845,
+              "sad": 0.04734007310245648,
+              "disgust": 0.039779876808680545,
+              "surprised": 0.022901072588894907,
+              "happy": 0.030356241202365426,
+              "neutral": 0.5379119768429035
+            },
+            "type": "choice"
+          },
+          "calm_pace": {
+            "confidence": 0.6465506973011148,
+            "noul": 0.35344930269888514,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6238864054291653,
+            "score": 1.7208904678569048,
+            "probabilities": {
+              "0": 0.05936426057214109,
+              "1": 0.24653816299026693,
+              "2": 0.6238864054291653,
+              "3": 0.05426519002539973,
+              "4": 0.015945980983027002
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "neutral"
+    },
+    {
+      "file": "03-01-02-02-01-01-02.wav",
+      "actor": "02",
+      "emotion": "calm",
+      "seconds": 4.14,
+      "rmsDb": -46.3,
+      "audioOnly": {
+        "ms": 456,
+        "tokens": {
+          "text": 652,
+          "audio": 129
+        },
+        "answers": {
+          "sentiment_voice": {
+            "confidence": 0.557775053503092,
+            "score": 1.9603928776048436,
+            "probabilities": {
+              "0": 0.07289463421515975,
+              "1": 0.1605984625382612,
+              "2": 0.557775053503092,
+              "3": 0.15068309091355017,
+              "4": 0.05804875882993697
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "delivery": {
+            "confidence": 0.4309290281693098,
+            "score": 2.4896360018191173,
+            "probabilities": {
+              "0": 0.0566011109082917,
+              "1": 0.13684106344622146,
+              "2": 0.22125366801987084,
+              "3": 0.4309290281693098,
+              "4": 0.15437512945630624
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.5025943525771259,
+            "noul": 0.4974056474228741,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.3834375242030312,
+            "choice": "neutral",
+            "probabilities": {
+              "calm": 0.22389016804485082,
+              "disgust": 0.03433323268043117,
+              "surprised": 0.044128068436152,
+              "sad": 0.07069178849392224,
+              "fearful": 0.04120396536758592,
+              "angry": 0.03474788198961785,
+              "neutral": 0.3834375242030312,
+              "happy": 0.16756737078440886
+            },
+            "type": "choice"
+          },
+          "irritated_tone": {
+            "confidence": 0.7919513044665865,
+            "noul": 0.2080486955334135,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 328,
+        "tokens": {
+          "text": 695,
+          "audio": 129
+        },
+        "answers": {
+          "acted_emotion": {
+            "confidence": 0.5419902016495005,
+            "choice": "neutral",
+            "probabilities": {
+              "disgust": 0.029873125273666895,
+              "angry": 0.03171122478071532,
+              "calm": 0.22583518828510904,
+              "surprised": 0.03162291982293494,
+              "sad": 0.05680233506935553,
+              "happy": 0.0447213595519053,
+              "fearful": 0.03744364556681252,
+              "neutral": 0.5419902016495005
+            },
+            "type": "choice"
+          },
+          "irritated_tone": {
+            "confidence": 0.8656656510377647,
+            "noul": 0.13433434896223528,
+            "type": "noul"
+          },
+          "calm_pace": {
+            "confidence": 0.5339599449249353,
+            "noul": 0.4660400550750647,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.4332590760566629,
+            "score": 2.661690262944817,
+            "probabilities": {
+              "0": 0.044011280077197054,
+              "1": 0.11569094945344717,
+              "2": 0.1909663461646953,
+              "3": 0.4332590760566629,
+              "4": 0.21607234824799762
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6748705307690374,
+            "score": 1.80552048596269,
+            "probabilities": {
+              "0": 0.03849242419469503,
+              "1": 0.20887302970249058,
+              "2": 0.6748705307690374,
+              "3": 0.06414966661298363,
+              "4": 0.013614348720793451
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "calm"
+    },
+    {
+      "file": "03-01-03-02-01-01-01.wav",
+      "actor": "01",
+      "emotion": "happy",
+      "seconds": 3.67,
+      "rmsDb": -39.1,
+      "audioOnly": {
+        "ms": 558,
+        "tokens": {
+          "text": 650,
+          "audio": 112
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.8144473370602938,
+            "noul": 0.18555266293970618,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.38409170373391904,
+            "score": 1.1295742068967152,
+            "probabilities": {
+              "0": 0.33788111292937,
+              "1": 0.38409170373391904,
+              "2": 0.12859007655047086,
+              "3": 0.10944607708310593,
+              "4": 0.039991029703134146
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.7233955103037267,
+            "noul": 0.7233955103037267,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.5255873983820966,
+            "choice": "angry",
+            "probabilities": {
+              "calm": 0.030546147891554264,
+              "happy": 0.09888857212687026,
+              "neutral": 0.08414186097160697,
+              "angry": 0.5255873983820966,
+              "disgust": 0.08641220047518901,
+              "fearful": 0.05948699699543955,
+              "surprised": 0.07632412613389523,
+              "sad": 0.03861269702334804
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.47004249020808503,
+            "score": 0.9935561862599456,
+            "probabilities": {
+              "0": 0.3069413112950248,
+              "1": 0.47004249020808503,
+              "2": 0.16134368010597197,
+              "3": 0.04586373772375585,
+              "4": 0.015808780667162268
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 367,
+        "tokens": {
+          "text": 693,
+          "audio": 112
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.7349594210881123,
+            "noul": 0.26504057891188776,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.4389479954894329,
+            "choice": "angry",
+            "probabilities": {
+              "disgust": 0.06996941513590635,
+              "angry": 0.4389479954894329,
+              "sad": 0.03459010153456362,
+              "happy": 0.043396217875991544,
+              "surprised": 0.0965330227774307,
+              "calm": 0.06252643957298266,
+              "neutral": 0.19141357356413402,
+              "fearful": 0.06262323404955826
+            },
+            "type": "choice"
+          },
+          "irritated_tone": {
+            "confidence": 0.580400163046844,
+            "noul": 0.4195998369531559,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.34008411698891167,
+            "score": 2.2672247159871572,
+            "probabilities": {
+              "0": 0.11761784766323255,
+              "1": 0.17936185757758702,
+              "2": 0.19206710181911982,
+              "3": 0.34008411698891167,
+              "4": 0.17086907595114895
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5641655164642974,
+            "score": 1.1515221859913007,
+            "probabilities": {
+              "0": 0.17191544919666238,
+              "1": 0.5641655164642974,
+              "2": 0.21497364324380538,
+              "3": 0.03837218134154648,
+              "4": 0.01057320975368833
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "calm"
+    },
+    {
+      "file": "03-01-03-02-01-01-02.wav",
+      "actor": "02",
+      "emotion": "happy",
+      "seconds": 3.7,
+      "rmsDb": -30,
+      "audioOnly": {
+        "ms": 580,
+        "tokens": {
+          "text": 650,
+          "audio": 113
+        },
+        "answers": {
+          "sentiment_voice": {
+            "confidence": 0.3695136870268097,
+            "score": 2.4997137738467985,
+            "probabilities": {
+              "0": 0.03289826667903035,
+              "1": 0.09497593313660876,
+              "2": 0.3571258365002221,
+              "3": 0.3695136870268097,
+              "4": 0.14548627665732902
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "delivery": {
+            "confidence": 0.6081572484975643,
+            "score": 2.8290795912194033,
+            "probabilities": {
+              "0": 0.023899132036475732,
+              "1": 0.07942383295839123,
+              "2": 0.11444756663097806,
+              "3": 0.6081572484975643,
+              "4": 0.17407221987659072
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.5448486584320075,
+            "noul": 0.5448486584320075,
+            "type": "noul"
+          },
+          "irritated_tone": {
+            "confidence": 0.812284852142937,
+            "noul": 0.18771514785706298,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.4782109104862393,
+            "choice": "happy",
+            "probabilities": {
+              "fearful": 0.01607657491865302,
+              "surprised": 0.0955800046043984,
+              "happy": 0.4782109104862393,
+              "calm": 0.11286935916831352,
+              "angry": 0.07087691502670072,
+              "sad": 0.02774468355535301,
+              "disgust": 0.029660628121574197,
+              "neutral": 0.16898092411876778
+            },
+            "type": "choice"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 352,
+        "tokens": {
+          "text": 693,
+          "audio": 113
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.8301965231598913,
+            "noul": 0.1698034768401086,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5931468626481382,
+            "score": 1.9544277613374954,
+            "probabilities": {
+              "0": 0.049446796569089464,
+              "1": 0.17283037464111128,
+              "2": 0.5931468626481382,
+              "3": 0.14300020316653636,
+              "4": 0.041575762975124685
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.34180789577232396,
+            "choice": "neutral",
+            "probabilities": {
+              "fearful": 0.022857239665801048,
+              "happy": 0.28981705027946986,
+              "surprised": 0.09464797016206615,
+              "disgust": 0.03797274577096888,
+              "angry": 0.09220854718438361,
+              "calm": 0.10082279073556474,
+              "neutral": 0.34180789577232396,
+              "sad": 0.01986576042942161
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.44865280924403317,
+            "score": 2.5953864164286076,
+            "probabilities": {
+              "0": 0.05960857459335327,
+              "1": 0.12651163738468757,
+              "2": 0.16899578189994152,
+              "3": 0.44865280924403317,
+              "4": 0.1962311968779844
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.6458862310107063,
+            "noul": 0.3541137689892937,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "happy"
+    },
+    {
+      "file": "03-01-04-02-01-01-01.wav",
+      "actor": "01",
+      "emotion": "sad",
+      "seconds": 3.8,
+      "rmsDb": -46.5,
+      "audioOnly": {
+        "ms": 451,
+        "tokens": {
+          "text": 650,
+          "audio": 116
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.757878433601924,
+            "noul": 0.24212156639807603,
+            "type": "noul"
+          },
+          "calm_pace": {
+            "confidence": 0.55348099439033,
+            "noul": 0.44651900560967,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.31465570755908806,
+            "choice": "neutral",
+            "probabilities": {
+              "fearful": 0.035916495883005016,
+              "happy": 0.22909707631398915,
+              "calm": 0.182852543210944,
+              "surprised": 0.04197078004070323,
+              "neutral": 0.31465570755908806,
+              "sad": 0.036824447968409786,
+              "angry": 0.12249428319356248,
+              "disgust": 0.03618866583029817
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5899353242282079,
+            "score": 1.9598188249515123,
+            "probabilities": {
+              "0": 0.06340932785970066,
+              "1": 0.15693270905520246,
+              "2": 0.5899353242282079,
+              "3": 0.1358750879876617,
+              "4": 0.05384755086922722
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "delivery": {
+            "confidence": 0.4099948155801392,
+            "score": 2.409550559722023,
+            "probabilities": {
+              "0": 0.05539624239553965,
+              "1": 0.13835642076804894,
+              "2": 0.27190019640576635,
+              "3": 0.4099948155801392,
+              "4": 0.12435232485050585
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 340,
+        "tokens": {
+          "text": 693,
+          "audio": 116
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.5326301943766649,
+            "noul": 0.4673698056233351,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.6219897056611988,
+            "choice": "neutral",
+            "probabilities": {
+              "happy": 0.034461273452713534,
+              "neutral": 0.6219897056611988,
+              "fearful": 0.022197055135810502,
+              "disgust": 0.03140267226918835,
+              "surprised": 0.018818751798867786,
+              "calm": 0.21580425796299843,
+              "sad": 0.029534141683166197,
+              "angry": 0.025792142036056398
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6911359451629747,
+            "score": 1.78531644110369,
+            "probabilities": {
+              "0": 0.038417113767671034,
+              "1": 0.2102930190448308,
+              "2": 0.6911359451629747,
+              "3": 0.04786415636518381,
+              "4": 0.012289765659339534
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.813683862536281,
+            "noul": 0.18631613746371897,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.4128684335958616,
+            "score": 2.4854537058933075,
+            "probabilities": {
+              "0": 0.04571952432467199,
+              "1": 0.13549955852046447,
+              "2": 0.25615054382537483,
+              "3": 0.4128684335958616,
+              "4": 0.14976193973362714
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "calm"
+    },
+    {
+      "file": "03-01-04-02-01-01-02.wav",
+      "actor": "02",
+      "emotion": "sad",
+      "seconds": 3.74,
+      "rmsDb": -45.6,
+      "audioOnly": {
+        "ms": 452,
+        "tokens": {
+          "text": 650,
+          "audio": 114
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.7280673634613304,
+            "noul": 0.27193263653866956,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.503348907111805,
+            "score": 1.2354581377784921,
+            "probabilities": {
+              "0": 0.18890025609983138,
+              "1": 0.503348907111805,
+              "2": 0.21553591336343986,
+              "3": 0.06782228975988794,
+              "4": 0.02439263366503592
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.6881745946596803,
+            "noul": 0.31182540534031966,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.5227123120999264,
+            "choice": "sad",
+            "probabilities": {
+              "sad": 0.5227123120999264,
+              "neutral": 0.050527601307885896,
+              "calm": 0.03464160627311345,
+              "disgust": 0.021171748636666265,
+              "happy": 0.05242817353429398,
+              "angry": 0.08083872482679187,
+              "fearful": 0.21201741483927836,
+              "surprised": 0.025662418482043634
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.3184191299758259,
+            "score": 2.0703425076376254,
+            "probabilities": {
+              "0": 0.14057693683951733,
+              "1": 0.24282799823294635,
+              "2": 0.16022331016482028,
+              "3": 0.3184191299758259,
+              "4": 0.13795262478689022
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 348,
+        "tokens": {
+          "text": 693,
+          "audio": 114
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.7379268211061296,
+            "noul": 0.26207317889387033,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.4058240198701533,
+            "score": 2.5049625008142815,
+            "probabilities": {
+              "0": 0.059265005941941444,
+              "1": 0.1500216386496512,
+              "2": 0.2010442697994229,
+              "3": 0.4058240198701533,
+              "4": 0.18384506573883114
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.24077673530907806,
+            "choice": "neutral",
+            "probabilities": {
+              "neutral": 0.24077673530907806,
+              "angry": 0.23757749349170532,
+              "happy": 0.05742274595327915,
+              "fearful": 0.0398832970582228,
+              "sad": 0.21212756451208636,
+              "disgust": 0.06963476263718824,
+              "calm": 0.11175439179532719,
+              "surprised": 0.030823009243113077
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5401110795162927,
+            "score": 1.3140060438531613,
+            "probabilities": {
+              "0": 0.10594559758845114,
+              "1": 0.5401110795162927,
+              "2": 0.30042161030178205,
+              "3": 0.04103510664059228,
+              "4": 0.012486605952881915
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.7026581805930199,
+            "noul": 0.2973418194069802,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "fearful"
+    },
+    {
+      "file": "03-01-05-02-01-01-01.wav",
+      "actor": "01",
+      "emotion": "angry",
+      "seconds": 4.1,
+      "rmsDb": -21,
+      "audioOnly": {
+        "ms": 518,
+        "tokens": {
+          "text": 652,
+          "audio": 128
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.9476094196907852,
+            "noul": 0.0523905803092148,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.7627601713710404,
+            "choice": "angry",
+            "probabilities": {
+              "neutral": 0.016639079211039017,
+              "happy": 0.02974729530043232,
+              "surprised": 0.059688298428233075,
+              "disgust": 0.025067800936009882,
+              "angry": 0.7627601713710404,
+              "sad": 0.015971124004616595,
+              "fearful": 0.08497069139024231,
+              "calm": 0.005155539358386758
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.4425907956934044,
+            "score": 0.7654158843210455,
+            "probabilities": {
+              "0": 0.4425907956934044,
+              "1": 0.4024465909302813,
+              "2": 0.11234353771543776,
+              "3": 0.032194084683617036,
+              "4": 0.010424990977259374
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.8356047066711739,
+            "noul": 0.8356047066711739,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.5699376845520044,
+            "score": 0.6414718711240693,
+            "probabilities": {
+              "0": 0.5699376845520044,
+              "1": 0.29765571235453525,
+              "2": 0.07357047989523129,
+              "3": 0.03866929381384449,
+              "4": 0.02016682938438449
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 332,
+        "tokens": {
+          "text": 695,
+          "audio": 128
+        },
+        "answers": {
+          "acted_emotion": {
+            "confidence": 0.7735403555825635,
+            "choice": "angry",
+            "probabilities": {
+              "disgust": 0.03659112206619646,
+              "fearful": 0.05121688695994812,
+              "happy": 0.017825194915376444,
+              "angry": 0.7735403555825635,
+              "surprised": 0.02734110872307016,
+              "neutral": 0.06347838333715253,
+              "sad": 0.011226160314470665,
+              "calm": 0.01878078810122186
+            },
+            "type": "choice"
+          },
+          "calm_pace": {
+            "confidence": 0.9303437036588954,
+            "noul": 0.06965629634110455,
+            "type": "noul"
+          },
+          "irritated_tone": {
+            "confidence": 0.5751475406477694,
+            "noul": 0.5751475406477694,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.24137090338862643,
+            "score": 1.7473297487455612,
+            "probabilities": {
+              "0": 0.2293725471146464,
+              "1": 0.24137090338862643,
+              "2": 0.2007553089477044,
+              "3": 0.20955673473456504,
+              "4": 0.11894450581445769
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5421609658861398,
+            "score": 0.9506788336030271,
+            "probabilities": {
+              "0": 0.26889692423140027,
+              "1": 0.5421609658861398,
+              "2": 0.16266581656044912,
+              "3": 0.021918938692054746,
+              "4": 0.004357354629956182
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "angry"
+    },
+    {
+      "file": "03-01-05-02-01-01-02.wav",
+      "actor": "02",
+      "emotion": "angry",
+      "seconds": 3.9,
+      "rmsDb": -27.5,
+      "audioOnly": {
+        "ms": 477,
+        "tokens": {
+          "text": 650,
+          "audio": 118
+        },
+        "answers": {
+          "delivery": {
+            "confidence": 0.3831016176887248,
+            "score": 0.9964568529856526,
+            "probabilities": {
+              "0": 0.3724262715979821,
+              "1": 0.3831016176887248,
+              "2": 0.14594050406633802,
+              "3": 0.07265219942356878,
+              "4": 0.025879407223386327
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.8840342183981383,
+            "noul": 0.11596578160186163,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.7195977171127057,
+            "choice": "angry",
+            "probabilities": {
+              "fearful": 0.030742282475188183,
+              "neutral": 0.06787484577849094,
+              "sad": 0.01953174252453844,
+              "disgust": 0.0626447932649795,
+              "happy": 0.05023512594778374,
+              "surprised": 0.030695819076024162,
+              "angry": 0.7195977171127057,
+              "calm": 0.01867767382028951
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.47641638316371765,
+            "score": 1.0129796851065624,
+            "probabilities": {
+              "0": 0.29087664648626993,
+              "1": 0.47641638316371765,
+              "2": 0.17783476510017562,
+              "3": 0.038595049256853704,
+              "4": 0.016277155992983097
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.5989157232324788,
+            "noul": 0.5989157232324788,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 337,
+        "tokens": {
+          "text": 693,
+          "audio": 118
+        },
+        "answers": {
+          "delivery": {
+            "confidence": 0.2903123084933598,
+            "score": 2.203013085761845,
+            "probabilities": {
+              "0": 0.11962325210610154,
+              "1": 0.1815778805891918,
+              "2": 0.24172397777640686,
+              "3": 0.2903123084933598,
+              "4": 0.16676258103494004
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.8341817153658377,
+            "noul": 0.16581828463416226,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5470303900250295,
+            "score": 1.0117061802396197,
+            "probabilities": {
+              "0": 0.24267427303465772,
+              "1": 0.5470303900250295,
+              "2": 0.1749988788727127,
+              "3": 0.026507799801235094,
+              "4": 0.00878865826636486
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.6547800544952487,
+            "noul": 0.3452199455047514,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.6548710847044231,
+            "choice": "angry",
+            "probabilities": {
+              "calm": 0.03199111931801728,
+              "surprised": 0.027737487858778772,
+              "angry": 0.6548710847044231,
+              "fearful": 0.031151674371457015,
+              "neutral": 0.16011615984533312,
+              "disgust": 0.06079515144056786,
+              "happy": 0.01555306364821016,
+              "sad": 0.01778425881321267
+            },
+            "type": "choice"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "happy"
+    },
+    {
+      "file": "03-01-06-02-01-01-01.wav",
+      "actor": "01",
+      "emotion": "fearful",
+      "seconds": 5,
+      "rmsDb": -30.2,
+      "audioOnly": {
+        "ms": 465,
+        "tokens": {
+          "text": 654,
+          "audio": 156
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.6923684548581136,
+            "noul": 0.6923684548581136,
+            "type": "noul"
+          },
+          "calm_pace": {
+            "confidence": 0.9411843457346474,
+            "noul": 0.05881565426535261,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.510239314931382,
+            "score": 0.7669443551906737,
+            "probabilities": {
+              "0": 0.37658943857335087,
+              "1": 0.510239314931382,
+              "2": 0.08822700234336031,
+              "3": 0.019525941035055838,
+              "4": 0.00541830311685089
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "delivery": {
+            "confidence": 0.5958715874797575,
+            "score": 1.2091798897640493,
+            "probabilities": {
+              "0": 0.2003838630696746,
+              "1": 0.5958715874797575,
+              "2": 0.07415866134140252,
+              "3": 0.0533525728351743,
+              "4": 0.07623331527399098
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.6111294270782195,
+            "choice": "fearful",
+            "probabilities": {
+              "sad": 0.05685376376250558,
+              "surprised": 0.05651525007593949,
+              "calm": 0.009618918714066541,
+              "angry": 0.21519993129343068,
+              "fearful": 0.6111294270782195,
+              "happy": 0.019093343543440163,
+              "disgust": 0.012047672364365818,
+              "neutral": 0.019541693168032143
+            },
+            "type": "choice"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 369,
+        "tokens": {
+          "text": 697,
+          "audio": 156
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.5806286114614723,
+            "noul": 0.4193713885385278,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.5099673464694838,
+            "choice": "fearful",
+            "probabilities": {
+              "happy": 0.014324432291722367,
+              "fearful": 0.5099673464694838,
+              "sad": 0.024815016570515682,
+              "calm": 0.02081582475912436,
+              "disgust": 0.04587474236339706,
+              "surprised": 0.08043731473392243,
+              "neutral": 0.039968192730402384,
+              "angry": 0.2637971300814318
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6163655163164417,
+            "score": 0.979015502299125,
+            "probabilities": {
+              "0": 0.21835336909277125,
+              "1": 0.6163655163164417,
+              "2": 0.13778573355213555,
+              "3": 0.022903005276194124,
+              "4": 0.0045923757624574905
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.9097055436564968,
+            "noul": 0.09029445634350318,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.24002235419452178,
+            "score": 2.244192368937699,
+            "probabilities": {
+              "0": 0.12627486757010276,
+              "1": 0.22201191223364322,
+              "2": 0.17298155807922797,
+              "3": 0.23870930792250433,
+              "4": 0.24002235419452178
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "fearful"
+    },
+    {
+      "file": "03-01-06-02-01-01-02.wav",
+      "actor": "02",
+      "emotion": "fearful",
+      "seconds": 3.8,
+      "rmsDb": -32.3,
+      "audioOnly": {
+        "ms": 501,
+        "tokens": {
+          "text": 650,
+          "audio": 116
+        },
+        "answers": {
+          "delivery": {
+            "confidence": 0.3589055711686226,
+            "score": 1.769760920593922,
+            "probabilities": {
+              "0": 0.1832467066637756,
+              "1": 0.3589055711686226,
+              "2": 0.09313826346494891,
+              "3": 0.23425901231521012,
+              "4": 0.1304504463874428
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.4572237206805685,
+            "choice": "sad",
+            "probabilities": {
+              "surprised": 0.06371792961462093,
+              "disgust": 0.00824086593339951,
+              "calm": 0.00849182729876816,
+              "sad": 0.4572237206805685,
+              "neutral": 0.014398404992993899,
+              "happy": 0.091835406407185,
+              "fearful": 0.2917381893621217,
+              "angry": 0.06435365571034224
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6608315854992819,
+            "score": 0.9633924415156511,
+            "probabilities": {
+              "0": 0.21330794865403585,
+              "1": 0.6608315854992819,
+              "2": 0.08554190627963461,
+              "3": 0.029797194811091145,
+              "4": 0.010521364755956634
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.9185353847317781,
+            "noul": 0.08146461526822193,
+            "type": "noul"
+          },
+          "irritated_tone": {
+            "confidence": 0.5382993532812124,
+            "noul": 0.46170064671878763,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 354,
+        "tokens": {
+          "text": 693,
+          "audio": 116
+        },
+        "answers": {
+          "acted_emotion": {
+            "confidence": 0.2888446714942747,
+            "choice": "fearful",
+            "probabilities": {
+              "fearful": 0.2888446714942747,
+              "angry": 0.2551287609110765,
+              "surprised": 0.1316244561148627,
+              "sad": 0.08161750411915969,
+              "neutral": 0.08541116198580607,
+              "happy": 0.07512964554654457,
+              "calm": 0.035615468898278255,
+              "disgust": 0.046628330929997616
+            },
+            "type": "choice"
+          },
+          "irritated_tone": {
+            "confidence": 0.7081901435301841,
+            "noul": 0.291809856469816,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6297533066984758,
+            "score": 1.1613566214050552,
+            "probabilities": {
+              "0": 0.14435027228496597,
+              "1": 0.6297533066984758,
+              "2": 0.1623611550717792,
+              "3": 0.04726005921609483,
+              "4": 0.016275206728684093
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "delivery": {
+            "confidence": 0.37323121824743183,
+            "score": 2.4498739924460944,
+            "probabilities": {
+              "0": 0.08616066160107198,
+              "1": 0.1596752096065657,
+              "2": 0.17661325704124414,
+              "3": 0.37323121824743183,
+              "4": 0.20431965350368617
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.8576513890442288,
+            "noul": 0.14234861095577117,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "fearful"
+    },
+    {
+      "file": "03-01-07-02-01-01-01.wav",
+      "actor": "01",
+      "emotion": "disgust",
+      "seconds": 4.3,
+      "rmsDb": -33.7,
+      "audioOnly": {
+        "ms": 546,
+        "tokens": {
+          "text": 652,
+          "audio": 133
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.8487164407705398,
+            "noul": 0.8487164407705398,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.5594407400017712,
+            "score": 0.622091022348581,
+            "probabilities": {
+              "0": 0.5594407400017712,
+              "1": 0.3203590791285038,
+              "2": 0.07103514980025581,
+              "3": 0.036998480658310594,
+              "4": 0.012166550411158477
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.9350050981131127,
+            "noul": 0.06499490188688731,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5641542382251649,
+            "score": 0.853610411128342,
+            "probabilities": {
+              "0": 0.3049031328693022,
+              "1": 0.5641542382251649,
+              "2": 0.10752499685311391,
+              "3": 0.01926434901272703,
+              "4": 0.004153283039692052
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.6577692187523615,
+            "choice": "angry",
+            "probabilities": {
+              "angry": 0.6577692187523615,
+              "neutral": 0.03752832762991183,
+              "disgust": 0.07625858637401829,
+              "happy": 0.06442374338200357,
+              "surprised": 0.06682011532545544,
+              "calm": 0.008243439282611207,
+              "fearful": 0.04561797099924599,
+              "sad": 0.04333859825439219
+            },
+            "type": "choice"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 373,
+        "tokens": {
+          "text": 695,
+          "audio": 133
+        },
+        "answers": {
+          "sentiment_voice": {
+            "confidence": 0.6581766827278434,
+            "score": 0.8623128148357766,
+            "probabilities": {
+              "0": 0.24958090146269202,
+              "1": 0.6581766827278434,
+              "2": 0.0761451646273433,
+              "3": 0.012543201875238608,
+              "4": 0.003554049306882706
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.7876790829775139,
+            "noul": 0.7876790829775139,
+            "type": "noul"
+          },
+          "calm_pace": {
+            "confidence": 0.9387301381512215,
+            "noul": 0.06126986184877852,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.7524344197002589,
+            "choice": "angry",
+            "probabilities": {
+              "angry": 0.7524344197002589,
+              "sad": 0.021309488709946377,
+              "fearful": 0.025004051190333967,
+              "neutral": 0.05042053647710639,
+              "surprised": 0.03838961359942385,
+              "disgust": 0.07990346115249751,
+              "happy": 0.01495151830061813,
+              "calm": 0.017586910869815016
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.4608339350867873,
+            "score": 1.049239507221582,
+            "probabilities": {
+              "0": 0.4608339350867873,
+              "1": 0.25010748464299315,
+              "2": 0.12113453975044823,
+              "3": 0.1148332190013926,
+              "4": 0.05309082151837868
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "angry"
+    },
+    {
+      "file": "03-01-07-02-01-01-02.wav",
+      "actor": "02",
+      "emotion": "disgust",
+      "seconds": 4.14,
+      "rmsDb": -40.6,
+      "audioOnly": {
+        "ms": 485,
+        "tokens": {
+          "text": 652,
+          "audio": 129
+        },
+        "answers": {
+          "delivery": {
+            "confidence": 0.29946153523369357,
+            "score": 1.861856707984351,
+            "probabilities": {
+              "0": 0.1779239294947288,
+              "1": 0.2538987264579728,
+              "2": 0.18264492971456095,
+              "3": 0.29946153523369357,
+              "4": 0.08607087909904391
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.2774112789138108,
+            "choice": "angry",
+            "probabilities": {
+              "neutral": 0.10878448633369504,
+              "fearful": 0.07769762561530773,
+              "calm": 0.04660032806999968,
+              "angry": 0.2774112789138108,
+              "surprised": 0.07976821595751468,
+              "happy": 0.18154495108336866,
+              "sad": 0.07511560960621427,
+              "disgust": 0.15307750442008916
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.4607861845632826,
+            "score": 1.281411473836193,
+            "probabilities": {
+              "0": 0.21097294529049243,
+              "1": 0.4607861845632826,
+              "2": 0.1982013255162368,
+              "3": 0.09593554027951609,
+              "4": 0.034104004350472165
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.7965195324171465,
+            "noul": 0.20348046758285357,
+            "type": "noul"
+          },
+          "irritated_tone": {
+            "confidence": 0.5652978838184932,
+            "noul": 0.5652978838184932,
+            "type": "noul"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 396,
+        "tokens": {
+          "text": 695,
+          "audio": 129
+        },
+        "answers": {
+          "sentiment_voice": {
+            "confidence": 0.5786813443577239,
+            "score": 1.0936308805115642,
+            "probabilities": {
+              "0": 0.19271293991017321,
+              "1": 0.5786813443577239,
+              "2": 0.18184755645735287,
+              "3": 0.03577821385986496,
+              "4": 0.010979945414884935
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.7830526256387144,
+            "noul": 0.21694737436128564,
+            "type": "noul"
+          },
+          "irritated_tone": {
+            "confidence": 0.7065212886091875,
+            "noul": 0.2934787113908125,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.4073949867519722,
+            "choice": "angry",
+            "probabilities": {
+              "neutral": 0.18585991016664433,
+              "happy": 0.048878332087775485,
+              "disgust": 0.16860877819319764,
+              "fearful": 0.03789544581094402,
+              "calm": 0.061030421973693204,
+              "sad": 0.03283157467858281,
+              "angry": 0.4073949867519722,
+              "surprised": 0.05750055033719018
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.3783780437281971,
+            "score": 2.395848150775997,
+            "probabilities": {
+              "0": 0.07052356940237955,
+              "1": 0.15540486098693973,
+              "2": 0.23873247246273405,
+              "3": 0.3783780437281971,
+              "4": 0.15696105341974953
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "fearful"
+    },
+    {
+      "file": "03-01-08-02-01-01-01.wav",
+      "actor": "01",
+      "emotion": "surprised",
+      "seconds": 3.44,
+      "rmsDb": -38.2,
+      "audioOnly": {
+        "ms": 491,
+        "tokens": {
+          "text": 650,
+          "audio": 106
+        },
+        "answers": {
+          "calm_pace": {
+            "confidence": 0.5212905944387999,
+            "noul": 0.5212905944387999,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.26080023561699595,
+            "choice": "happy",
+            "probabilities": {
+              "disgust": 0.04184196936034325,
+              "happy": 0.26080023561699595,
+              "surprised": 0.1739528985227588,
+              "calm": 0.11744252518700285,
+              "sad": 0.038698233808736604,
+              "fearful": 0.037246760415407844,
+              "neutral": 0.22031941002092595,
+              "angry": 0.10969796706782876
+            },
+            "type": "choice"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5350586763843925,
+            "score": 1.972166350773382,
+            "probabilities": {
+              "0": 0.06646220274662712,
+              "1": 0.17296786108654472,
+              "2": 0.5350586763843925,
+              "3": 0.17296390221169022,
+              "4": 0.052547357570745426
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "irritated_tone": {
+            "confidence": 0.7194472304763022,
+            "noul": 0.28055276952369784,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.4808640940342523,
+            "score": 2.5246574741366214,
+            "probabilities": {
+              "0": 0.04229999825871293,
+              "1": 0.11872087964590673,
+              "2": 0.23455789992827727,
+              "3": 0.4808640940342523,
+              "4": 0.12355712813285076
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 367,
+        "tokens": {
+          "text": 693,
+          "audio": 106
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.8213934240265589,
+            "noul": 0.17860657597344112,
+            "type": "noul"
+          },
+          "calm_pace": {
+            "confidence": 0.6829050290028353,
+            "noul": 0.3170949709971646,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.6157323373140371,
+            "score": 1.720136808604307,
+            "probabilities": {
+              "0": 0.052122010843138,
+              "1": 0.2614799303340992,
+              "2": 0.6157323373140371,
+              "3": 0.05547068239276899,
+              "4": 0.015195039115956667
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.44641935935405574,
+            "choice": "neutral",
+            "probabilities": {
+              "disgust": 0.05636381382334082,
+              "calm": 0.160347983115413,
+              "sad": 0.022231165814015307,
+              "angry": 0.1129734917777213,
+              "neutral": 0.44641935935405574,
+              "happy": 0.09897290764611445,
+              "surprised": 0.07533771383248086,
+              "fearful": 0.027353564636858715
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.37712492162451144,
+            "score": 2.3781355237180883,
+            "probabilities": {
+              "0": 0.07295994318225708,
+              "1": 0.14813166178922504,
+              "2": 0.2542523982803483,
+              "3": 0.37712492162451144,
+              "4": 0.1475310751236581
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "calm"
+    },
+    {
+      "file": "03-01-08-02-01-01-02.wav",
+      "actor": "02",
+      "emotion": "surprised",
+      "seconds": 3.74,
+      "rmsDb": -36.6,
+      "audioOnly": {
+        "ms": 511,
+        "tokens": {
+          "text": 650,
+          "audio": 114
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.6266766416676457,
+            "noul": 0.37332335833235425,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.494026886971945,
+            "score": 1.4203060473655171,
+            "probabilities": {
+              "0": 0.1207565272537933,
+              "1": 0.494026886971945,
+              "2": 0.25604223195310905,
+              "3": 0.1025027187972564,
+              "4": 0.02667163502389619
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.7407338202841809,
+            "noul": 0.2592661797158191,
+            "type": "noul"
+          },
+          "delivery": {
+            "confidence": 0.38922352496847246,
+            "score": 2.1256379761331,
+            "probabilities": {
+              "0": 0.11402049571121316,
+              "1": 0.23467395919577086,
+              "2": 0.1625173192331311,
+              "3": 0.38922352496847246,
+              "4": 0.09956470089141234
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "acted_emotion": {
+            "confidence": 0.42085822242019966,
+            "choice": "surprised",
+            "probabilities": {
+              "sad": 0.02443789655285375,
+              "fearful": 0.12766523780501982,
+              "surprised": 0.42085822242019966,
+              "disgust": 0.052994425623229424,
+              "neutral": 0.07008699691504928,
+              "calm": 0.02278635912434907,
+              "angry": 0.12110293587972651,
+              "happy": 0.16006792567957254
+            },
+            "type": "choice"
+          }
+        },
+        "error": null
+      },
+      "withText": {
+        "ms": 400,
+        "tokens": {
+          "text": 693,
+          "audio": 114
+        },
+        "answers": {
+          "irritated_tone": {
+            "confidence": 0.7473212620541052,
+            "noul": 0.2526787379458948,
+            "type": "noul"
+          },
+          "acted_emotion": {
+            "confidence": 0.30198980994235064,
+            "choice": "surprised",
+            "probabilities": {
+              "happy": 0.08258902945866642,
+              "disgust": 0.074605001180251,
+              "surprised": 0.30198980994235064,
+              "fearful": 0.04910647204168515,
+              "angry": 0.10127244768590393,
+              "neutral": 0.2913367479251526,
+              "sad": 0.01617192769630365,
+              "calm": 0.08292856406968667
+            },
+            "type": "choice"
+          },
+          "delivery": {
+            "confidence": 0.3929356374022425,
+            "score": 2.3606437970256784,
+            "probabilities": {
+              "0": 0.08437345727846558,
+              "1": 0.16440153336570945,
+              "2": 0.2078610681805444,
+              "3": 0.3929356374022425,
+              "4": 0.15042830377303815
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "calm_pace": {
+            "confidence": 0.8053666273108167,
+            "noul": 0.19463337268918332,
+            "type": "noul"
+          },
+          "sentiment_voice": {
+            "confidence": 0.5225186612412565,
+            "score": 1.3572751835897408,
+            "probabilities": {
+              "0": 0.0994332608051076,
+              "1": 0.5225186612412565,
+              "2": 0.31351042738071533,
+              "3": 0.050414934704628316,
+              "4": 0.014122715868292168
+            },
+            "legend": {
+              "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+              "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+              "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+              "3": "Positive: satisfied, relieved or appreciative",
+              "4": "Very positive: delighted or openly grateful"
+            },
+            "type": "score"
+          }
+        },
+        "error": null
+      },
+      "generalModel": "surprised"
+    }
+  ]
+}

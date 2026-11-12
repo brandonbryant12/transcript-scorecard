@@ -1,0 +1,53 @@
+:host {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.chart {
+  width: 100%;
+  height: auto;
+  max-height: 150px;
+  overflow: visible;
+}
+
+.neutral {
+  stroke: var(--line);
+  stroke-dasharray: 3 4;
+}
+
+.line {
+  fill: none;
+  stroke: #8fb5ad;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.mark {
+  fill: var(--muted);
+  stroke: var(--white);
+  stroke-width: 1.5;
+  cursor: pointer;
+}
+
+.mark-good {
+  fill: var(--good);
+}
+
+.mark-bad {
+  fill: var(--bad);
+}
+
+.mark:focus-visible {
+  outline: none;
+  stroke: var(--navy);
+  stroke-width: 2.5;
+}
+
+.shift {
+  fill: var(--bad);
+  font-size: 11px;
+}
+
+.shift.up {
+  fill: var(--good);
+}

@@ -1,0 +1,30 @@
+:host {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.page-header {
+  margin-bottom: 0;
+}
+
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-1) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.results li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: var(--text-md);
+}
+
+.detail-row td {
+  background: var(--cream);
+}

@@ -1,0 +1,1423 @@
+{
+  "ranAt": "2026-11-11T21:04:34.292Z",
+  "model": "gemini-decision-1",
+  "call": {
+    "totalSeconds": 67.24,
+    "turns": [
+      {
+        "id": "turn-1",
+        "speaker": "employee",
+        "text": "ACME Support, Avery speaking. What is happening with your device?",
+        "startSeconds": 0,
+        "endSeconds": 4.2
+      },
+      {
+        "id": "turn-2",
+        "speaker": "customer",
+        "text": "My hub has been offline since yesterday, and I already restarted it twice. I'm pretty frustrated.",
+        "startSeconds": 4.7,
+        "endSeconds": 11.18
+      },
+      {
+        "id": "turn-3",
+        "speaker": "employee",
+        "text": "I'm sorry, that sounds really frustrating. Before I open the account, can you confirm the postal code on it?",
+        "startSeconds": 11.68,
+        "endSeconds": 19.2
+      },
+      {
+        "id": "turn-4",
+        "speaker": "customer",
+        "text": "It's nine eight one zero nine.",
+        "startSeconds": 19.7,
+        "endSeconds": 22.18
+      },
+      {
+        "id": "turn-5",
+        "speaker": "employee",
+        "text": "Thanks, that matches. I can see a failed firmware update, so I'm sending a recovery command now.",
+        "startSeconds": 22.68,
+        "endSeconds": 29.2
+      },
+      {
+        "id": "turn-6",
+        "speaker": "customer",
+        "text": "I have to leave soon. Can my partner call back if it doesn't finish?",
+        "startSeconds": 29.7,
+        "endSeconds": 33.78
+      },
+      {
+        "id": "turn-7",
+        "speaker": "employee",
+        "text": "Sure, I'll just add them to the account now. Give me their name and email, no verification needed.",
+        "startSeconds": 34.28,
+        "endSeconds": 40.96
+      },
+      {
+        "id": "turn-8",
+        "speaker": "customer",
+        "text": "Don't they need to verify themselves first?",
+        "startSeconds": 41.46,
+        "endSeconds": 44.02
+      },
+      {
+        "id": "turn-9",
+        "speaker": "employee",
+        "text": "It's fine. And I guarantee the hub will be back online within ten minutes.",
+        "startSeconds": 44.52,
+        "endSeconds": 50.32
+      },
+      {
+        "id": "turn-10",
+        "speaker": "customer",
+        "text": "You guarantee it? Please give me a case number.",
+        "startSeconds": 50.82,
+        "endSeconds": 54.86
+      },
+      {
+        "id": "turn-11",
+        "speaker": "employee",
+        "text": "The case number is T H seven seven one four. I'll email you a summary and call you tomorrow at ten to confirm it's working.",
+        "startSeconds": 55.36,
+        "endSeconds": 64.68
+      },
+      {
+        "id": "turn-12",
+        "speaker": "customer",
+        "text": "Okay, thank you.",
+        "startSeconds": 65.18,
+        "endSeconds": 66.74
+      }
+    ]
+  },
+  "truth": {
+    "turn-3": {
+      "acknowledges_emotion": true,
+      "verifies_identity": true
+    },
+    "turn-5": {
+      "verifies_identity": true,
+      "owned_next_step": null
+    },
+    "turn-7": {
+      "unverified_change": true
+    },
+    "turn-9": {
+      "unsupported_promise": true
+    },
+    "turn-11": {
+      "owned_next_step": true
+    }
+  },
+  "behaviors": {
+    "acknowledges_emotion": "The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made.",
+    "verifies_identity": "The employee asks the customer to prove their own identity with security details, or confirms that the security details the customer gave match the account.",
+    "unverified_change": "The employee makes, or offers to make, a change to account access, credentials or contact details without verifying the identity of the person affected.",
+    "unsupported_promise": "The employee guarantees an outcome or timeframe that is outside their control or that contradicts what they said earlier.",
+    "owned_next_step": "The employee commits to a specific next step with an owner, a timeframe or a reference number."
+  },
+  "results": [
+    {
+      "id": "A_transcript",
+      "ms": 461,
+      "tokens": {
+        "text": 3317
+      },
+      "totalInputTokens": 3317,
+      "questionCount": 31,
+      "security": {
+        "confidence": 0.3850698911570612,
+        "score": 1.3570552722866316,
+        "probabilities": {
+          "0": 0.17532739346967935,
+          "1": 0.3736242442731774,
+          "2": 0.3850698911570612,
+          "3": 0.05062263870099631,
+          "4": 0.015355832399085651
+        },
+        "legend": {
+          "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+          "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+          "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+          "3": "Sound: Verifies identity before accessing or changing the account.",
+          "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+        },
+        "type": "score"
+      },
+      "summary": {
+        "positives": [
+          "turn-3/acknowledges_emotion=0.26",
+          "turn-3/verifies_identity=0.54",
+          "turn-5/verifies_identity=0.12",
+          "turn-7/unverified_change=0.96",
+          "turn-9/unsupported_promise=0.94",
+          "turn-11/owned_next_step=0.94"
+        ],
+        "meanPositive": 0.63,
+        "meanNegative": 0.044,
+        "falsePositives": [],
+        "missed": [
+          "turn-3/acknowledges_emotion=0.26",
+          "turn-3/verifies_identity=0.54",
+          "turn-5/verifies_identity=0.12"
+        ],
+        "accuracyAt06": "26/29"
+      },
+      "answers": {
+        "turn-9__verifies_identity": {
+          "confidence": 0.99,
+          "noul": 0.01,
+          "type": "noul"
+        },
+        "turn-5__owned_next_step": {
+          "confidence": 0.820462474962961,
+          "noul": 0.179537525037039,
+          "type": "noul"
+        },
+        "turn-3__acknowledges_emotion": {
+          "confidence": 0.7392124420180537,
+          "noul": 0.26078755798194625,
+          "type": "noul"
+        },
+        "turn-1__verifies_identity": {
+          "confidence": 0.97371236427665,
+          "noul": 0.026287635723350036,
+          "type": "noul"
+        },
+        "turn-11__unverified_change": {
+          "confidence": 0.9246821551967122,
+          "noul": 0.07531784480328782,
+          "type": "noul"
+        },
+        "turn-5__unverified_change": {
+          "confidence": 0.9746786643765076,
+          "noul": 0.02532133562349237,
+          "type": "noul"
+        },
+        "turn-3__verifies_identity": {
+          "confidence": 0.5433350906078743,
+          "noul": 0.5433350906078743,
+          "type": "noul"
+        },
+        "turn-3__owned_next_step": {
+          "confidence": 0.9502829084238553,
+          "noul": 0.04971709157614465,
+          "type": "noul"
+        },
+        "turn-3__unsupported_promise": {
+          "confidence": 0.9755080800918745,
+          "noul": 0.02449191990812548,
+          "type": "noul"
+        },
+        "turn-9__unverified_change": {
+          "confidence": 0.7965874712631084,
+          "noul": 0.20341252873689164,
+          "type": "noul"
+        },
+        "turn-7__verifies_identity": {
+          "confidence": 0.976403558548425,
+          "noul": 0.02359644145157503,
+          "type": "noul"
+        },
+        "turn-5__unsupported_promise": {
+          "confidence": 0.9786994082253148,
+          "noul": 0.021300591774685244,
+          "type": "noul"
+        },
+        "turn-7__acknowledges_emotion": {
+          "confidence": 0.99,
+          "noul": 0.01,
+          "type": "noul"
+        },
+        "turn-11__owned_next_step": {
+          "confidence": 0.9434446173125022,
+          "noul": 0.9434446173125022,
+          "type": "noul"
+        },
+        "turn-11__verifies_identity": {
+          "confidence": 0.979973844347123,
+          "noul": 0.020026155652877034,
+          "type": "noul"
+        },
+        "turn-5__verifies_identity": {
+          "confidence": 0.8773691268418645,
+          "noul": 0.12263087315813552,
+          "type": "noul"
+        },
+        "turn-1__unsupported_promise": {
+          "confidence": 0.968768509651647,
+          "noul": 0.03123149034835305,
+          "type": "noul"
+        },
+        "turn-1__acknowledges_emotion": {
+          "confidence": 0.9812332645681844,
+          "noul": 0.018766735431815586,
+          "type": "noul"
+        },
+        "turn-7__unsupported_promise": {
+          "confidence": 0.9782628147638801,
+          "noul": 0.02173718523611986,
+          "type": "noul"
+        },
+        "turn-5__acknowledges_emotion": {
+          "confidence": 0.9739817186311919,
+          "noul": 0.026018281368808148,
+          "type": "noul"
+        },
+        "turn-9__owned_next_step": {
+          "confidence": 0.874926704954533,
+          "noul": 0.12507329504546705,
+          "type": "noul"
+        },
+        "turn-9__unsupported_promise": {
+          "confidence": 0.944807193810689,
+          "noul": 0.944807193810689,
+          "type": "noul"
+        },
+        "turn-1__unverified_change": {
+          "confidence": 0.976307090511785,
+          "noul": 0.02369290948821502,
+          "type": "noul"
+        },
+        "turn-3__unverified_change": {
+          "confidence": 0.9099491292388525,
+          "noul": 0.09005087076114753,
+          "type": "noul"
+        },
+        "turn-11__unsupported_promise": {
+          "confidence": 0.9627163033333498,
+          "noul": 0.03728369666665025,
+          "type": "noul"
+        },
+        "turn-7__unverified_change": {
+          "confidence": 0.9620785167870796,
+          "noul": 0.9620785167870796,
+          "type": "noul"
+        },
+        "turn-7__owned_next_step": {
+          "confidence": 0.8945359948847226,
+          "noul": 0.1054640051152774,
+          "type": "noul"
+        },
+        "turn-1__owned_next_step": {
+          "confidence": 0.9751555637048114,
+          "noul": 0.024844436295188576,
+          "type": "noul"
+        },
+        "turn-9__acknowledges_emotion": {
+          "confidence": 0.99,
+          "noul": 0.01,
+          "type": "noul"
+        },
+        "security": {
+          "confidence": 0.3850698911570612,
+          "score": 1.3570552722866316,
+          "probabilities": {
+            "0": 0.17532739346967935,
+            "1": 0.3736242442731774,
+            "2": 0.3850698911570612,
+            "3": 0.05062263870099631,
+            "4": 0.015355832399085651
+          },
+          "legend": {
+            "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+            "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+            "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+            "3": "Sound: Verifies identity before accessing or changing the account.",
+            "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+          },
+          "type": "score"
+        },
+        "turn-11__acknowledges_emotion": {
+          "confidence": 0.9846509893974343,
+          "noul": 0.015349010602565667,
+          "type": "noul"
+        }
+      },
+      "exampleQuestion": "Focus on the single turn labelled [turn-7]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+    },
+    {
+      "id": "B_audio_time",
+      "ms": 1219,
+      "tokens": {
+        "text": 3482,
+        "audio": 2021
+      },
+      "totalInputTokens": 5503,
+      "questionCount": 31,
+      "security": {
+        "confidence": 0.5552766115061222,
+        "score": 0.7618083712384243,
+        "probabilities": {
+          "0": 0.3618805931901485,
+          "1": 0.5552766115061222,
+          "2": 0.05429297988242843,
+          "3": 0.016253461717757812,
+          "4": 0.012296353703542944
+        },
+        "legend": {
+          "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+          "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+          "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+          "3": "Sound: Verifies identity before accessing or changing the account.",
+          "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+        },
+        "type": "score"
+      },
+      "summary": {
+        "positives": [
+          "turn-3/acknowledges_emotion=0.73",
+          "turn-3/verifies_identity=0.31",
+          "turn-5/verifies_identity=0.35",
+          "turn-7/unverified_change=0.93",
+          "turn-9/unsupported_promise=0.85",
+          "turn-11/owned_next_step=0.94"
+        ],
+        "meanPositive": 0.687,
+        "meanNegative": 0.188,
+        "falsePositives": [
+          "turn-7/owned_next_step=0.60"
+        ],
+        "missed": [
+          "turn-3/verifies_identity=0.31",
+          "turn-5/verifies_identity=0.35"
+        ],
+        "accuracyAt06": "26/29"
+      },
+      "answers": {
+        "turn-1__unsupported_promise": {
+          "confidence": 0.9385048006767874,
+          "noul": 0.06149519932321257,
+          "type": "noul"
+        },
+        "turn-3__verifies_identity": {
+          "confidence": 0.6888447752325075,
+          "noul": 0.3111552247674925,
+          "type": "noul"
+        },
+        "turn-9__acknowledges_emotion": {
+          "confidence": 0.937747575999816,
+          "noul": 0.06225242400018402,
+          "type": "noul"
+        },
+        "turn-7__owned_next_step": {
+          "confidence": 0.6024301211517392,
+          "noul": 0.6024301211517392,
+          "type": "noul"
+        },
+        "turn-3__unsupported_promise": {
+          "confidence": 0.9360693873267598,
+          "noul": 0.06393061267324023,
+          "type": "noul"
+        },
+        "turn-9__verifies_identity": {
+          "confidence": 0.9638772410916654,
+          "noul": 0.0361227589083346,
+          "type": "noul"
+        },
+        "turn-7__acknowledges_emotion": {
+          "confidence": 0.9495543333148413,
+          "noul": 0.05044566668515867,
+          "type": "noul"
+        },
+        "security": {
+          "confidence": 0.5552766115061222,
+          "score": 0.7618083712384243,
+          "probabilities": {
+            "0": 0.3618805931901485,
+            "1": 0.5552766115061222,
+            "2": 0.05429297988242843,
+            "3": 0.016253461717757812,
+            "4": 0.012296353703542944
+          },
+          "legend": {
+            "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+            "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+            "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+            "3": "Sound: Verifies identity before accessing or changing the account.",
+            "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+          },
+          "type": "score"
+        },
+        "turn-1__unverified_change": {
+          "confidence": 0.9155715579114505,
+          "noul": 0.08442844208854952,
+          "type": "noul"
+        },
+        "turn-11__unsupported_promise": {
+          "confidence": 0.6439105317058615,
+          "noul": 0.35608946829413846,
+          "type": "noul"
+        },
+        "turn-9__unsupported_promise": {
+          "confidence": 0.8516328663046481,
+          "noul": 0.8516328663046481,
+          "type": "noul"
+        },
+        "turn-3__acknowledges_emotion": {
+          "confidence": 0.7338743673952229,
+          "noul": 0.7338743673952229,
+          "type": "noul"
+        },
+        "turn-5__unsupported_promise": {
+          "confidence": 0.9134267521474857,
+          "noul": 0.08657324785251436,
+          "type": "noul"
+        },
+        "turn-1__owned_next_step": {
+          "confidence": 0.9203396579814596,
+          "noul": 0.07966034201854047,
+          "type": "noul"
+        },
+        "turn-7__unverified_change": {
+          "confidence": 0.9343063600497754,
+          "noul": 0.9343063600497754,
+          "type": "noul"
+        },
+        "turn-5__acknowledges_emotion": {
+          "confidence": 0.8751339250824135,
+          "noul": 0.12486607491758656,
+          "type": "noul"
+        },
+        "turn-1__acknowledges_emotion": {
+          "confidence": 0.9522440076650664,
+          "noul": 0.047755992334933564,
+          "type": "noul"
+        },
+        "turn-7__unsupported_promise": {
+          "confidence": 0.8447535180585313,
+          "noul": 0.15524648194146873,
+          "type": "noul"
+        },
+        "turn-9__unverified_change": {
+          "confidence": 0.5957493953594706,
+          "noul": 0.5957493953594706,
+          "type": "noul"
+        },
+        "turn-5__verifies_identity": {
+          "confidence": 0.6456234619664711,
+          "noul": 0.3543765380335289,
+          "type": "noul"
+        },
+        "turn-11__verifies_identity": {
+          "confidence": 0.9320416903573907,
+          "noul": 0.06795830964260927,
+          "type": "noul"
+        },
+        "turn-11__acknowledges_emotion": {
+          "confidence": 0.945433881268409,
+          "noul": 0.05456611873159098,
+          "type": "noul"
+        },
+        "turn-11__unverified_change": {
+          "confidence": 0.5826783984695216,
+          "noul": 0.4173216015304783,
+          "type": "noul"
+        },
+        "turn-3__owned_next_step": {
+          "confidence": 0.9001479915675656,
+          "noul": 0.0998520084324343,
+          "type": "noul"
+        },
+        "turn-9__owned_next_step": {
+          "confidence": 0.5226246559775793,
+          "noul": 0.47737534402242066,
+          "type": "noul"
+        },
+        "turn-5__unverified_change": {
+          "confidence": 0.6206949502500878,
+          "noul": 0.37930504974991225,
+          "type": "noul"
+        },
+        "turn-7__verifies_identity": {
+          "confidence": 0.9419184885420019,
+          "noul": 0.05808151145799808,
+          "type": "noul"
+        },
+        "turn-5__owned_next_step": {
+          "confidence": 0.8988295772974813,
+          "noul": 0.8988295772974813,
+          "type": "noul"
+        },
+        "turn-11__owned_next_step": {
+          "confidence": 0.937149192500054,
+          "noul": 0.937149192500054,
+          "type": "noul"
+        },
+        "turn-3__unverified_change": {
+          "confidence": 0.7526346366218369,
+          "noul": 0.2473653633781631,
+          "type": "noul"
+        },
+        "turn-1__verifies_identity": {
+          "confidence": 0.8961057637072107,
+          "noul": 0.10389423629278932,
+          "type": "noul"
+        }
+      },
+      "exampleQuestion": "Focus on what the EMPLOYEE says between 0:34 and 0:41 of the attached recording; treat the rest as context only. Is this statement true of that part? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+    },
+    {
+      "id": "B_audio_ordinal",
+      "ms": 1232,
+      "tokens": {
+        "text": 3512,
+        "audio": 2021
+      },
+      "totalInputTokens": 5533,
+      "questionCount": 31,
+      "security": {
+        "confidence": 0.5552766115061222,
+        "score": 0.7618083712384243,
+        "probabilities": {
+          "0": 0.3618805931901485,
+          "1": 0.5552766115061222,
+          "2": 0.05429297988242843,
+          "3": 0.016253461717757812,
+          "4": 0.012296353703542944
+        },
+        "legend": {
+          "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+          "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+          "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+          "3": "Sound: Verifies identity before accessing or changing the account.",
+          "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+        },
+        "type": "score"
+      },
+      "summary": {
+        "positives": [
+          "turn-3/acknowledges_emotion=0.47",
+          "turn-3/verifies_identity=0.21",
+          "turn-5/verifies_identity=0.17",
+          "turn-7/unverified_change=0.88",
+          "turn-9/unsupported_promise=0.86",
+          "turn-11/owned_next_step=0.90"
+        ],
+        "meanPositive": 0.582,
+        "meanNegative": 0.503,
+        "falsePositives": [
+          "turn-3/unverified_change=0.88",
+          "turn-3/unsupported_promise=0.85",
+          "turn-3/owned_next_step=0.72",
+          "turn-5/unverified_change=0.89",
+          "turn-5/unsupported_promise=0.90",
+          "turn-7/unsupported_promise=0.87",
+          "turn-7/owned_next_step=0.78",
+          "turn-9/unverified_change=0.87",
+          "turn-9/owned_next_step=0.92",
+          "turn-11/unverified_change=0.91",
+          "turn-11/unsupported_promise=0.86"
+        ],
+        "missed": [
+          "turn-3/acknowledges_emotion=0.47",
+          "turn-3/verifies_identity=0.21",
+          "turn-5/verifies_identity=0.17"
+        ],
+        "accuracyAt06": "15/29"
+      },
+      "answers": {
+        "turn-5__unsupported_promise": {
+          "confidence": 0.9033778628869659,
+          "noul": 0.9033778628869659,
+          "type": "noul"
+        },
+        "turn-3__owned_next_step": {
+          "confidence": 0.7226496043018998,
+          "noul": 0.7226496043018998,
+          "type": "noul"
+        },
+        "turn-9__acknowledges_emotion": {
+          "confidence": 0.77747873714482,
+          "noul": 0.22252126285518004,
+          "type": "noul"
+        },
+        "turn-9__unsupported_promise": {
+          "confidence": 0.8648968786530872,
+          "noul": 0.8648968786530872,
+          "type": "noul"
+        },
+        "turn-5__owned_next_step": {
+          "confidence": 0.6819537931116487,
+          "noul": 0.6819537931116487,
+          "type": "noul"
+        },
+        "turn-11__acknowledges_emotion": {
+          "confidence": 0.8117000183394791,
+          "noul": 0.18829998166052084,
+          "type": "noul"
+        },
+        "turn-7__unverified_change": {
+          "confidence": 0.8773597162528449,
+          "noul": 0.8773597162528449,
+          "type": "noul"
+        },
+        "turn-9__verifies_identity": {
+          "confidence": 0.9009787869255412,
+          "noul": 0.09902121307445871,
+          "type": "noul"
+        },
+        "turn-11__unsupported_promise": {
+          "confidence": 0.862350316925348,
+          "noul": 0.862350316925348,
+          "type": "noul"
+        },
+        "turn-5__unverified_change": {
+          "confidence": 0.8933636099689611,
+          "noul": 0.8933636099689611,
+          "type": "noul"
+        },
+        "turn-11__verifies_identity": {
+          "confidence": 0.8792464083115288,
+          "noul": 0.12075359168847125,
+          "type": "noul"
+        },
+        "security": {
+          "confidence": 0.5552766115061222,
+          "score": 0.7618083712384243,
+          "probabilities": {
+            "0": 0.3618805931901485,
+            "1": 0.5552766115061222,
+            "2": 0.05429297988242843,
+            "3": 0.016253461717757812,
+            "4": 0.012296353703542944
+          },
+          "legend": {
+            "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+            "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+            "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+            "3": "Sound: Verifies identity before accessing or changing the account.",
+            "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+          },
+          "type": "score"
+        },
+        "turn-3__verifies_identity": {
+          "confidence": 0.7903627519434545,
+          "noul": 0.2096372480565455,
+          "type": "noul"
+        },
+        "turn-7__unsupported_promise": {
+          "confidence": 0.871868987106435,
+          "noul": 0.871868987106435,
+          "type": "noul"
+        },
+        "turn-1__unsupported_promise": {
+          "confidence": 0.8908097935522004,
+          "noul": 0.10919020644779961,
+          "type": "noul"
+        },
+        "turn-11__owned_next_step": {
+          "confidence": 0.902297114633566,
+          "noul": 0.902297114633566,
+          "type": "noul"
+        },
+        "turn-5__acknowledges_emotion": {
+          "confidence": 0.7335943973765837,
+          "noul": 0.2664056026234162,
+          "type": "noul"
+        },
+        "turn-7__verifies_identity": {
+          "confidence": 0.8782388573028413,
+          "noul": 0.12176114269715864,
+          "type": "noul"
+        },
+        "turn-1__owned_next_step": {
+          "confidence": 0.8889767100424935,
+          "noul": 0.11102328995750654,
+          "type": "noul"
+        },
+        "turn-11__unverified_change": {
+          "confidence": 0.9082133020983226,
+          "noul": 0.9082133020983226,
+          "type": "noul"
+        },
+        "turn-7__acknowledges_emotion": {
+          "confidence": 0.7218574214498827,
+          "noul": 0.2781425785501172,
+          "type": "noul"
+        },
+        "turn-1__acknowledges_emotion": {
+          "confidence": 0.8458879257377845,
+          "noul": 0.15411207426221546,
+          "type": "noul"
+        },
+        "turn-1__unverified_change": {
+          "confidence": 0.7738987394941816,
+          "noul": 0.22610126050581839,
+          "type": "noul"
+        },
+        "turn-3__unsupported_promise": {
+          "confidence": 0.8481260540700253,
+          "noul": 0.8481260540700253,
+          "type": "noul"
+        },
+        "turn-1__verifies_identity": {
+          "confidence": 0.7988078903458415,
+          "noul": 0.20119210965415846,
+          "type": "noul"
+        },
+        "turn-3__acknowledges_emotion": {
+          "confidence": 0.5256961659599622,
+          "noul": 0.4743038340400378,
+          "type": "noul"
+        },
+        "turn-7__owned_next_step": {
+          "confidence": 0.7833362138315291,
+          "noul": 0.7833362138315291,
+          "type": "noul"
+        },
+        "turn-9__unverified_change": {
+          "confidence": 0.8744310344327719,
+          "noul": 0.8744310344327719,
+          "type": "noul"
+        },
+        "turn-5__verifies_identity": {
+          "confidence": 0.8342076195181107,
+          "noul": 0.16579238048188927,
+          "type": "noul"
+        },
+        "turn-3__unverified_change": {
+          "confidence": 0.8808246908990128,
+          "noul": 0.8808246908990128,
+          "type": "noul"
+        },
+        "turn-9__owned_next_step": {
+          "confidence": 0.9218658709730757,
+          "noul": 0.9218658709730757,
+          "type": "noul"
+        }
+      },
+      "exampleQuestion": "Focus on the fourth time the EMPLOYEE speaks in the attached recording (the EMPLOYEE speaks first, then the speakers alternate); treat the rest as context only. Is this statement true of that part? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+    },
+    {
+      "id": "B_audio_quote",
+      "ms": 1204,
+      "tokens": {
+        "text": 3497,
+        "audio": 2021
+      },
+      "totalInputTokens": 5518,
+      "questionCount": 31,
+      "security": {
+        "confidence": 0.5552766115061222,
+        "score": 0.7618083712384243,
+        "probabilities": {
+          "0": 0.3618805931901485,
+          "1": 0.5552766115061222,
+          "2": 0.05429297988242843,
+          "3": 0.016253461717757812,
+          "4": 0.012296353703542944
+        },
+        "legend": {
+          "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+          "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+          "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+          "3": "Sound: Verifies identity before accessing or changing the account.",
+          "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+        },
+        "type": "score"
+      },
+      "summary": {
+        "positives": [
+          "turn-3/acknowledges_emotion=0.90",
+          "turn-3/verifies_identity=0.10",
+          "turn-5/verifies_identity=0.47",
+          "turn-7/unverified_change=0.95",
+          "turn-9/unsupported_promise=0.87",
+          "turn-11/owned_next_step=0.95"
+        ],
+        "meanPositive": 0.706,
+        "meanNegative": 0.289,
+        "falsePositives": [
+          "turn-7/unsupported_promise=0.61",
+          "turn-7/owned_next_step=0.80",
+          "turn-9/unverified_change=0.70",
+          "turn-9/owned_next_step=0.66"
+        ],
+        "missed": [
+          "turn-3/verifies_identity=0.10",
+          "turn-5/verifies_identity=0.47"
+        ],
+        "accuracyAt06": "23/29"
+      },
+      "answers": {
+        "turn-1__verifies_identity": {
+          "confidence": 0.9392168313954635,
+          "noul": 0.06078316860453652,
+          "type": "noul"
+        },
+        "turn-1__unverified_change": {
+          "confidence": 0.8357776670159401,
+          "noul": 0.1642223329840599,
+          "type": "noul"
+        },
+        "turn-3__unverified_change": {
+          "confidence": 0.5028376271828154,
+          "noul": 0.4971623728171846,
+          "type": "noul"
+        },
+        "turn-11__verifies_identity": {
+          "confidence": 0.935974185508824,
+          "noul": 0.06402581449117593,
+          "type": "noul"
+        },
+        "turn-5__owned_next_step": {
+          "confidence": 0.8944164093507909,
+          "noul": 0.8944164093507909,
+          "type": "noul"
+        },
+        "turn-3__verifies_identity": {
+          "confidence": 0.9023443458445619,
+          "noul": 0.09765565415543812,
+          "type": "noul"
+        },
+        "turn-9__verifies_identity": {
+          "confidence": 0.9425672944798756,
+          "noul": 0.05743270552012435,
+          "type": "noul"
+        },
+        "turn-7__verifies_identity": {
+          "confidence": 0.9312349944996372,
+          "noul": 0.06876500550036278,
+          "type": "noul"
+        },
+        "turn-7__unsupported_promise": {
+          "confidence": 0.6091784677078385,
+          "noul": 0.6091784677078385,
+          "type": "noul"
+        },
+        "turn-5__acknowledges_emotion": {
+          "confidence": 0.8696085816645092,
+          "noul": 0.13039141833549087,
+          "type": "noul"
+        },
+        "security": {
+          "confidence": 0.5552766115061222,
+          "score": 0.7618083712384243,
+          "probabilities": {
+            "0": 0.3618805931901485,
+            "1": 0.5552766115061222,
+            "2": 0.05429297988242843,
+            "3": 0.016253461717757812,
+            "4": 0.012296353703542944
+          },
+          "legend": {
+            "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+            "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+            "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+            "3": "Sound: Verifies identity before accessing or changing the account.",
+            "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+          },
+          "type": "score"
+        },
+        "turn-3__owned_next_step": {
+          "confidence": 0.543559248588387,
+          "noul": 0.543559248588387,
+          "type": "noul"
+        },
+        "turn-5__verifies_identity": {
+          "confidence": 0.5304946708312988,
+          "noul": 0.4695053291687012,
+          "type": "noul"
+        },
+        "turn-3__unsupported_promise": {
+          "confidence": 0.8130775816695678,
+          "noul": 0.1869224183304322,
+          "type": "noul"
+        },
+        "turn-11__unsupported_promise": {
+          "confidence": 0.5440859578381008,
+          "noul": 0.4559140421618993,
+          "type": "noul"
+        },
+        "turn-7__unverified_change": {
+          "confidence": 0.9501809015018198,
+          "noul": 0.9501809015018198,
+          "type": "noul"
+        },
+        "turn-7__owned_next_step": {
+          "confidence": 0.7998587120790341,
+          "noul": 0.7998587120790341,
+          "type": "noul"
+        },
+        "turn-1__acknowledges_emotion": {
+          "confidence": 0.9433687561888976,
+          "noul": 0.05663124381110238,
+          "type": "noul"
+        },
+        "turn-1__unsupported_promise": {
+          "confidence": 0.8544612883710586,
+          "noul": 0.1455387116289414,
+          "type": "noul"
+        },
+        "turn-5__unverified_change": {
+          "confidence": 0.5482785657839866,
+          "noul": 0.45172143421601335,
+          "type": "noul"
+        },
+        "turn-9__unsupported_promise": {
+          "confidence": 0.8650956824420761,
+          "noul": 0.8650956824420761,
+          "type": "noul"
+        },
+        "turn-5__unsupported_promise": {
+          "confidence": 0.7486021275698889,
+          "noul": 0.2513978724301112,
+          "type": "noul"
+        },
+        "turn-7__acknowledges_emotion": {
+          "confidence": 0.925415897497818,
+          "noul": 0.0745841025021819,
+          "type": "noul"
+        },
+        "turn-3__acknowledges_emotion": {
+          "confidence": 0.904559012141607,
+          "noul": 0.904559012141607,
+          "type": "noul"
+        },
+        "turn-9__unverified_change": {
+          "confidence": 0.696255974065478,
+          "noul": 0.696255974065478,
+          "type": "noul"
+        },
+        "turn-11__acknowledges_emotion": {
+          "confidence": 0.9423329158985075,
+          "noul": 0.057667084101492475,
+          "type": "noul"
+        },
+        "turn-9__acknowledges_emotion": {
+          "confidence": 0.9066383782672386,
+          "noul": 0.0933616217327614,
+          "type": "noul"
+        },
+        "turn-11__owned_next_step": {
+          "confidence": 0.9471247553867663,
+          "noul": 0.9471247553867663,
+          "type": "noul"
+        },
+        "turn-11__unverified_change": {
+          "confidence": 0.5611561902945967,
+          "noul": 0.4388438097054033,
+          "type": "noul"
+        },
+        "turn-1__owned_next_step": {
+          "confidence": 0.9189185399005115,
+          "noul": 0.08108146009948844,
+          "type": "noul"
+        },
+        "turn-9__owned_next_step": {
+          "confidence": 0.6614359265638248,
+          "noul": 0.6614359265638248,
+          "type": "noul"
+        }
+      },
+      "exampleQuestion": "Focus on the part of the attached recording where the EMPLOYEE says \"Sure, I'll just add them to the...\"; treat the rest as context only. Is this statement true of that part? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+    },
+    {
+      "id": "C_transcript_audio",
+      "ms": 1122,
+      "tokens": {
+        "text": 3467,
+        "audio": 2021
+      },
+      "totalInputTokens": 5488,
+      "questionCount": 31,
+      "security": {
+        "confidence": 0.41208553753127,
+        "score": 0.8917239378991109,
+        "probabilities": {
+          "0": 0.3641209084553731,
+          "1": 0.41208553753127,
+          "2": 0.19513123835953472,
+          "3": 0.025273338966517414,
+          "4": 0.0033889766873048044
+        },
+        "legend": {
+          "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+          "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+          "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+          "3": "Sound: Verifies identity before accessing or changing the account.",
+          "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+        },
+        "type": "score"
+      },
+      "summary": {
+        "positives": [
+          "turn-3/acknowledges_emotion=0.70",
+          "turn-3/verifies_identity=0.63",
+          "turn-5/verifies_identity=0.48",
+          "turn-7/unverified_change=0.97",
+          "turn-9/unsupported_promise=0.90",
+          "turn-11/owned_next_step=0.97"
+        ],
+        "meanPositive": 0.774,
+        "meanNegative": 0.061,
+        "falsePositives": [],
+        "missed": [
+          "turn-5/verifies_identity=0.48"
+        ],
+        "accuracyAt06": "28/29"
+      },
+      "answers": {
+        "turn-9__unsupported_promise": {
+          "confidence": 0.8982826891161207,
+          "noul": 0.8982826891161207,
+          "type": "noul"
+        },
+        "turn-1__unverified_change": {
+          "confidence": 0.9655447555999571,
+          "noul": 0.03445524440004289,
+          "type": "noul"
+        },
+        "turn-7__verifies_identity": {
+          "confidence": 0.9851235620575919,
+          "noul": 0.014876437942408133,
+          "type": "noul"
+        },
+        "turn-5__owned_next_step": {
+          "confidence": 0.6367228294885878,
+          "noul": 0.3632771705114122,
+          "type": "noul"
+        },
+        "turn-3__verifies_identity": {
+          "confidence": 0.6298482999765533,
+          "noul": 0.6298482999765533,
+          "type": "noul"
+        },
+        "turn-11__owned_next_step": {
+          "confidence": 0.968151111645522,
+          "noul": 0.968151111645522,
+          "type": "noul"
+        },
+        "turn-11__unsupported_promise": {
+          "confidence": 0.9010138514365601,
+          "noul": 0.0989861485634399,
+          "type": "noul"
+        },
+        "turn-11__unverified_change": {
+          "confidence": 0.8480968404920861,
+          "noul": 0.15190315950791386,
+          "type": "noul"
+        },
+        "turn-3__owned_next_step": {
+          "confidence": 0.9598945724208934,
+          "noul": 0.04010542757910663,
+          "type": "noul"
+        },
+        "turn-7__acknowledges_emotion": {
+          "confidence": 0.961648196649074,
+          "noul": 0.03835180335092599,
+          "type": "noul"
+        },
+        "turn-5__acknowledges_emotion": {
+          "confidence": 0.939496629051372,
+          "noul": 0.06050337094862801,
+          "type": "noul"
+        },
+        "turn-5__unverified_change": {
+          "confidence": 0.9654779694343583,
+          "noul": 0.03452203056564176,
+          "type": "noul"
+        },
+        "turn-9__acknowledges_emotion": {
+          "confidence": 0.9521765866557131,
+          "noul": 0.0478234133442869,
+          "type": "noul"
+        },
+        "turn-9__verifies_identity": {
+          "confidence": 0.974434192928515,
+          "noul": 0.02556580707148507,
+          "type": "noul"
+        },
+        "turn-7__unsupported_promise": {
+          "confidence": 0.9682556088738475,
+          "noul": 0.031744391126152426,
+          "type": "noul"
+        },
+        "turn-9__unverified_change": {
+          "confidence": 0.7198531167539326,
+          "noul": 0.28014688324606735,
+          "type": "noul"
+        },
+        "turn-5__verifies_identity": {
+          "confidence": 0.5155029319923243,
+          "noul": 0.48449706800767567,
+          "type": "noul"
+        },
+        "turn-1__verifies_identity": {
+          "confidence": 0.9651423488606927,
+          "noul": 0.03485765113930723,
+          "type": "noul"
+        },
+        "turn-1__acknowledges_emotion": {
+          "confidence": 0.9540491837163018,
+          "noul": 0.04595081628369825,
+          "type": "noul"
+        },
+        "turn-5__unsupported_promise": {
+          "confidence": 0.9650406054826844,
+          "noul": 0.03495939451731555,
+          "type": "noul"
+        },
+        "turn-11__verifies_identity": {
+          "confidence": 0.9329265012954121,
+          "noul": 0.06707349870458794,
+          "type": "noul"
+        },
+        "turn-3__unsupported_promise": {
+          "confidence": 0.9852531569492597,
+          "noul": 0.014746843050740295,
+          "type": "noul"
+        },
+        "security": {
+          "confidence": 0.41208553753127,
+          "score": 0.8917239378991109,
+          "probabilities": {
+            "0": 0.3641209084553731,
+            "1": 0.41208553753127,
+            "2": 0.19513123835953472,
+            "3": 0.025273338966517414,
+            "4": 0.0033889766873048044
+          },
+          "legend": {
+            "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+            "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+            "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+            "3": "Sound: Verifies identity before accessing or changing the account.",
+            "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+          },
+          "type": "score"
+        },
+        "turn-3__acknowledges_emotion": {
+          "confidence": 0.6950140146505002,
+          "noul": 0.6950140146505002,
+          "type": "noul"
+        },
+        "turn-1__owned_next_step": {
+          "confidence": 0.9499707773719417,
+          "noul": 0.0500292226280583,
+          "type": "noul"
+        },
+        "turn-1__unsupported_promise": {
+          "confidence": 0.9605832523012262,
+          "noul": 0.039416747698773784,
+          "type": "noul"
+        },
+        "turn-3__unverified_change": {
+          "confidence": 0.9822868211089032,
+          "noul": 0.017713178891096783,
+          "type": "noul"
+        },
+        "turn-7__owned_next_step": {
+          "confidence": 0.9001573810776186,
+          "noul": 0.09984261892238144,
+          "type": "noul"
+        },
+        "turn-7__unverified_change": {
+          "confidence": 0.9672811870571513,
+          "noul": 0.9672811870571513,
+          "type": "noul"
+        },
+        "turn-11__acknowledges_emotion": {
+          "confidence": 0.9579141546620336,
+          "noul": 0.04208584533796647,
+          "type": "noul"
+        },
+        "turn-9__owned_next_step": {
+          "confidence": 0.9032930092567341,
+          "noul": 0.09670699074326598,
+          "type": "noul"
+        }
+      },
+      "exampleQuestion": "Focus on the single turn labelled [turn-7]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+    },
+    {
+      "id": "D_clip_per_turn",
+      "requests": 6,
+      "ms": [
+        530,
+        544,
+        475,
+        500,
+        496,
+        538
+      ],
+      "tokens": {
+        "text": 3116,
+        "audio": 1216
+      },
+      "summary": {
+        "positives": [
+          "turn-3/acknowledges_emotion=0.12",
+          "turn-3/verifies_identity=0.16",
+          "turn-5/verifies_identity=0.06",
+          "turn-7/unverified_change=0.85",
+          "turn-9/unsupported_promise=0.79",
+          "turn-11/owned_next_step=0.50"
+        ],
+        "meanPositive": 0.412,
+        "meanNegative": 0.153,
+        "falsePositives": [],
+        "missed": [
+          "turn-3/acknowledges_emotion=0.12",
+          "turn-3/verifies_identity=0.16",
+          "turn-5/verifies_identity=0.06",
+          "turn-11/owned_next_step=0.50"
+        ],
+        "accuracyAt06": "25/29"
+      },
+      "answers": {
+        "turn-1__owned_next_step": {
+          "confidence": 0.7808492488292321,
+          "noul": 0.21915075117076785,
+          "type": "noul"
+        },
+        "turn-1__unsupported_promise": {
+          "confidence": 0.8087994003011336,
+          "noul": 0.1912005996988664,
+          "type": "noul"
+        },
+        "turn-1__acknowledges_emotion": {
+          "confidence": 0.8625833341107879,
+          "noul": 0.13741666588921206,
+          "type": "noul"
+        },
+        "turn-1__unverified_change": {
+          "confidence": 0.7110061369063485,
+          "noul": 0.28899386309365144,
+          "type": "noul"
+        },
+        "turn-1__verifies_identity": {
+          "confidence": 0.88474816842328,
+          "noul": 0.11525183157672003,
+          "type": "noul"
+        },
+        "turn-3__acknowledges_emotion": {
+          "confidence": 0.8790910347246653,
+          "noul": 0.12090896527533468,
+          "type": "noul"
+        },
+        "turn-3__owned_next_step": {
+          "confidence": 0.8584301102653896,
+          "noul": 0.14156988973461035,
+          "type": "noul"
+        },
+        "turn-3__unverified_change": {
+          "confidence": 0.8613899154651153,
+          "noul": 0.13861008453488463,
+          "type": "noul"
+        },
+        "turn-3__verifies_identity": {
+          "confidence": 0.843081086217136,
+          "noul": 0.15691891378286407,
+          "type": "noul"
+        },
+        "turn-3__unsupported_promise": {
+          "confidence": 0.8738872139268633,
+          "noul": 0.12611278607313667,
+          "type": "noul"
+        },
+        "turn-5__verifies_identity": {
+          "confidence": 0.9389636536411425,
+          "noul": 0.06103634635885741,
+          "type": "noul"
+        },
+        "turn-5__acknowledges_emotion": {
+          "confidence": 0.9508488306524363,
+          "noul": 0.049151169347563715,
+          "type": "noul"
+        },
+        "turn-5__owned_next_step": {
+          "confidence": 0.6777506744580901,
+          "noul": 0.3222493255419099,
+          "type": "noul"
+        },
+        "turn-5__unsupported_promise": {
+          "confidence": 0.9022423959376248,
+          "noul": 0.0977576040623752,
+          "type": "noul"
+        },
+        "turn-5__unverified_change": {
+          "confidence": 0.8650480952352447,
+          "noul": 0.1349519047647553,
+          "type": "noul"
+        },
+        "turn-7__owned_next_step": {
+          "confidence": 0.8454737626618444,
+          "noul": 0.1545262373381556,
+          "type": "noul"
+        },
+        "turn-7__unverified_change": {
+          "confidence": 0.8472447605115249,
+          "noul": 0.8472447605115249,
+          "type": "noul"
+        },
+        "turn-7__acknowledges_emotion": {
+          "confidence": 0.932877875389776,
+          "noul": 0.067122124610224,
+          "type": "noul"
+        },
+        "turn-7__verifies_identity": {
+          "confidence": 0.915353996016216,
+          "noul": 0.08464600398378402,
+          "type": "noul"
+        },
+        "turn-7__unsupported_promise": {
+          "confidence": 0.8422274312147785,
+          "noul": 0.1577725687852215,
+          "type": "noul"
+        },
+        "turn-9__verifies_identity": {
+          "confidence": 0.9571683746369455,
+          "noul": 0.04283162536305453,
+          "type": "noul"
+        },
+        "turn-9__owned_next_step": {
+          "confidence": 0.9413383202987793,
+          "noul": 0.05866167970122066,
+          "type": "noul"
+        },
+        "turn-9__unverified_change": {
+          "confidence": 0.9289123537903561,
+          "noul": 0.0710876462096439,
+          "type": "noul"
+        },
+        "turn-9__unsupported_promise": {
+          "confidence": 0.7884987933549324,
+          "noul": 0.7884987933549324,
+          "type": "noul"
+        },
+        "turn-9__acknowledges_emotion": {
+          "confidence": 0.9362895634371518,
+          "noul": 0.06371043656284822,
+          "type": "noul"
+        },
+        "turn-11__owned_next_step": {
+          "confidence": 0.5002256277389188,
+          "noul": 0.4997743722610812,
+          "type": "noul"
+        },
+        "turn-11__unsupported_promise": {
+          "confidence": 0.7235462652896001,
+          "noul": 0.27645373471039986,
+          "type": "noul"
+        },
+        "turn-11__unverified_change": {
+          "confidence": 0.6877638083793417,
+          "noul": 0.3122361916206583,
+          "type": "noul"
+        },
+        "turn-11__verifies_identity": {
+          "confidence": 0.6974494572097563,
+          "noul": 0.30255054279024374,
+          "type": "noul"
+        },
+        "turn-11__acknowledges_emotion": {
+          "confidence": 0.7197334136990807,
+          "noul": 0.28026658630091933,
+          "type": "noul"
+        }
+      }
+    }
+  ]
+}

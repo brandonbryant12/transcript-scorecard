@@ -1,0 +1,18 @@
+<div class="title">
+  <strong>{{ point().title }}</strong>
+  <span class="muted small">{{ point().skillName }}</span>
+</div>
+<p class="detail">{{ point().detail }}</p>
+@if (impactNote(); as note) {
+  <p class="impact small">{{ note }}</p>
+}
+@if (turnIds().length > 0) {
+  <div class="row">
+    @for (turnId of turnIds(); track turnId) {
+      <app-turn-link [turnId]="turnId" />
+    }
+    @if (moreTurns() > 0) {
+      <span class="muted small">+{{ moreTurns() }} more</span>
+    }
+  </div>
+}

@@ -2,31 +2,50 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
+    },
     "dev": {
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": true
     },
     "@scorecard/api#dev": {
+      "dependsOn": [
+        "^build"
+      ],
       "cache": false,
       "persistent": true,
-      "passThroughEnv": ["JEV_API_KEY", "OPENAI_API_KEY", "PORT", "SCORECARD_DB_PATH"]
-    },
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
-    },
-    "@scorecard/api#build": {
-      "dependsOn": ["^build"],
-      "outputs": []
+      "passThroughEnv": [
+        "GEMINI_API_KEY",
+        "OPENAI_API_KEY",
+        "JEV_API_KEY",
+        "PORT",
+        "SCORECARD_DB_PATH"
+      ]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     },
     "test": {
-      "dependsOn": ["^build"],
+      "dependsOn": [
+        "^build"
+      ],
       "outputs": []
     }
   },
-  "globalPassThroughEnv": ["CI", "NODE_ENV"]
+  "globalPassThroughEnv": [
+    "CI",
+    "NODE_ENV"
+  ]
 }

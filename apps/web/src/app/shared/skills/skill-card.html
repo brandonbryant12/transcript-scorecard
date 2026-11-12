@@ -1,0 +1,80 @@
+<header class="head">
+  <div class="stack-tight">
+    <h3>{{ skill().name }}</h3>
+    <div class="row">
+      <span class="chip chip-info">{{ channelLabel() }}</span>
+      <span class="muted small">Weight {{ skill().weight }}</span>
+    </div>
+  </div>
+  @if (skill().assessed) {
+    <div class="score">
+      <strong class="numeric" [class]="'tone-' + tone()">{{
+        skill().normalizedScore | score
+      }}</strong>
+      <span class="small">{{ levelLabel() }}</span>
+    </div>
+  } @else {
+    <span class="chip">{{ needs() }}</span>
+  }
+</header>
+
+<p class="muted small">{{ skill().description }}</p>
+
+@if (skill().assessed) {
+  @if (history().length > 1) {
+    <app-sparkline [values]="history()" [label]="skill().name + ' score over the call'" />
+  }
+
+  <ol class="distribution" aria-label="Probability of each rubric level">
+    @for (level of distribution(); track level.label) {
+      <li [class.chosen]="level.chosen" [title]="level.description">
+        <span class="level-label">{{ level.label }}</span>
+        <span class="meter"><span [style.width.%]="level.probability * 100"></span></span>
+        <span class="numeric small">{{ level.probability | percent }}</span>
+      </li>
+    }
+  </ol>
+
+  <p class="small muted">
+    Model confidence {{ skill().confidence | percent }}
+    @if (partialWeight()) {
+      · counts at {{ skill().observability | percent }} of its weight
+    }
+  </p>
+} @else {
+  <p class="small muted">
+    This skill is judged from {{ channelLabel().toLowerCase() }}, which this call does not have (or
+    the provider cannot read), so it carries no weight in the score.
+  </p>
+}
+
+@if (behaviors().length > 0) {
+  <ul class="behaviors" aria-label="Behaviours">
+    @for (view of behaviors(); track view.behavior.behaviorId) {
+      <li>
+        <div class="behavior-line">
+          <span class="chip" [class]="'chip-' + view.tone">{{ view.statusLabel }}</span>
+          <span class="behavior-name" [title]="view.behavior.statement">
+            {{ view.behavior.name }}
+            @if (view.behavior.critical) {
+              <span class="chip chip-bad">critical</span>
+            }
+          </span>
+          <span class="row turn-links">
+            @for (turnId of view.turnIds; track turnId) {
+              <app-turn-link [turnId]="turnId" />
+            }
+            @if (view.moreTurns > 0) {
+              <span class="muted small">+{{ view.moreTurns }}</span>
+            }
+          </span>
+        </div>
+        @if (view.quote; as quote) {
+          <blockquote>“{{ quote }}”</blockquote>
+        } @else if (view.behavior.status === 'missed' || view.behavior.status === 'violated') {
+          <p class="tip small">{{ view.behavior.tip }}</p>
+        }
+      </li>
+    }
+  </ul>
+}

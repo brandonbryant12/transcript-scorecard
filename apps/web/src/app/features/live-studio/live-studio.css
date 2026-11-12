@@ -1,0 +1,81 @@
+:host {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.page-header {
+  margin-bottom: 0;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.status i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-playing,
+.status-completed {
+  border-color: #bcdbd2;
+  color: var(--good);
+}
+
+.status-playing i {
+  animation: pulse 1.3s ease infinite;
+}
+
+.status-failed {
+  border-color: #efc9c5;
+  color: var(--bad);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) minmax(130px, 1fr) minmax(130px, 1fr);
+  align-items: start;
+  gap: var(--space-4);
+}
+
+.provider,
+.actions,
+.progress {
+  grid-column: 1 / -1;
+}
+
+.progress {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.progress small {
+  text-align: right;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 720px) {
+  .controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .call-field {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,0 +1,32 @@
+<a class="skip-link" href="#main">Skip to content</a>
+
+<aside class="sidebar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>
+      <strong>Scorecard</strong>
+      <small>Call coaching lab</small>
+    </span>
+  </div>
+
+  <nav aria-label="Primary">
+    @for (item of navItems; track item.path) {
+      <a [routerLink]="item.path" routerLinkActive="active" ariaCurrentWhenActive="page">
+        <span>{{ item.label }}</span>
+        <small>{{ item.hint }}</small>
+      </a>
+    }
+  </nav>
+
+  <p class="sidebar-note">Fictional demo transcripts. Scores come from real provider calls.</p>
+</aside>
+
+<main id="main" class="content">
+  @if (healthError(); as message) {
+    <div class="notice notice-error health" role="alert">
+      <span>{{ message }}</span>
+      <button type="button" class="btn-link" (click)="retryHealth()">Retry</button>
+    </div>
+  }
+  <router-outlet />
+</main>

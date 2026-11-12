@@ -1,46 +1,33 @@
-import { createServer } from "node:http"
-import { mkdirSync } from "node:fs"
-import { dirname } from "node:path"
-import { SqliteClient } from "@effect/sql-sqlite-node"
-import { Config, Effect, ManagedRuntime, Option, Redacted } from "effect"
-import { initializeDatabase } from "./repository"
-import { makeRequestHandler } from "./server"
+import { Logger, StandardSchemaValidationPipe } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { WsAdapter } from '@nestjs/platform-ws';
+import { PROVIDER_ORDER, PROVIDERS } from '@scorecard/domain';
+import { AppModule } from './app.module.js';
+import type { Env } from './config/env.js';
+import { CredentialsService } from './decisions/credentials.service.js';
 
-const config = await Effect.runPromise(
-  Effect.all({
-    port: Config.integer("PORT").pipe(Config.withDefault(3001)),
-    filename: Config.string("SCORECARD_DB_PATH").pipe(Config.withDefault("./data/scorecard.sqlite")),
-    jevKey: Config.redacted("JEV_API_KEY").pipe(Config.option),
-    openaiKey: Config.redacted("OPENAI_API_KEY").pipe(Config.option),
-  }),
-)
-const { port, filename } = config
-const jevKey = Option.getOrUndefined(config.jevKey)
-const openaiKey = Option.getOrUndefined(config.openaiKey)
-mkdirSync(dirname(filename), { recursive: true })
-const layer = SqliteClient.layer({ filename })
-const runtime = ManagedRuntime.make(layer)
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule);
+  app.setGlobalPrefix('api');
+  // Request bodies and parameters are validated against the Zod schemas their handlers
+  // declare; the schemas live in @scorecard/domain and are shared with the web app.
+  app.useGlobalPipes(new StandardSchemaValidationPipe());
+  // Practice calls use plain WebSockets, so a browser needs no client library.
+  app.useWebSocketAdapter(new WsAdapter(app));
+  app.enableShutdownHooks();
 
-await runtime.runPromise(initializeDatabase)
+  const port = app.get<ConfigService<Env, true>>(ConfigService).get('PORT', { infer: true });
+  await app.listen(port, '127.0.0.1');
 
-let disposeLive = (): void => {}
-const server = createServer(
-  makeRequestHandler(runtime, {
-    jev: jevKey ? Redacted.value(jevKey) : undefined,
-    openai: openaiKey ? Redacted.value(openaiKey) : undefined,
-  }, undefined, (dispose) => {
-    disposeLive = dispose
-  }),
-)
-server.listen(port, "127.0.0.1", () => {
-  console.log(`Scorecard API listening on http://127.0.0.1:${port}`)
-})
-
-const shutdown = (): void => {
-  disposeLive()
-  server.close(() => {
-    Effect.runPromise(runtime.disposeEffect).finally(() => process.exit(0))
-  })
+  const logger = new Logger('Bootstrap');
+  const credentials = app.get(CredentialsService);
+  const configured = PROVIDER_ORDER.filter((provider) => credentials.isConfigured(provider));
+  logger.log(`Scorecard API listening on http://127.0.0.1:${port}/api`);
+  logger.log(
+    configured.length > 0
+      ? `Providers configured: ${configured.map((provider) => PROVIDERS[provider].label).join(', ')} (default: ${PROVIDERS[credentials.defaultProvider].label})`
+      : `No provider key is configured. Set ${PROVIDER_ORDER.map((provider) => PROVIDERS[provider].envVar).join(', ')} in .env to score calls.`,
+  );
 }
-process.once("SIGINT", shutdown)
-process.once("SIGTERM", shutdown)
+await bootstrap();

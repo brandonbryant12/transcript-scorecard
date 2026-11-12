@@ -1,0 +1,125 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Voice practice</p>
+    <h1>Practice call</h1>
+    <p>
+      A real-time voice model plays the customer and you speak as the support employee. Both sides
+      are transcribed as you talk and scored live, the same way as a replayed call.
+    </p>
+  </div>
+  <span class="chip" [class.chip-good]="call.phase() === 'live'">{{ phaseLabel() }}</span>
+</header>
+
+@if (unavailable(); as reason) {
+  <div class="notice notice-warn" role="status">{{ reason }}</div>
+}
+
+<section class="panel panel-body setup" aria-label="Call setup">
+  <fieldset class="scenarios" [disabled]="inCall()">
+    <legend class="field-label">Scenario</legend>
+    @for (scenario of scenarioList(); track scenario.id) {
+      <label class="scenario" [class.selected]="scenario.id === scenarioId()">
+        <input
+          type="radio"
+          name="scenario"
+          [value]="scenario.id"
+          [checked]="scenario.id === scenarioId()"
+          (change)="selectScenario(scenario.id)"
+        />
+        <span class="stack-tight">
+          <strong>{{ scenario.title }}</strong>
+          <span class="muted small">{{ scenario.summary }}</span>
+          <span class="muted small">Customer: {{ scenario.customerName }}</span>
+        </span>
+      </label>
+    } @empty {
+      @if (scenarios.isLoading()) {
+        <app-state-message kind="loading" title="Loading scenarios" />
+      } @else {
+        <p class="muted">No scenarios are available.</p>
+      }
+    }
+  </fieldset>
+
+  <div class="options">
+    <label class="field">
+      <span>Your name on the call</span>
+      <input
+        #nameInput
+        class="input"
+        type="text"
+        maxlength="60"
+        autocomplete="name"
+        placeholder="e.g. Jordan Lee"
+        [value]="agentName()"
+        [disabled]="inCall()"
+        (input)="updateAgentName(nameInput.value)"
+      />
+    </label>
+
+    <label class="toggle">
+      <input
+        #videoToggle
+        type="checkbox"
+        [checked]="video()"
+        [disabled]="inCall()"
+        (change)="video.set(videoToggle.checked)"
+      />
+      <span>
+        <strong>Use my camera</strong>
+        <span class="muted small">One frame a second is sent for on-camera presence.</span>
+      </span>
+    </label>
+
+    <app-provider-picker
+      [provider]="provider()"
+      (providerChange)="chooseProvider($event)"
+      [disabled]="inCall()"
+    />
+    @if (!readsMedia()) {
+      <p class="muted small">
+        This provider scores the transcript only. Voice and camera are read by providers that accept
+        audio and images.
+      </p>
+    }
+
+    <div class="row">
+      <button type="button" class="btn btn-primary" [disabled]="!canStart()" (click)="start()">
+        {{ call.phase() === 'ended' ? 'Start another call' : 'Start call' }}
+      </button>
+      <button type="button" class="btn btn-danger" [disabled]="!inCall()" (click)="end()">
+        End call
+      </button>
+    </div>
+    <p class="muted small">
+      Starting asks for your microphone. Use headphones so the customer's voice is not picked up
+      again.
+    </p>
+  </div>
+
+  @if (call.cameraStream(); as stream) {
+    <video
+      class="self-view"
+      [srcObject]="stream"
+      autoplay
+      muted
+      playsinline
+      aria-label="Your camera"
+    ></video>
+  }
+</section>
+
+@if (error(); as message) {
+  <div class="notice notice-error" role="alert">{{ message }}</div>
+}
+@if (call.notice(); as message) {
+  <div class="notice notice-warn" role="status">{{ message }}</div>
+}
+
+@if (call.sessionId() !== null || session()) {
+  <app-session-board
+    [session]="session()"
+    [caption]="call.caption()"
+    emptyMessage="Say hello to start the call. Turns appear here as each of you finishes speaking."
+  />
+}

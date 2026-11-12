@@ -1,0 +1,14 @@
+.turn-link {
+  padding: 1px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  color: var(--teal);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.turn-link:hover {
+  border-color: var(--teal);
+}

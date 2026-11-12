@@ -1,0 +1,71 @@
+@if (evaluation(); as result) {
+  <div class="summary">
+    <div class="score" [class]="'tone-' + tone()">
+      <strong class="numeric">{{ result.overallScore | score }}</strong>
+      <span>/ 100</span>
+    </div>
+    <div class="stack-tight">
+      <div class="row">
+        <span
+          class="chip"
+          [class.chip-good]="result.stage === 'final'"
+          [class.chip-info]="result.stage !== 'final'"
+        >
+          {{ result.stage === 'final' ? 'Final score' : 'Provisional' }}
+        </span>
+        @if (processing()) {
+          <span class="chip">Scoring…</span>
+        }
+        @for (channel of channels(); track channel) {
+          <span class="chip" title="A channel that contributed readings to this evaluation">
+            {{ channel }}
+          </span>
+        }
+      </div>
+      <p>
+        @if (result.overallScore === null) {
+          Too little of the scorecard is observable to score yet.
+        } @else if (result.stage === 'final') {
+          {{ result.coverage | percent }} of the scorecard's weight applied to this call.
+        } @else {
+          {{ result.coverage | percent }} of the scorecard observable so far.
+        }
+      </p>
+      <p class="muted small">
+        Confidence {{ result.confidence | percent }}
+        @if (change(); as trend) {
+          ·
+          <span
+            [class.tone-good]="trend.delta > 0"
+            [class.tone-bad]="trend.delta < 0"
+            class="numeric"
+            >{{ trend.text }}</span
+          >
+        }
+      </p>
+    </div>
+  </div>
+
+  @if (flagCount() > 0) {
+    <div class="notice notice-error" role="alert">
+      <strong>
+        {{
+          flagCount() === 1 ? 'A critical behaviour was' : flagCount() + ' critical behaviours were'
+        }}
+        detected.
+      </strong>
+      The score is unchanged by it; a person should review this call.
+    </div>
+  }
+} @else {
+  <div class="summary">
+    <div class="score tone-neutral"><strong>—</strong><span>/ 100</span></div>
+    <p class="muted">
+      {{
+        processing()
+          ? 'Scoring the first turns…'
+          : 'The score appears after the first scoring pass.'
+      }}
+    </p>
+  </div>
+}

@@ -1,0 +1,571 @@
+{
+  "ranAt": "2026-11-11T21:07:57.024Z",
+  "model": "gemini-decision-1",
+  "formats": [
+    {
+      "mimeType": "audio/wav",
+      "label": "WAV 16 kHz 16-bit mono",
+      "bytes": 145964,
+      "status": 200,
+      "ms": 566,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8054194471385471,
+      "heardOther": 0.28028719671741636,
+      "error": null
+    },
+    {
+      "mimeType": "audio/wav",
+      "label": "WAV 8 kHz 16-bit mono",
+      "bytes": 73004,
+      "status": 200,
+      "ms": 463,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8841261570747181,
+      "heardOther": 0.17680760438882237,
+      "error": null
+    },
+    {
+      "mimeType": "audio/wav",
+      "label": "WAV 8 kHz mu-law (telephony)",
+      "bytes": 36572,
+      "status": 200,
+      "ms": 443,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8285033877913973,
+      "heardOther": 0.13135177296396022,
+      "error": null
+    },
+    {
+      "mimeType": "audio/l16",
+      "label": "raw PCM, no rate given",
+      "bytes": 145920,
+      "status": 400,
+      "ms": 172,
+      "tokens": {},
+      "heardWords": null,
+      "heardOther": null,
+      "error": {
+        "message": "Rate is required for TYPE_L16 audio.",
+        "code": "invalid_request"
+      }
+    },
+    {
+      "mimeType": "audio/l16;rate=16000",
+      "label": "raw PCM, rate parameter",
+      "bytes": 145920,
+      "status": 200,
+      "ms": 326,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8054194471385471,
+      "heardOther": 0.28028719671741636,
+      "error": null
+    },
+    {
+      "mimeType": "audio/pcm;rate=16000",
+      "label": "raw PCM, Live API style MIME",
+      "bytes": 145920,
+      "status": 200,
+      "ms": 301,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8054194471385471,
+      "heardOther": 0.28028719671741636,
+      "error": null
+    },
+    {
+      "mimeType": "audio/mp3",
+      "label": "MP3 32 kbps",
+      "bytes": 18800,
+      "status": 200,
+      "ms": 414,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.778296590253124,
+      "heardOther": 0.15685728681339592,
+      "error": null
+    },
+    {
+      "mimeType": "audio/mpeg",
+      "label": "MP3 labelled audio/mpeg",
+      "bytes": 18800,
+      "status": 200,
+      "ms": 320,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.778296590253124,
+      "heardOther": 0.15685728681339592,
+      "error": null
+    },
+    {
+      "mimeType": "audio/m4a",
+      "label": "AAC in M4A",
+      "bytes": 20029,
+      "status": 200,
+      "ms": 443,
+      "tokens": {
+        "text": 171,
+        "audio": 141
+      },
+      "heardWords": 0.7556668253350743,
+      "heardOther": 0.13441354483370713,
+      "error": null
+    },
+    {
+      "mimeType": "audio/aac",
+      "label": "AAC ADTS",
+      "bytes": 19442,
+      "status": 200,
+      "ms": 463,
+      "tokens": {
+        "text": 171,
+        "audio": 142
+      },
+      "heardWords": 0.8739981533503199,
+      "heardOther": 0.19151093452435874,
+      "error": null
+    },
+    {
+      "mimeType": "audio/ogg",
+      "label": "Opus in Ogg",
+      "bytes": 13374,
+      "status": 200,
+      "ms": 426,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8670474666622333,
+      "heardOther": 0.07421204170903661,
+      "error": null
+    },
+    {
+      "mimeType": "audio/webm",
+      "label": "Opus in WebM (MediaRecorder default)",
+      "bytes": 14785,
+      "status": 200,
+      "ms": 311,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8670474666622333,
+      "heardOther": 0.07421204170903661,
+      "error": null
+    },
+    {
+      "mimeType": "audio/flac",
+      "label": "FLAC",
+      "bytes": 91568,
+      "status": 200,
+      "ms": 747,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8054194471385471,
+      "heardOther": 0.28028719671741636,
+      "error": null
+    },
+    {
+      "mimeType": "application/octet-stream",
+      "label": "WAV bytes, generic MIME",
+      "bytes": 145964,
+      "status": 400,
+      "ms": 170,
+      "tokens": {},
+      "heardWords": null,
+      "heardOther": null,
+      "error": {
+        "message": "Unsupported mime_type 'application/octet-stream' in audio content. Only audio/* MIME types are supported.",
+        "code": "invalid_request"
+      }
+    },
+    {
+      "mimeType": "audio/mp3",
+      "label": "WAV bytes labelled as MP3",
+      "bytes": 145964,
+      "status": 200,
+      "ms": 347,
+      "tokens": {
+        "text": 171,
+        "audio": 139
+      },
+      "heardWords": 0.8054194471385471,
+      "heardOther": 0.28028719671741636,
+      "error": null
+    }
+  ],
+  "degenerate": [
+    {
+      "label": "3 s of digital silence",
+      "status": 200,
+      "tokens": {
+        "text": 351,
+        "audio": 90
+      },
+      "answers": {
+        "any_speech": {
+          "confidence": 0.6531946146783705,
+          "noul": 0.34680538532162947,
+          "type": "noul"
+        },
+        "irritated": {
+          "confidence": 0.7794154787473537,
+          "noul": 0.22058452125264627,
+          "type": "noul"
+        },
+        "delivery": {
+          "confidence": 0.3760417012318581,
+          "score": 2.427598884481428,
+          "probabilities": {
+            "0": 0.06600413818219968,
+            "1": 0.16197462449668434,
+            "2": 0.22320949403393123,
+            "3": 0.3760417012318581,
+            "4": 0.17277004205532667
+          },
+          "legend": {
+            "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+            "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+            "2": "Neutral: Even and professional, without warmth.",
+            "3": "Warm: Calm, friendly and unhurried.",
+            "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "label": "0.25 s of speech",
+      "status": 200,
+      "tokens": {
+        "text": 347,
+        "audio": 12
+      },
+      "answers": {
+        "any_speech": {
+          "confidence": 0.648024394131913,
+          "noul": 0.3519756058680869,
+          "type": "noul"
+        },
+        "delivery": {
+          "confidence": 0.3400692962849686,
+          "score": 2.3121828874695716,
+          "probabilities": {
+            "0": 0.07882826193577157,
+            "1": 0.17953167404491013,
+            "2": 0.24691987318382153,
+            "3": 0.3400692962849686,
+            "4": 0.15465089455052816
+          },
+          "legend": {
+            "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+            "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+            "2": "Neutral: Even and professional, without warmth.",
+            "3": "Warm: Calm, friendly and unhurried.",
+            "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+          },
+          "type": "score"
+        },
+        "irritated": {
+          "confidence": 0.7982144434559754,
+          "noul": 0.20178555654402466,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "label": "0.05 s of speech",
+      "status": 200,
+      "tokens": {
+        "text": 347,
+        "audio": 7
+      },
+      "answers": {
+        "irritated": {
+          "confidence": 0.77829658989923,
+          "noul": 0.22170341010076997,
+          "type": "noul"
+        },
+        "delivery": {
+          "confidence": 0.38300080825508376,
+          "score": 2.494627480251209,
+          "probabilities": {
+            "0": 0.054188714120710586,
+            "1": 0.1526188478563134,
+            "2": 0.22388015572096234,
+            "3": 0.38300080825508376,
+            "4": 0.18631147404692994
+          },
+          "legend": {
+            "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+            "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+            "2": "Neutral: Even and professional, without warmth.",
+            "3": "Warm: Calm, friendly and unhurried.",
+            "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+          },
+          "type": "score"
+        },
+        "any_speech": {
+          "confidence": 0.6656616178003067,
+          "noul": 0.3343383821996933,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "label": "empty WAV (header only)",
+      "status": 400,
+      "tokens": {},
+      "answers": null,
+      "error": {
+        "message": "input[0]: audio/wav content could not be decoded (malformed data)",
+        "code": "invalid_request"
+      }
+    }
+  ],
+  "scaling": [
+    {
+      "seconds": 5,
+      "bytes": 160044,
+      "status": 200,
+      "tokens": {
+        "text": 113,
+        "audio": 150
+      },
+      "ms": [
+        524,
+        354,
+        348
+      ],
+      "error": null
+    },
+    {
+      "seconds": 15,
+      "bytes": 480044,
+      "status": 200,
+      "tokens": {
+        "text": 133,
+        "audio": 450
+      },
+      "ms": [
+        570,
+        592,
+        836
+      ],
+      "error": null
+    },
+    {
+      "seconds": 30,
+      "bytes": 960044,
+      "status": 200,
+      "tokens": {
+        "text": 163,
+        "audio": 900
+      },
+      "ms": [
+        803,
+        588,
+        611
+      ],
+      "error": null
+    },
+    {
+      "seconds": 67,
+      "bytes": 2144044,
+      "status": 200,
+      "tokens": {
+        "text": 237,
+        "audio": 2010
+      },
+      "ms": [
+        1132,
+        1328,
+        1513
+      ],
+      "error": null
+    },
+    {
+      "seconds": 134,
+      "bytes": 4288044,
+      "status": 200,
+      "tokens": {
+        "text": 371,
+        "audio": 4020
+      },
+      "ms": [
+        1842,
+        1587,
+        1728
+      ],
+      "error": null
+    },
+    {
+      "seconds": 268,
+      "bytes": 8576044,
+      "status": 200,
+      "tokens": {
+        "text": 639,
+        "audio": 8040
+      },
+      "ms": [
+        3083,
+        2834,
+        3041
+      ],
+      "error": null
+    },
+    {
+      "seconds": 536,
+      "bytes": 17152044,
+      "status": 200,
+      "tokens": {
+        "text": 1175,
+        "audio": 16080
+      },
+      "ms": [
+        5773,
+        5739,
+        6414
+      ],
+      "error": null
+    }
+  ],
+  "telephone": [
+    {
+      "actor": "01",
+      "emotion": "neutral",
+      "wav16k": {
+        "irritated": 0.2418624198658046,
+        "delivery": 2.4310203609190486,
+        "audioTokens": 103
+      },
+      "wav8k": {
+        "irritated": 0.2742103449087237,
+        "delivery": 2.2441674166569756,
+        "audioTokens": 103
+      },
+      "mulaw8k": {
+        "irritated": 0.26721723882272036,
+        "delivery": 2.2182556071128117,
+        "audioTokens": 103
+      }
+    },
+    {
+      "actor": "02",
+      "emotion": "neutral",
+      "wav16k": {
+        "irritated": 0.25123153100156614,
+        "delivery": 2.326886508638781,
+        "audioTokens": 111
+      },
+      "wav8k": {
+        "irritated": 0.2614053313604113,
+        "delivery": 2.4244534244423623,
+        "audioTokens": 111
+      },
+      "mulaw8k": {
+        "irritated": 0.23872560107001403,
+        "delivery": 2.422600679422592,
+        "audioTokens": 111
+      }
+    },
+    {
+      "actor": "01",
+      "emotion": "angry",
+      "wav16k": {
+        "irritated": 0.8356047066711739,
+        "delivery": 0.6414718711240693,
+        "audioTokens": 128
+      },
+      "wav8k": {
+        "irritated": 0.8728886405276745,
+        "delivery": 0.5470456790152392,
+        "audioTokens": 128
+      },
+      "mulaw8k": {
+        "irritated": 0.8382104115714343,
+        "delivery": 0.9930158753066005,
+        "audioTokens": 128
+      }
+    },
+    {
+      "actor": "02",
+      "emotion": "angry",
+      "wav16k": {
+        "irritated": 0.5989157232324788,
+        "delivery": 0.9964568529856526,
+        "audioTokens": 118
+      },
+      "wav8k": {
+        "irritated": 0.5115700188022935,
+        "delivery": 1.2389439999095009,
+        "audioTokens": 118
+      },
+      "mulaw8k": {
+        "irritated": 0.8150036621982083,
+        "delivery": 0.7433555925525962,
+        "audioTokens": 118
+      }
+    },
+    {
+      "actor": "01",
+      "emotion": "fearful",
+      "wav16k": {
+        "irritated": 0.6923684548581136,
+        "delivery": 1.2091798897640493,
+        "audioTokens": 156
+      },
+      "wav8k": {
+        "irritated": 0.6342662378407036,
+        "delivery": 1.0447079618359032,
+        "audioTokens": 156
+      },
+      "mulaw8k": {
+        "irritated": 0.7541161158250081,
+        "delivery": 1.118872369057013,
+        "audioTokens": 156
+      }
+    },
+    {
+      "actor": "02",
+      "emotion": "fearful",
+      "wav16k": {
+        "irritated": 0.46170064671878763,
+        "delivery": 1.769760920593922,
+        "audioTokens": 116
+      },
+      "wav8k": {
+        "irritated": 0.23888179242404425,
+        "delivery": 2.2770209610996788,
+        "audioTokens": 116
+      },
+      "mulaw8k": {
+        "irritated": 0.4766046505787577,
+        "delivery": 1.2932610404034035,
+        "audioTokens": 116
+      }
+    }
+  ]
+}

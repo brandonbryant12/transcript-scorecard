@@ -1,0 +1,96 @@
+<form class="stack" (submit)="$event.preventDefault()">
+  @for (section of sections(); track section.skill.id) {
+    @let rating = reviewForm.ratings[section.skillIndex];
+    <fieldset class="skill">
+      <legend>
+        <span class="skill-name">{{ section.skill.name }}</span>
+        <span class="chip chip-info">{{ channelLabels[section.skill.channel] }}</span>
+      </legend>
+      <p class="muted small">{{ section.skill.description }}</p>
+
+      <div class="levels" role="radiogroup" [attr.aria-label]="section.skill.name + ' level'">
+        @for (level of section.skill.levels; track level.label; let levelIndex = $index) {
+          <label class="level">
+            <input type="radio" [value]="'' + levelIndex" [formField]="rating.level" />
+            <span>
+              <strong>{{ levelIndex }} · {{ level.label }}</strong>
+              <span class="muted small">{{ level.description }}</span>
+            </span>
+          </label>
+        }
+        <label class="level">
+          <input type="radio" [value]="notApplicable" [formField]="rating.level" />
+          <span>
+            <strong>N/A</strong>
+            <span class="muted small">The call gave no fair basis to judge this skill.</span>
+          </span>
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Note (optional)</span>
+        <input class="input" type="text" [formField]="rating.note" />
+      </label>
+
+      @if (section.behaviors.length > 0) {
+        <div class="behaviors">
+          <span class="field-label">Did you observe these behaviours?</span>
+          @for (item of section.behaviors; track item.behavior.id) {
+            @let label = reviewForm.behaviors[item.index].label;
+            <div class="behavior">
+              <p>
+                {{ item.behavior.statement }}
+                @if (item.behavior.polarity === 'negative') {
+                  <span class="chip chip-warn">problem behaviour</span>
+                }
+              </p>
+              <div class="choices" role="radiogroup" [attr.aria-label]="item.behavior.name">
+                <label>
+                  <input type="radio" value="yes" [formField]="label" />
+                  Yes
+                </label>
+                <label>
+                  <input type="radio" value="no" [formField]="label" />
+                  No
+                </label>
+                <label>
+                  <input type="radio" value="na" [formField]="label" />
+                  N/A
+                </label>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </fieldset>
+  }
+
+  <label class="field">
+    <span>Overall notes</span>
+    <textarea class="textarea" rows="3" [formField]="reviewForm.notes"></textarea>
+  </label>
+
+  <div class="row-between footer">
+    <span class="muted small">
+      @if (blockedReason(); as reason) {
+        {{ reason }}
+      } @else {
+        {{ ratedCount() }} of {{ sections().length }} skills rated. A draft is saved work; only a
+        submitted review counts as ground truth.
+      }
+    </span>
+    <span class="row">
+      <button type="button" class="btn" [disabled]="!canSave()" (click)="saveDraft.emit()">
+        Save draft
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!canSubmit()"
+        (click)="submitReview.emit()"
+      >
+        {{ saving() ? 'Saving…' : 'Submit review' }}
+      </button>
+    </span>
+  </div>
+</form>

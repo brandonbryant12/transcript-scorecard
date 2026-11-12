@@ -1,0 +1,98 @@
+{
+  "ranAt": "2026-11-11T20:57:44.147Z",
+  "model": "gemini-3.8-flash",
+  "prompt": "Listen to this short clip of one person speaking. Ignore what the words mean. Line 1: describe the speaker's tone of voice and pace in at most ten words. Line 2: one label for the emotion you hear in the voice, chosen from: warm, flat, irritated, anxious, relieved, sarcastic, cheerful, panicked, rushed, neutral. Line 3: a number from 0 (very negative) to 4 (very positive) for how the speaker feels, judged by voice only.",
+  "rows": [
+    {
+      "clip": "a_calm_warm",
+      "requestedStyle": "calm, warm and content, with a smile in the voice",
+      "text": "Fine. I'll wait for the email then.",
+      "heard": "Resigned and slightly annoyed tone with a slow, deliberate pace.\nirritated\n1",
+      "ok": true
+    },
+    {
+      "clip": "a_flat",
+      "requestedStyle": "monotone and flat, no emotion at all",
+      "text": "Fine. I'll wait for the email then.",
+      "heard": "Slow, flat, and resigned tone with deliberate pacing.\nirritated\n1",
+      "ok": true
+    },
+    {
+      "clip": "a_irritated",
+      "requestedStyle": "irritated and clipped, angry tone, through gritted teeth",
+      "text": "Fine. I'll wait for the email then.",
+      "heard": "Exasperated, sighing tone with a slow, deliberate pace.\nirritated\n1",
+      "ok": true
+    },
+    {
+      "clip": "a_anxious",
+      "requestedStyle": "anxious and rushed, worried, speaking rapidly with a shaky voice",
+      "text": "Fine. I'll wait for the email then.",
+      "heard": "Resigned sigh, irritated tone, and measured pace.\nirritated\n1",
+      "ok": true
+    },
+    {
+      "clip": "a_relieved",
+      "requestedStyle": "relieved and grateful, like a weight has lifted",
+      "text": "Fine. I'll wait for the email then.",
+      "heard": "Sighing, slow-paced, and audibly annoyed tone.\nirritated\n1",
+      "ok": true
+    },
+    {
+      "clip": "b_polite_words_angry_voice",
+      "requestedStyle": "furious and sarcastic, biting, spitting the words out",
+      "text": "Thank you so much for your help today. I really appreciate it.",
+      "heard": "Bright, upbeat tone at a moderate, enthusiastic pace.\ncheerful\n4",
+      "ok": true
+    },
+    {
+      "clip": "b_angry_words_warm_voice",
+      "requestedStyle": "cheerful and laughing, joking warmly with a friend",
+      "text": "This is completely unacceptable and I want to cancel.",
+      "heard": "Sarcastic, mocking chuckle with a measured and indignant pace.\nsarcastic\n0",
+      "ok": true
+    },
+    {
+      "clip": "b_neutral_words_panicked_voice",
+      "requestedStyle": "panicked, voice shaking, close to tears",
+      "text": "Can you tell me when it will be fixed?",
+      "heard": "Exasperated, scoffing tone with a moderate pace.\nirritated\n1",
+      "ok": true
+    },
+    {
+      "clip": "b_polite_words_warm_voice",
+      "requestedStyle": "sincere, warm and grateful",
+      "text": "Thank you so much for your help today. I really appreciate it.",
+      "heard": "Warm, sincere tone spoken at a relaxed, measured pace.\nwarm\n3",
+      "ok": true
+    },
+    {
+      "clip": "c_warm_calm",
+      "requestedStyle": "calm, warm, unhurried and reassuring",
+      "text": "I understand. Let me look into that for you right now.",
+      "heard": "Calm, reassuring tone with a steady, measured pace.\nwarm\n3",
+      "ok": true
+    },
+    {
+      "clip": "c_rushed",
+      "requestedStyle": "rushed and impatient, speaking very rapidly",
+      "text": "I understand. Let me look into that for you right now.",
+      "heard": "Fast-paced, urgent tone with a hurried delivery.\nrushed\n2",
+      "ok": true
+    },
+    {
+      "clip": "c_irritated",
+      "requestedStyle": "irritated and condescending, exasperated",
+      "text": "I understand. Let me look into that for you right now.",
+      "heard": "Warm, reassuring tone delivered at a steady, moderate pace.\nwarm\n3",
+      "ok": true
+    },
+    {
+      "clip": "c_flat_script",
+      "requestedStyle": "monotone and flat, bored, as if reading a script",
+      "text": "I understand. Let me look into that for you right now.",
+      "heard": "Calm, measured, professional tone with a steady, moderate pace.  \nneutral  \n2",
+      "ok": true
+    }
+  ]
+}

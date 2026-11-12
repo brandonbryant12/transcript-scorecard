@@ -1,0 +1,118 @@
+@let current = session();
+
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Real-time scoring</p>
+    <h1>Live studio</h1>
+    <p>
+      Replay a call one turn at a time. Each turn is read once as it arrives, and the scorecard is
+      re-scored on the call so far.
+    </p>
+  </div>
+  <span class="status" [class]="'status-' + (current?.status ?? 'ready')">
+    <i aria-hidden="true"></i>{{ statusLabel() }}
+  </span>
+</header>
+
+<section class="panel panel-body controls" aria-label="Replay controls">
+  <label class="field call-field">
+    <span>Call</span>
+    <select
+      #callSelect
+      class="select"
+      [disabled]="busy() || callList().length === 0"
+      (change)="selectCall(callSelect.value)"
+    >
+      @for (call of callList(); track call.id) {
+        <option [value]="call.id" [selected]="call.id === callId()">
+          {{ call.subject }} · {{ call.customerName }} with {{ call.agentName }}
+        </option>
+      }
+    </select>
+    @if (selectedCall(); as call) {
+      <small class="muted">
+        {{ call.turnCount }} turns · {{ call.durationSeconds | duration }} conversation
+      </small>
+    }
+  </label>
+
+  <label class="field">
+    <span>Turn pace</span>
+    <select #paceSelect class="select" (change)="changePace(paceSelect.value)">
+      @for (option of paceOptions(); track option) {
+        <option [value]="option" [selected]="option === paceMs()">
+          {{ option / 1000 }}s per turn
+        </option>
+      }
+    </select>
+    <small class="muted">How fast turns arrive</small>
+  </label>
+
+  <label class="field">
+    <span>Score every</span>
+    <select #scoreSelect class="select" (change)="changeScoreEvery(scoreSelect.value)">
+      @for (option of scoreEveryOptions(); track option) {
+        <option [value]="option" [selected]="option === scoreEvery()">
+          {{ option === 1 ? 'every turn' : option + ' turns' }}
+        </option>
+      }
+    </select>
+    <small class="muted">
+      @if (projectedPasses(); as passes) {
+        About {{ passes }} scoring {{ passes === 1 ? 'pass' : 'passes' }}
+      } @else {
+        Turns batched per pass
+      }
+    </small>
+  </label>
+
+  <app-provider-picker
+    class="provider"
+    [provider]="provider()"
+    (providerChange)="chooseProvider($event)"
+    [disabled]="busy()"
+  />
+
+  <div class="row actions">
+    <button type="button" class="btn btn-primary" [disabled]="!canStart()" (click)="start()">
+      {{ startLabel() }}
+    </button>
+    <button type="button" class="btn" [disabled]="!isPlaying() || busy()" (click)="pause()">
+      Pause
+    </button>
+    <button type="button" class="btn" [disabled]="!current || busy()" (click)="reset()">
+      Reset
+    </button>
+  </div>
+
+  <div class="progress">
+    <div
+      class="meter"
+      role="progressbar"
+      aria-label="Replay progress"
+      [attr.aria-valuenow]="progress()"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    >
+      <span [style.width.%]="progress()"></span>
+    </div>
+    <small class="muted numeric">
+      @if (current) {
+        {{ current.revealedTurnCount }} of {{ current.totalTurns ?? '?' }} turns ·
+        {{ current.elapsedMs / 1000 | duration }} elapsed
+      } @else {
+        Replay not started
+      }
+    </small>
+  </div>
+</section>
+
+@if (error(); as message) {
+  <div class="notice notice-error" role="alert">{{ message }}</div>
+}
+
+<app-session-board
+  [session]="current"
+  [placeholderTitle]="selectedCall()?.subject ?? 'No call selected'"
+  emptyMessage="Choose a call and start the replay. Turns appear here, with what the model found in each one."
+/>

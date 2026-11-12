@@ -1,0 +1,214 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">What gets scored</p>
+    <h1>Scorecard</h1>
+    <p>
+      Each skill has a weighted rubric, which produces the number, and behaviours, which produce the
+      evidence and the coaching. Saving publishes a new version; earlier evaluations and reviews
+      keep the version they were made against.
+    </p>
+  </div>
+  @if (active(); as current) {
+    <div class="row">
+      <span class="chip chip-info">Active: version {{ current.version }}</span>
+      <button type="button" class="btn" [disabled]="!changed() || saving()" (click)="discard()">
+        Discard changes
+      </button>
+      <button type="button" class="btn btn-primary" [disabled]="!canPublish()" (click)="publish()">
+        {{ saving() ? 'Publishing…' : 'Publish version ' + (current.version + 1) }}
+      </button>
+    </div>
+  }
+</header>
+
+@if (saveError(); as message) {
+  <div class="notice notice-error" role="alert">{{ message }}</div>
+}
+@if (changed() && problems().length > 0) {
+  <div class="notice notice-warn" role="status">
+    <div>
+      <strong>Fix before publishing:</strong>
+      {{ problems().join('. ') }}.
+    </div>
+  </div>
+}
+@if (published(); as version) {
+  <div class="notice notice-good" role="status">
+    Version {{ version }} is published and is now used for new evaluations and reviews.
+  </div>
+}
+
+@if (loadError(); as message) {
+  <app-state-message kind="error" title="Could not load the scorecard" [detail]="message">
+    <button type="button" class="btn" (click)="reload()">Try again</button>
+  </app-state-message>
+} @else if (active(); as current) {
+  <form class="stack" (submit)="$event.preventDefault()">
+    <section class="panel panel-body details" aria-label="Scorecard details">
+      <label class="field">
+        <span>Scorecard name</span>
+        <input class="input" type="text" [formField]="editor.name" />
+      </label>
+      <label class="field">
+        <span>Description</span>
+        <input class="input" type="text" [formField]="editor.description" />
+      </label>
+    </section>
+
+    @for (skillModel of model().skills; track skillModel.id; let skillIndex = $index) {
+      @let skill = editor.skills[skillIndex];
+      <section
+        class="panel skill"
+        [class.disabled]="!skillModel.enabled"
+        [attr.aria-label]="skillModel.name"
+      >
+        <div class="panel-head">
+          <div class="skill-main">
+            <label class="field">
+              <span>Skill</span>
+              <input class="input name-input" type="text" [formField]="skill.name" />
+            </label>
+            <label class="field">
+              <span>What it measures</span>
+              <textarea class="textarea" rows="2" [formField]="skill.description"></textarea>
+            </label>
+          </div>
+          <div class="skill-settings">
+            <label class="field">
+              <span>Judged from</span>
+              <select class="select" [formField]="skill.channel">
+                @for (channel of channels; track channel) {
+                  <option [value]="channel">{{ channelLabels[channel] }}</option>
+                }
+              </select>
+            </label>
+            <label class="field">
+              <span>Weight</span>
+              <input class="input numeric" type="number" step="1" [formField]="skill.weight" />
+            </label>
+            <label class="check">
+              <input type="checkbox" [formField]="skill.enabled" />
+              <span>Enabled</span>
+            </label>
+            <span
+              class="muted small numeric"
+              title="This skill's share of the total enabled weight. Weights do not need to add up to 100."
+            >
+              @if (skillModel.enabled) {
+                {{ shareOf(skillModel.id) | percent }} of the score
+              } @else {
+                Not scored
+              }
+            </span>
+          </div>
+        </div>
+
+        <div class="panel-body stack">
+          <div class="stack-tight">
+            <span class="field-label">Rubric levels, lowest to highest</span>
+            <ol class="levels">
+              @for (level of skillModel.levels; track $index; let levelIndex = $index) {
+                <li>
+                  <span class="level-index numeric">{{ levelIndex }}</span>
+                  <input
+                    class="input"
+                    type="text"
+                    [attr.aria-label]="'Level ' + levelIndex + ' label'"
+                    [formField]="skill.levels[levelIndex].label"
+                  />
+                  <input
+                    class="input"
+                    type="text"
+                    [attr.aria-label]="'Level ' + levelIndex + ' description'"
+                    [formField]="skill.levels[levelIndex].description"
+                  />
+                </li>
+              }
+            </ol>
+          </div>
+
+          <div class="stack-tight">
+            <div class="row-between">
+              <span class="field-label">Behaviours</span>
+              <button type="button" class="btn btn-small" (click)="addBehavior(skillIndex)">
+                Add behaviour
+              </button>
+            </div>
+            @for (behaviorModel of skillModel.behaviors; track $index; let behaviorIndex = $index) {
+              @let behavior = skill.behaviors[behaviorIndex];
+              <fieldset class="behavior">
+                <legend class="visually-hidden">{{ behaviorModel.name || 'New behaviour' }}</legend>
+                <label class="field">
+                  <span>Name</span>
+                  <input class="input" type="text" [formField]="behavior.name" />
+                </label>
+                <label class="field">
+                  <span>Type</span>
+                  <select class="select" [formField]="behavior.polarity">
+                    <option value="positive">Should happen</option>
+                    <option value="negative">Should not happen</option>
+                  </select>
+                </label>
+                <label class="check">
+                  <input type="checkbox" [formField]="behavior.critical" />
+                  <span>Critical: flag the whole call</span>
+                </label>
+                <button
+                  type="button"
+                  class="btn btn-small btn-danger"
+                  (click)="removeBehavior(skillIndex, behaviorIndex)"
+                >
+                  Remove
+                </button>
+                <label class="field wide">
+                  <span>Statement, true or false of one employee turn</span>
+                  <input class="input" type="text" [formField]="behavior.statement" />
+                </label>
+                <label class="field wide">
+                  <span>Expected when (blank means every call)</span>
+                  <input
+                    class="input"
+                    type="text"
+                    placeholder="The situation that calls for this behaviour"
+                    [formField]="behavior.expectedWhen"
+                  />
+                </label>
+                <label class="field wide">
+                  <span>Coaching tip</span>
+                  <input class="input" type="text" [formField]="behavior.tip" />
+                </label>
+                @if (behaviorModel.id === '') {
+                  <span class="muted small wide">
+                    New: its id is generated from the name when the version is published.
+                  </span>
+                }
+              </fieldset>
+            } @empty {
+              <p class="muted small">
+                No behaviours. The rubric still scores this skill, but there will be no evidence or
+                coaching for it.
+              </p>
+            }
+          </div>
+        </div>
+      </section>
+    }
+  </form>
+
+  <section class="panel panel-body" aria-label="Version history">
+    <h2>Version history</h2>
+    <ul class="versions">
+      @for (version of current.versions; track version.id) {
+        <li>
+          <strong>Version {{ version.version }}</strong>
+          <span class="muted small">published {{ version.createdAt | date: 'medium' }}</span>
+          @if (version.id === current.id) {
+            <span class="chip chip-good">active</span>
+          }
+        </li>
+      }
+    </ul>
+  </section>
+} @else {
+  <app-state-message kind="loading" title="Loading the scorecard" />
+}

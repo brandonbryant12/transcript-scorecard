@@ -1,0 +1,20 @@
+<div class="picker" role="group" [attr.aria-label]="label()">
+  <span class="field-label">{{ label() }}</span>
+  <div class="segments">
+    @for (option of options(); track option.id) {
+      <button
+        type="button"
+        [attr.aria-pressed]="provider() === option.id"
+        [class.active]="provider() === option.id"
+        [disabled]="disabled() || option.unavailable !== null"
+        [title]="option.unavailable ?? ''"
+        (click)="provider.set(option.id)"
+      >
+        {{ option.label }}
+      </button>
+    }
+  </div>
+  @if (missing().length > 0) {
+    <span class="muted small">Not configured: {{ missing().join(', ') }}</span>
+  }
+</div>

@@ -1,0 +1,260 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Ground truth</p>
+    <h1>Validation</h1>
+    <p>
+      Coaches rate calls on the same scorecard without seeing the AI. This page compares the two, so
+      trust in the scores rests on labelled calls rather than on how plausible they look.
+    </p>
+  </div>
+  <button type="button" class="btn" (click)="reload()">Refresh</button>
+</header>
+
+@if (loadError(); as message) {
+  <app-state-message kind="error" title="Could not load the validation report" [detail]="message">
+    <button type="button" class="btn" (click)="reload()">Try again</button>
+  </app-state-message>
+} @else if (data(); as report) {
+  <section class="stats" aria-label="Ground truth collected">
+    <div class="panel panel-body stat">
+      <strong class="numeric">{{ report.submittedReviews }}</strong>
+      <span>Submitted reviews</span>
+    </div>
+    <div class="panel panel-body stat">
+      <strong class="numeric">{{ report.reviewedCalls }} / {{ report.totalCalls }}</strong>
+      <span>Calls reviewed</span>
+    </div>
+    <div class="panel panel-body stat">
+      <strong class="numeric">{{ report.coaches.length }}</strong>
+      <span
+        >{{ report.coaches.length === 1 ? 'Coach' : 'Coaches'
+        }}{{ report.coaches.length ? ': ' + report.coaches.join(', ') : '' }}</span
+      >
+    </div>
+    <div class="panel panel-body stat">
+      @if (report.humanBaseline; as baseline) {
+        <strong class="numeric">{{ baseline.exact | percent }}</strong>
+        <span>
+          Coach-to-coach exact agreement ({{ baseline.adjacent | percent }} within one level,
+          {{ baseline.n }} skills)
+        </span>
+      } @else {
+        <strong>—</strong>
+        <span>Human baseline: needs two coaches on the same call</span>
+      }
+    </div>
+  </section>
+
+  @if (report.submittedReviews === 0) {
+    <section class="panel">
+      <app-state-message
+        title="No ground truth yet"
+        detail="Submit a coach review of at least one call. Agreement between the AI and the coach appears here as soon as a reviewed call also has an AI evaluation."
+      >
+        <a class="btn btn-primary" routerLink="/coach-review">Review a call</a>
+      </app-state-message>
+    </section>
+  } @else if (report.providers.length === 0) {
+    <section class="panel">
+      <app-state-message
+        title="Nothing to compare yet"
+        detail="The reviewed calls have no AI evaluation on a matching scorecard. Score them with a batch run."
+      >
+        <a class="btn btn-primary" routerLink="/runs">Go to runs</a>
+      </app-state-message>
+    </section>
+  }
+
+  @for (provider of report.providers; track provider.provider) {
+    <section class="panel" [attr.aria-label]="(provider.provider | providerLabel) + ' agreement'">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">{{ provider.model }}</p>
+          <h2>{{ provider.provider | providerLabel }}</h2>
+        </div>
+        <span class="muted small">
+          {{ provider.calls }} {{ provider.calls === 1 ? 'call' : 'calls' }} ·
+          {{ provider.all.n }} rated skills compared
+        </span>
+      </div>
+
+      <div class="panel-body stack">
+        <dl class="metrics">
+          <div>
+            <dt>Exact agreement</dt>
+            <dd class="numeric">{{ provider.all.exact | percent }}</dd>
+          </div>
+          <div>
+            <dt>Within one level</dt>
+            <dd class="numeric">{{ provider.all.adjacent | percent }}</dd>
+          </div>
+          <div>
+            <dt>MAE (levels)</dt>
+            <dd class="numeric">{{ provider.all.mae | number: '1.2-2' }}</dd>
+          </div>
+          <div>
+            <dt>Weighted kappa</dt>
+            <dd class="numeric">
+              {{ provider.all.qwk === null ? '—' : (provider.all.qwk | number: '1.2-2') }}
+            </dd>
+          </div>
+          <div>
+            <dt>Overall score MAE</dt>
+            <dd class="numeric">
+              {{
+                provider.overall.n === 0 ? '—' : (provider.overall.mae | number: '1.1-1') + ' pts'
+              }}
+            </dd>
+          </div>
+          <div>
+            <dt>Behaviour agreement</dt>
+            <dd class="numeric">
+              {{ provider.behaviors.n === 0 ? '—' : (provider.behaviors.agreement | percent) }}
+            </dd>
+          </div>
+        </dl>
+
+        <p>
+          <strong>{{ levelBias(provider.all.bias) }}.</strong>
+          @if (provider.overall.n > 0) {
+            On the overall score, {{ scoreBias(provider.overall.bias) }}.
+          }
+          @if (provider.behaviors.n > 0) {
+            Behaviours ({{ provider.behaviors.n }} labelled): precision
+            {{
+              provider.behaviors.precision === null
+                ? '—'
+                : (provider.behaviors.precision | percent)
+            }}, recall
+            {{ provider.behaviors.recall === null ? '—' : (provider.behaviors.recall | percent) }}.
+          }
+        </p>
+
+        <div class="tables">
+          <div class="table-scroll">
+            <table class="table">
+              <caption>
+                By skill
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Skill</th>
+                  <th scope="col" class="num">n</th>
+                  <th scope="col" class="num">Exact</th>
+                  <th scope="col" class="num">Within one</th>
+                  <th scope="col" class="num">MAE</th>
+                  <th scope="col" class="num">Bias</th>
+                  <th scope="col" class="num">Kappa</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (skill of provider.skills; track skill.skillId) {
+                  <tr>
+                    <th scope="row">{{ skill.name }}</th>
+                    <td class="num">{{ skill.n }}</td>
+                    <td class="num">{{ skill.exact | percent }}</td>
+                    <td class="num">{{ skill.adjacent | percent }}</td>
+                    <td class="num">{{ skill.mae | number: '1.2-2' }}</td>
+                    <td class="num">
+                      {{ skill.bias > 0 ? '+' : '' }}{{ skill.bias | number: '1.2-2' }}
+                    </td>
+                    <td class="num">
+                      {{ skill.qwk === null ? '—' : (skill.qwk | number: '1.2-2') }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <div class="table-scroll">
+            <table class="table">
+              <caption>
+                Calibration
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">AI confidence</th>
+                  <th scope="col" class="num">n</th>
+                  <th scope="col" class="num">Mean confidence</th>
+                  <th scope="col" class="num">Exactly right</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (bucket of provider.calibration; track bucket.label) {
+                  <tr>
+                    <th scope="row">{{ bucket.label }}</th>
+                    <td class="num">{{ bucket.n }}</td>
+                    <td class="num">
+                      {{ bucket.n === 0 ? '—' : (bucket.meanConfidence | percent) }}
+                    </td>
+                    <td class="num">{{ bucket.n === 0 ? '—' : (bucket.exact | percent) }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        @if (provider.disagreements.length > 0) {
+          <div class="table-scroll">
+            <table class="table">
+              <caption>
+                Disagreements, largest first
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Call</th>
+                  <th scope="col">Skill</th>
+                  <th scope="col">Coach</th>
+                  <th scope="col">AI</th>
+                  <th scope="col" class="num">AI confidence</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of provider.disagreements; track $index) {
+                  <tr>
+                    <td>
+                      <a routerLink="/calls" [queryParams]="{ call: item.callId }">{{
+                        item.subject
+                      }}</a>
+                      <div class="muted small">{{ item.coachName }}</div>
+                    </td>
+                    <td>{{ item.skillName }}</td>
+                    <td>
+                      {{ item.coachLabel }}
+                      <span class="muted small">(level {{ item.coachLevel }})</span>
+                    </td>
+                    <td>
+                      {{ item.aiLabel }}
+                      <span class="muted small">
+                        (level {{ item.aiLevel }}, expected {{ item.aiExpected | number: '1.1-1' }})
+                      </span>
+                    </td>
+                    <td class="num">{{ item.confidence | percent }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="muted">The AI and the coaches chose the same level on every rated skill.</p>
+        }
+      </div>
+    </section>
+  }
+
+  <section class="panel panel-body" aria-label="How to read these numbers">
+    <h2>How to read these numbers</h2>
+    <dl class="notes">
+      @for (note of metricNotes; track note.term) {
+        <div>
+          <dt>{{ note.term }}</dt>
+          <dd>{{ note.meaning }}</dd>
+        </div>
+      }
+    </dl>
+  </section>
+} @else {
+  <app-state-message kind="loading" title="Building the validation report" />
+}

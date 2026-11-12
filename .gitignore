@@ -23,4 +23,6 @@ coverage/
 *.sqlite3-wal
 
 .DS_Store
+.angular/
+out-tsc/
 .vite/

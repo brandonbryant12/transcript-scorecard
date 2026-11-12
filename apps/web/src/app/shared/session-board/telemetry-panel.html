@@ -1,0 +1,53 @@
+@let totals = session().totals;
+@let pricing = session().pricing;
+
+<div class="row-between">
+  <strong>{{ provider() }}{{ model() ? ' · ' + model() : '' }}</strong>
+  @if (inFlightMs(); as elapsed) {
+    <span class="chip chip-info numeric"
+      >Request in flight · {{ elapsed | number: '1.0-0' }} ms</span
+    >
+  }
+</div>
+
+<dl class="stats">
+  <div>
+    <dt>Requests</dt>
+    <dd class="numeric">{{ totals.requests | number }}</dd>
+  </div>
+  <div>
+    <dt>Questions</dt>
+    <dd class="numeric">{{ totals.questions | number }}</dd>
+  </div>
+  <div>
+    <dt>Input tokens</dt>
+    <dd class="numeric">{{ totals.inputTokens | number }}</dd>
+  </div>
+  <div>
+    <dt>Latency avg</dt>
+    <dd class="numeric">
+      {{ totals.latencyAvgMs === null ? '—' : (totals.latencyAvgMs | number: '1.0-0') + ' ms' }}
+    </dd>
+  </div>
+  <div>
+    <dt>Latency P95</dt>
+    <dd class="numeric">
+      {{ totals.latencyP95Ms === null ? '—' : (totals.latencyP95Ms | number: '1.0-0') + ' ms' }}
+    </dd>
+  </div>
+  <div>
+    <dt>Est. cost</dt>
+    <dd class="numeric">{{ totals.estimatedCostUsd | usd }}</dd>
+  </div>
+</dl>
+
+<p class="muted small">
+  Latency is measured on the server around each provider call.
+  @if (failedRequests() > 0) {
+    {{ failedRequests() }} request{{ failedRequests() === 1 ? '' : 's' }} failed.
+  }
+  Cost is estimated at
+  <a [href]="pricing.sourceUrl" target="_blank" rel="noreferrer"
+    >${{ pricing.inputUsdPerMillion }} per million input tokens</a
+  >; output is free.
+</p>

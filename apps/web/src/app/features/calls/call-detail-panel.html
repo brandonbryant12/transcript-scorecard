@@ -1,0 +1,107 @@
+<section class="panel" aria-label="Call detail">
+  @if (call(); as detail) {
+    <header class="panel-head">
+      <div class="stack-tight">
+        <p class="eyebrow">{{ detail.customerName }} with {{ detail.agentName }}</p>
+        <h2>{{ detail.subject }}</h2>
+        <p class="muted small">
+          {{ detail.startedAt | date: 'medium' }} · {{ detail.durationSeconds | duration }} ·
+          {{ detail.turnCount }} turns
+        </p>
+      </div>
+      <button type="button" class="btn btn-small" (click)="closed.emit()">Close</button>
+    </header>
+
+    <div class="panel-body stack">
+      @if (detail.evaluations.length > 1) {
+        <div class="row" role="group" aria-label="Evaluation provider">
+          <span class="field-label">Evaluation from</span>
+          @for (summary of detail.evaluations; track summary.evaluationId) {
+            <button
+              type="button"
+              class="btn btn-small"
+              [class.btn-primary]="summary.provider === shownProvider()"
+              [attr.aria-pressed]="summary.provider === shownProvider()"
+              (click)="showProvider(summary.provider)"
+            >
+              {{ summary.provider | providerLabel }} · {{ summary.overallScore | score }}
+            </button>
+          }
+        </div>
+      }
+
+      @if (detail.evaluation; as evaluation) {
+        <p class="muted small">
+          {{ evaluation.provider | providerLabel }} · {{ evaluation.model }} · scored
+          {{ evaluation.createdAt | date: 'medium' }} · {{ evaluation.usage.questions }} questions
+          in {{ evaluation.usage.latencyMs }} ms · {{ evaluation.usage.estimatedCostUsd | usd }}
+        </p>
+
+        <div class="tabs" role="tablist">
+          @for (item of tabs; track item.id) {
+            <button
+              type="button"
+              role="tab"
+              [attr.aria-selected]="tab() === item.id"
+              (click)="tab.set(item.id)"
+            >
+              {{ item.label }}
+            </button>
+          }
+        </div>
+
+        @switch (tab()) {
+          @case ('coaching') {
+            <div class="stack" role="tabpanel">
+              <app-score-card [evaluation]="evaluation" />
+              <app-coach-panel [coaching]="evaluation.coaching" />
+              <div class="stack-tight">
+                <p class="eyebrow">Customer journey</p>
+                <app-journey-chart [journey]="evaluation.journey" [risk]="evaluation.risk" />
+              </div>
+            </div>
+          }
+          @case ('scorecard') {
+            <div class="skills" role="tabpanel">
+              @for (skill of evaluation.skills; track skill.skillId) {
+                <app-skill-card [skill]="skill" [turns]="detail.transcript" />
+              }
+            </div>
+          }
+          @case ('transcript') {
+            <app-transcript
+              class="transcript"
+              role="tabpanel"
+              [turns]="detail.transcript"
+              [evaluation]="evaluation"
+              [agentName]="detail.agentName"
+              [customerName]="detail.customerName"
+            />
+          }
+        }
+      } @else {
+        <app-state-message
+          title="Not scored yet"
+          detail="Start a batch run or replay this call in the live studio to evaluate it."
+        >
+          <a class="btn" routerLink="/runs">Go to runs</a>
+        </app-state-message>
+        <app-transcript
+          class="transcript"
+          [turns]="detail.transcript"
+          [agentName]="detail.agentName"
+          [customerName]="detail.customerName"
+        />
+      }
+    </div>
+  } @else if (loadError(); as message) {
+    <app-state-message kind="error" title="Could not load this call" [detail]="message">
+      <div class="row">
+        <button type="button" class="btn" (click)="reload()">Try again</button>
+        <button type="button" class="btn" (click)="closed.emit()">Close</button>
+      </div>
+    </app-state-message>
+  } @else {
+    <app-state-message kind="loading" title="Loading the call" />
+  }
+</section>

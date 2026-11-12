@@ -1,0 +1,14 @@
+<div
+  class="state"
+  [class.error]="kind() === 'error'"
+  [attr.role]="kind() === 'error' ? 'alert' : 'status'"
+>
+  @if (kind() === 'loading') {
+    <span class="spinner" aria-hidden="true"></span>
+  }
+  <strong>{{ title() }}</strong>
+  @if (detail(); as text) {
+    <span>{{ text }}</span>
+  }
+  <ng-content />
+</div>

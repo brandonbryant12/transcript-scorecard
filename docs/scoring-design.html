@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Scorecard Scoring Design</title>
+<style>
+/* Layout: a reading column of about 70 characters beside a sticky contents rail;
+   diagrams and tables may run wider inside their own scroll containers. */
+:root {
+  --bg: #f1f5f3;
+  --surface: #fbfcfb;
+  --ink: #1b333e;
+  --heading: #123b4c;
+  --muted: #5d7278;
+  --line: #d3dfdb;
+  --line-strong: #a9bfba;
+  --accent: #147b70;
+  --accent-soft: #dcefe9;
+  --warn: #a8691a;
+  --warn-soft: #f6ead6;
+  --bad: #ae4743;
+  --bad-soft: #f7e4e2;
+  --code-bg: #e6eeeb;
+  --font-text: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Avenir Next", "Segoe UI Variable Display", "Segoe UI", ui-sans-serif, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1b21;
+    --surface: #14262e;
+    --ink: #dfe9e7;
+    --heading: #eef5f3;
+    --muted: #94aaad;
+    --line: #26393f;
+    --line-strong: #3d565d;
+    --accent: #5fc7b1;
+    --accent-soft: #173b3a;
+    --warn: #e2ab5e;
+    --warn-soft: #3a2e19;
+    --bad: #e88f8a;
+    --bad-soft: #40211f;
+    --code-bg: #101f26;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1b21;
+  --surface: #14262e;
+  --ink: #dfe9e7;
+  --heading: #eef5f3;
+  --muted: #94aaad;
+  --line: #26393f;
+  --line-strong: #3d565d;
+  --accent: #5fc7b1;
+  --accent-soft: #173b3a;
+  --warn: #e2ab5e;
+  --warn-soft: #3a2e19;
+  --bad: #e88f8a;
+  --bad-soft: #40211f;
+  --code-bg: #101f26;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.65 var(--font-text);
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.page {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: 40px 96px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+.masthead { display: grid; gap: 14px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+.kicker { margin: 0; color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+h1 { margin: 0; color: var(--heading); font: 700 clamp(30px, 5vw, 46px)/1.08 var(--font-display); letter-spacing: -.025em; text-wrap: balance; }
+.lede { margin: 0; max-width: 68ch; font-size: 18px; line-height: 1.6; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; color: var(--muted); font-size: 13px; }
+.meta code { font-size: 12px; }
+
+.layout { display: grid; grid-template-columns: 216px minmax(0, 1fr); gap: 48px; align-items: start; margin-top: 36px; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); max-height: calc(100vh - 40px); overflow-y: auto; font-size: 13.5px; }
+.toc h2 { margin: 0 0 10px; color: var(--muted); font: 700 11px/1.3 var(--font-text); letter-spacing: .12em; text-transform: uppercase; }
+.toc ol { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; counter-reset: toc; }
+.toc li { counter-increment: toc; }
+.toc a { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px; padding: 5px 8px; border-radius: 6px; color: var(--ink); text-decoration: none; line-height: 1.35; }
+.toc a::before { content: counter(toc); color: var(--muted); font-variant-numeric: tabular-nums; }
+.toc a:hover { background: var(--accent-soft); }
+.toc a.active { background: var(--accent-soft); color: var(--heading); font-weight: 600; }
+.toc a:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+main { min-width: 0; display: grid; gap: 64px; }
+section { display: grid; gap: 16px; min-width: 0; scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 20px); }
+section > * { min-width: 0; margin: 0; }
+h2 { color: var(--heading); font: 700 clamp(23px, 3.2vw, 29px)/1.2 var(--font-display); letter-spacing: -.015em; text-wrap: balance; }
+h2 .num { display: block; margin-bottom: 6px; color: var(--accent); font: 700 12px/1 var(--font-text); letter-spacing: .12em; }
+h3 { margin-top: 12px; color: var(--heading); font: 650 18px/1.3 var(--font-display); text-wrap: balance; }
+p, ul, ol.steps, dl { max-width: 70ch; }
+ul, ol.steps { padding-left: 1.25em; display: grid; gap: 8px; }
+a { color: var(--accent); text-underline-offset: 2px; }
+strong { color: var(--heading); font-weight: 650; }
+code { padding: 1px 5px; border-radius: 4px; background: var(--code-bg); font: 0.86em/1.4 var(--font-mono); overflow-wrap: anywhere; }
+pre { margin: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--code-bg); overflow-x: auto; font: 13px/1.55 var(--font-mono); }
+pre code { padding: 0; background: none; font: inherit; overflow-wrap: normal; }
+.cap { color: var(--muted); font-size: 13.5px; max-width: 70ch; }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+table { width: 100%; min-width: 540px; border-collapse: collapse; font-size: 14px; line-height: 1.45; font-variant-numeric: tabular-nums; }
+th, td { padding: 9px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+thead th { color: var(--muted); font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+tbody th { color: var(--heading); font-weight: 600; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+tr.total td, tr.total th { border-top: 2px solid var(--line-strong); font-weight: 650; color: var(--heading); }
+
+.note { padding: 14px 16px; border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0; max-width: 70ch; }
+.note.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+.note p { margin: 0; }
+.note p + p { margin-top: 8px; }
+
+.pill { display: inline-block; padding: 1px 8px; border-radius: 20px; font-size: 12px; font-weight: 650; white-space: nowrap; }
+.pill.good { background: var(--accent-soft); color: var(--accent); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.quiet { background: var(--code-bg); color: var(--muted); }
+
+dl.terms { display: grid; grid-template-columns: minmax(120px, 190px) minmax(0, 1fr); gap: 10px 20px; }
+dl.terms dt { color: var(--heading); font-weight: 650; }
+dl.terms dd { margin: 0; }
+
+figure { margin: 0; display: grid; gap: 10px; }
+.fig-scroll { overflow-x: auto; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.fig-scroll svg { display: block; width: 100%; min-width: 660px; height: auto; color: var(--ink); font-family: var(--font-text); }
+figcaption { color: var(--muted); font-size: 13.5px; max-width: 70ch; }
+
+/* SVG parts, all coloured from the page tokens */
+.t { fill: var(--ink); font-size: 12.5px; }
+.tb { fill: var(--heading); font-size: 12.5px; font-weight: 650; }
+.tm { fill: var(--muted); font-size: 11.5px; }
+.ts { fill: var(--muted); font-size: 9.5px; }
+.tmono { fill: var(--ink); font-size: 11px; font-family: var(--font-mono); }
+.tacc { fill: var(--accent); font-size: 12px; font-weight: 650; }
+.tbad { fill: var(--bad); font-size: 12px; font-weight: 650; }
+.twarn { fill: var(--warn); font-size: 12px; font-weight: 650; }
+.box { fill: var(--bg); stroke: var(--line-strong); stroke-width: 1.2; }
+.box-acc { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.2; }
+.c-seen { fill: var(--bg); stroke: var(--line-strong); stroke-width: 1; }
+.c-new { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+.c-future { fill: var(--surface); stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
+.c-emp { fill: var(--accent-soft); stroke: var(--line-strong); stroke-width: .8; }
+.c-cust { fill: var(--bg); stroke: var(--line-strong); stroke-width: .8; }
+.bar-acc { fill: var(--accent); }
+.ln { fill: none; stroke: var(--muted); stroke-width: 1.3; }
+.ln-acc { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.ln-dash { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 5 4; stroke-linejoin: round; }
+.grid { fill: none; stroke: var(--line); stroke-width: 1; }
+.dot-acc { fill: var(--accent); }
+.dot-ring { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.m-bad { fill: var(--bad); }
+.m-warn { fill: var(--warn); }
+.m-pos { fill: var(--surface); stroke: var(--accent); stroke-width: 2; }
+.lead-bad { fill: none; stroke: var(--bad); stroke-width: 1.2; }
+.lead-warn { fill: none; stroke: var(--warn); stroke-width: 1.2; }
+.lead-acc { fill: none; stroke: var(--accent); stroke-width: 1.2; }
+.ah { fill: var(--muted); }
+
+@media (max-width: 880px) {
+  .layout { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .toc { position: static; max-height: none; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+  .toc ol { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+  main { gap: 52px; }
+}
+@media (max-width: 520px) {
+  body { font-size: 15.5px; }
+  .lede { font-size: 16.5px; }
+  dl.terms { grid-template-columns: minmax(0, 1fr); gap: 2px 0; }
+  dl.terms dd { margin-bottom: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="masthead">
+  <p class="kicker">Transcript Scorecard · design and philosophy</p>
+  <h1>How a call becomes a score, evidence and coaching</h1>
+  <p class="lede">This page explains how the system scores a support call while it is happening, how it finds the turns that justify each score, how it reads the customer's emotions, what it tells a coach, and how coaches check whether any of it can be trusted. It gives the reasoning behind each decision so you can change the system without first reverse-engineering it.</p>
+  <p class="meta"><span>Scoring method <code>moments-1</code></span><span>Written 11 November 2026</span><span>Method, maths and types live in <code>packages/domain/src</code></span></p>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#overview">The system in one picture</a></li>
+    <li><a href="#before">What was wrong before</a></li>
+    <li><a href="#decision-models">What a decision model allows</a></li>
+    <li><a href="#scorecard">Skills and behaviours</a></li>
+    <li><a href="#lanes">Two lanes of questions</a></li>
+    <li><a href="#worked">One call, worked through</a></li>
+    <li><a href="#composition">From answers to a score</a></li>
+    <li><a href="#journey">The customer's side</a></li>
+    <li><a href="#coaching">Coaching without generated text</a></li>
+    <li><a href="#realtime">Scoring during the call</a></li>
+    <li><a href="#channels">Transcript, audio and video</a></li>
+    <li><a href="#ground-truth">Ground truth from coaches</a></li>
+    <li><a href="#data-model">Data model</a></li>
+    <li><a href="#measured">What we measured</a></li>
+    <li><a href="#limits">Limits and open questions</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- 1 -->
+<section id="overview">
+  <h2><span class="num">1</span>The system in one picture</h2>
+  <p>A call arrives as a sequence of <strong>turns</strong>: one speaker, one stretch of speech. The system keeps a <strong>scorecard</strong> that says what good looks like. Every time a few new turns arrive it writes a set of narrow, typed questions, sends them with the transcript to a <strong>decision model</strong>, and receives a probability for each. Those probabilities are stored as <strong>readings</strong>. A pure function then composes the readings into an <strong>evaluation</strong>: a score per skill, an overall score, the turns that serve as evidence, the customer's emotional journey, and coaching points.</p>
+  <p>Separately, a coach can rate the same call on the same scorecard without seeing the AI's answer. Comparing the two tells you how far to trust the evaluation, and which thresholds to move.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 760 240" role="img" aria-label="Turns feed a question plan, the decision model returns probabilities, readings are composed into an evaluation, and coach reviews are compared with it in an agreement report.">
+        <defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ah"/></marker></defs>
+        <text x="148" y="50" text-anchor="middle" class="tm">new turns</text>
+        <text x="316" y="50" text-anchor="middle" class="tm">typed questions</text>
+        <text x="484" y="50" text-anchor="middle" class="tm">probabilities</text>
+        <text x="632" y="50" text-anchor="middle" class="tm">pure function</text>
+        <rect x="10" y="60" width="118" height="64" rx="6" class="box"/>
+        <text x="69" y="88" text-anchor="middle" class="tb">Turns</text>
+        <text x="69" y="107" text-anchor="middle" class="tm">replay, stream, voice</text>
+        <rect x="168" y="60" width="128" height="64" rx="6" class="box"/>
+        <text x="232" y="88" text-anchor="middle" class="tb">Question plan</text>
+        <text x="232" y="107" text-anchor="middle" class="tm">turn lane + call lane</text>
+        <rect x="336" y="60" width="128" height="64" rx="6" class="box-acc"/>
+        <text x="400" y="88" text-anchor="middle" class="tb">Decision model</text>
+        <text x="400" y="107" text-anchor="middle" class="tm">no generated text</text>
+        <rect x="504" y="60" width="108" height="64" rx="6" class="box"/>
+        <text x="558" y="88" text-anchor="middle" class="tb">Readings</text>
+        <text x="558" y="107" text-anchor="middle" class="tm">kept per turn</text>
+        <rect x="652" y="60" width="98" height="64" rx="6" class="box"/>
+        <text x="701" y="88" text-anchor="middle" class="tb">Evaluation</text>
+        <text x="701" y="107" text-anchor="middle" class="tm">score, evidence</text>
+        <line x1="128" y1="92" x2="166" y2="92" class="ln" marker-end="url(#ah1)"/>
+        <line x1="296" y1="92" x2="334" y2="92" class="ln" marker-end="url(#ah1)"/>
+        <line x1="464" y1="92" x2="502" y2="92" class="ln" marker-end="url(#ah1)"/>
+        <line x1="612" y1="92" x2="650" y2="92" class="ln" marker-end="url(#ah1)"/>
+        <rect x="336" y="170" width="128" height="52" rx="6" class="box"/>
+        <text x="400" y="192" text-anchor="middle" class="tb">Coach review</text>
+        <text x="400" y="210" text-anchor="middle" class="tm">blind, same scorecard</text>
+        <rect x="560" y="170" width="190" height="52" rx="6" class="box"/>
+        <text x="655" y="192" text-anchor="middle" class="tb">Agreement report</text>
+        <text x="655" y="210" text-anchor="middle" class="tm">kappa, bias, calibration</text>
+        <line x1="464" y1="196" x2="558" y2="196" class="ln" marker-end="url(#ah1)"/>
+        <text x="511" y="188" text-anchor="middle" class="tm">coach levels</text>
+        <line x1="701" y1="124" x2="701" y2="168" class="ln" marker-end="url(#ah1)"/>
+        <text x="693" y="150" text-anchor="end" class="tm">AI levels</text>
+      </svg>
+    </div>
+    <figcaption>The model only ever answers questions. Everything a person reads is composed from those answers by code that can be re-run on stored readings without another API call.</figcaption>
+  </figure>
+  <p>Five terms carry the rest of the page:</p>
+  <dl class="terms">
+    <dt>Skill</dt><dd>A weighted line on the scorecard, such as "Resolution &amp; ownership", with an ordered rubric of described levels.</dd>
+    <dt>Behaviour</dt><dd>One observable action that is either true of a single employee turn or not, such as "The employee restates the customer's problem".</dd>
+    <dt>Reading</dt><dd>One probability returned by the model, stored against the turn, skill or behaviour it was asked about.</dd>
+    <dt>Pass</dt><dd>One round of questions against the call so far. A live call gets many passes; a finished transcript gets one.</dd>
+    <dt>Observability</dt><dd>The probability that the call gives a fair basis to judge a skill. It decides how much that skill counts.</dd>
+  </dl>
+</section>
+
+<!-- 2 -->
+<section id="before">
+  <h2><span class="num">2</span>What was wrong before</h2>
+  <p>The first version asked one rubric question per criterion and one "which turn is the best evidence?" question per criterion, and repeated all of them on the whole transcript every five turns. It produced plausible numbers. It also had six problems, and each one shaped the redesign.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Problem</th><th>What it looked like</th><th>What replaced it</th></tr></thead>
+      <tbody>
+        <tr><th>Vague rubric</th><td>Levels were bare labels such as "Adequate" and "Strong". One criterion, "Accuracy &amp; policy alignment", bundled accuracy, identity checks and unsupported promises.</td><td>Every level has a description, and bundled criteria are split into separate skills.</td></tr>
+        <tr><th>One evidence turn</th><td>A single choice among every turn in the call. It could not show a strength and a failure in the same skill, and it put the whole transcript into the options of every evidence question.</td><td>A yes/no question per behaviour per employee turn. Evidence is every turn where a behaviour was detected.</td></tr>
+        <tr><th>Cost grew with the square of the call</th><td>Each re-score re-read every turn for every criterion.</td><td>Each turn is read once. Only call-level questions are repeated.</td></tr>
+        <tr><th>Early-call penalty</th><td>Four turns in, Resolution was rated "Unresolved" with near-total confidence, because nothing had been resolved yet.</td><td>A separate question asks whether the skill can be judged yet, and the answer sets how much the skill counts.</td></tr>
+        <tr><th>One emotion for the call</th><td>A single label for "the most recent part of the call".</td><td>Sentiment and emotion per customer turn, so the journey and its turning points are visible.</td></tr>
+        <tr><th>No coaching, no ground truth</th><td>A score and a quote. Nothing said what to do differently, and nothing said whether the score was right.</td><td>Coaching assembled from scorecard text, and coach reviews compared with the AI.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The early-call penalty is the easiest one to see in numbers. This is a probe on the seeded call <code>call-1002</code>, asking for a Resolution rating (0 to 4) on growing prefixes, next to the gate question the new design adds.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Turns seen</th><th class="n">Resolution, JEV</th><th class="n">Gate, JEV</th><th class="n">Resolution, OpenAI</th><th class="n">Gate, OpenAI</th></tr></thead>
+      <tbody>
+        <tr><th>2</th><td class="n">0.11</td><td class="n">0.07</td><td class="n">0.01</td><td class="n">0.00</td></tr>
+        <tr><th>4</th><td class="n">1.71</td><td class="n">0.09</td><td class="n">0.03</td><td class="n">0.00</td></tr>
+        <tr><th>8</th><td class="n">1.34</td><td class="n">0.31</td><td class="n">0.01</td><td class="n">0.00</td></tr>
+        <tr><th>28 (whole call)</th><td class="n">2.57</td><td class="n">0.93</td><td class="n">2.17</td><td class="n">1.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">Without the gate, a live score at turn 4 would have charged the employee for an unresolved issue on a call that had barely started. With it, Resolution carries almost no weight until the employee has had a chance to resolve anything.</p>
+</section>
+
+<!-- 3 -->
+<section id="decision-models">
+  <h2><span class="num">3</span>What a decision model allows</h2>
+  <p>The Gemini Decisions API, OpenAI Decisions and TypeSafe JEV share one shape. You send an input and a set of questions. Each question is one of three types, each is answered independently against the same input, and each answer is a calibrated probability. The model writes no text at all, which is why a request with hundreds of questions returns in a few hundred milliseconds and costs input tokens only.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Question type</th><th>Returns</th><th>Used here for</th></tr></thead>
+      <tbody>
+        <tr><th>Yes / no</th><td>Probability of yes</td><td>"Did this behaviour happen in this turn?", "Can this skill be judged yet?", "Was this behaviour called for?"</td></tr>
+        <tr><th>Choice</th><td>One option and a probability for every option</td><td>The customer's emotion in one turn</td></tr>
+        <tr><th>Ordered rubric</th><td>A probability per level and their weighted average</td><td>Skill ratings, customer sentiment, escalation risk</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Three consequences follow, and the whole design leans on them.</p>
+  <ul>
+    <li><strong>Questions are atomic and the logic lives in code.</strong> Questions cannot see each other, so there is no point writing one clever question that tries to weigh several things. Ask many narrow ones and combine the answers with ordinary arithmetic and <code>if</code> statements. That also makes every combination rule readable and testable.</li>
+    <li><strong>The model cannot write coaching.</strong> It returns numbers. Every sentence a coach reads therefore has to exist already, written by a person in the scorecard: behaviour names, tips and level descriptions. The code decides which of those sentences a call has earned.</li>
+    <li><strong>Confidence is usable.</strong> Because answers are probabilities rather than prose, the system can tell hesitating from knowing, and route the uncertain cases to a person.</li>
+  </ul>
+  <p>The three providers differ only in wire format. An adapter per provider translates to one neutral contract, and all answers pass through one validator that rejects a missing answer, a wrong type, a probability outside 0 to 1, a choice that was not offered or a rubric score outside its range. A bad answer fails the pass. It is never replaced with a default, and a provider's error body never reaches the browser because it can echo the transcript or a key.</p>
+<pre><code>// The neutral contract every provider adapter translates to and from
+type Question =
+  | { type: "noul";   instructions: string }                                   // yes / no
+  | { type: "choice"; instructions: string; options: Record&lt;string, string&gt; }
+  | { type: "score";  instructions: string; levels: string[] }                 // ordered, index 0 is lowest
+
+type Answer =
+  | { type: "noul";   probability: number; confidence: number }
+  | { type: "choice"; choice: string; confidence: number; probabilities: Record&lt;string, number&gt; }
+  | { type: "score";  score: number; confidence: number; probabilities: number[] }</code></pre>
+</section>
+
+<!-- 4 -->
+<section id="scorecard">
+  <h2><span class="num">4</span>Skills and behaviours</h2>
+  <p>A scorecard is a list of weighted skills. Each skill is judged in two ways at once, because the two ways are good at different things.</p>
+  <h3>The rubric gives the number</h3>
+  <p>Each skill has an ordered rubric of two to ten levels, and every level has a label and a description. The description matters more than the label: the model picks "the level whose description fits best", and adjacent levels have to be clearly different for that to work. This is the Resolution rubric in the default scorecard.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th class="n">Level</th><th>Label</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td class="n">0</td><th>Unresolved</th><td>No fix and no plan; the customer is left where they started.</td></tr>
+        <tr><td class="n">1</td><th>Weak next step</th><td>A vague or unowned follow-up with no timeframe.</td></tr>
+        <tr><td class="n">2</td><th>Partial</th><td>Some progress, but part of the issue is still open or unowned.</td></tr>
+        <tr><td class="n">3</td><th>Resolved</th><td>The issue is fixed, or has a specific next step with an owner and a timeframe.</td></tr>
+        <tr><td class="n">4</td><th>Resolved and proactive</th><td>Fixed and confirmed with the customer, with future problems anticipated and prevented.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The scale is linear on purpose. The returned score is the probability-weighted average of the level indices, so levels that are not evenly spaced would skew it.</p>
+  <h3>Behaviours give the evidence and the coaching</h3>
+  <p>A behaviour is a statement that is true or false of one employee turn. It has a polarity, an optional situation in which it is expected, a flag for critical failures, and a tip written by whoever owns the scorecard.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Meaning</th><th>Example from the default scorecard</th></tr></thead>
+      <tbody>
+        <tr><th>statement</th><td>What is checked against a single turn</td><td>"The employee restates or summarises the customer's problem in their own words to confirm understanding."</td></tr>
+        <tr><th>polarity</th><td><em>positive</em>: should happen. <em>negative</em>: should not.</td><td>"Makes an unsupported promise" is negative.</td></tr>
+        <tr><th>expectedWhen</th><td>The situation that calls for a positive behaviour. Empty means every call.</td><td>"The customer has described the problem they need help with."</td></tr>
+        <tr><th>critical</th><td>A negative behaviour that raises a flag on the whole call</td><td>"Unverified account change"</td></tr>
+        <tr><th>tip</th><td>The advice shown when the behaviour is missed or violated</td><td>"Play the problem back and ask whether you have it right before you start troubleshooting."</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Behaviours answer the question a rubric cannot: <em>where</em>. "Accuracy: 35" is a verdict. "Made an unsupported promise at turns 22 and 24" is something a coach can play back.</p>
+  <h3>Why both, and why the rubric owns the number</h3>
+  <p>Counting behaviours would give a score, but a poor one. A checklist rewards saying the right words and cannot weigh a recovery against a slip. The rubric makes a holistic judgement and is directly comparable with a coach's rating on the same levels. So the rubric produces the skill score, and behaviours explain it. The two are asked independently, which gives a free consistency check: when they contradict each other the evaluation is sent to a person (<a href="#coaching">section 9</a>).</p>
+  <h3>The default scorecard</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Skill</th><th>Judged from</th><th class="n">Weight</th><th>Behaviours</th></tr></thead>
+      <tbody>
+        <tr><th>Empathy &amp; active listening</th><td>Transcript</td><td class="n">20</td><td>Acknowledges the emotion · Restates the problem · Owns a mistake · <span class="pill bad">negative</span> Dismisses the customer</td></tr>
+        <tr><th>Accuracy &amp; honesty</th><td>Transcript</td><td class="n">20</td><td>Sets honest expectations · Corrects their own error · <span class="pill bad">negative</span> Makes an unsupported promise · <span class="pill bad">negative</span> States something wrong</td></tr>
+        <tr><th>Security &amp; verification</th><td>Transcript</td><td class="n">20</td><td>Verifies identity · <span class="pill bad">critical</span> Unverified account change</td></tr>
+        <tr><th>Resolution &amp; ownership</th><td>Transcript</td><td class="n">25</td><td>Investigates before acting · Delivers the fix · Gives an owned next step</td></tr>
+        <tr><th>Clear communication</th><td>Transcript</td><td class="n">15</td><td>Explains the why · Confirms key details · Summarises the outcome</td></tr>
+        <tr><th>Vocal delivery</th><td>Audio</td><td class="n">10</td><td>Speaks calmly · <span class="pill bad">negative</span> Sounds irritated</td></tr>
+        <tr><th>On-camera presence</th><td>Video</td><td class="n">10</td><td>Faces the camera · <span class="pill bad">negative</span> Looks away</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">Weights do not need to total 100. The overall score divides by the weight that actually counted, so the two media skills simply drop out of a transcript-only call (<a href="#channels">section 11</a>).</p>
+  <h3>Versions are immutable</h3>
+  <p>Publishing an edit never changes a scorecard in place. It creates the next version, and every run, evaluation and coach review records the version it was made against. Without that, changing one level description would silently change the meaning of every stored score, and a coach's rating could be compared with an AI rating made on a different rubric. Publishing an unchanged definition creates nothing.</p>
+</section>
+
+<!-- 5 -->
+<section id="lanes">
+  <h2><span class="num">5</span>Two lanes of questions</h2>
+  <p>Each pass sends one shared input, the transcript so far, and questions from two lanes. The split exists because some facts about a call are settled the moment a turn is spoken and others keep changing until the call ends.</p>
+  <h3>Turn lane: read each turn once</h3>
+  <p>Whether the employee restated the problem in turn 8 does not change when turn 30 arrives. So for every employee turn that has not been read yet, the plan asks one yes/no question per behaviour, and for every new customer turn it asks for sentiment and emotion. The answers are stored against the turn and never asked again. The cost of this lane grows with the length of the call, not with its square.</p>
+<pre><code>Focus on the single turn labelled [turn-18]; treat every other turn as context only.
+Is this statement true of that turn? Statement: The employee makes, or offers to make,
+a change to account access, credentials or contact details without verifying the
+identity of the person affected.</code></pre>
+  <h3>Call lane: asked again on every pass</h3>
+  <p>A skill rating, by contrast, is a judgement about the whole call so far and has to be refreshed. On every pass the call lane asks:</p>
+  <ul>
+    <li><strong>One rubric rating per skill.</strong> "Rate the EMPLOYEE on "Resolution &amp; ownership": … Judge only what the transcript shows so far; do not guess how the call will end. Choose the level whose description fits best."</li>
+    <li><strong>One gate per skill.</strong> While the call is live: "Has it progressed far enough to fairly judge the EMPLOYEE on …? Answer yes only if the employee has already had a real opportunity to show this skill." Once the call is over the wording becomes "Did this call give the EMPLOYEE a real opportunity to show …? Answer no only if nothing in the call called for this skill."</li>
+    <li><strong>One "was it called for?" check per conditional behaviour.</strong> "Has this situation come up at any point in the call so far? Situation: The customer has asked for a guarantee, a timeframe, or certainty about an outcome."</li>
+    <li><strong>Escalation risk.</strong> "If the call ended right now, how likely is the CUSTOMER to escalate, complain, or stop using the company?"</li>
+  </ul>
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 760 200" role="img" aria-label="Three passes over a six-turn call. Each pass reads only its two new turns in the turn lane, while the call lane re-asks its questions against the whole transcript so far.">
+        <!-- pass 1 -->
+        <text x="14" y="22" class="tb">Pass 1 · provisional</text>
+        <rect x="14" y="40" width="32" height="28" rx="3" class="c-new"/><text x="30" y="59" text-anchor="middle" class="t">1</text>
+        <rect x="52" y="40" width="32" height="28" rx="3" class="c-new"/><text x="68" y="59" text-anchor="middle" class="t">2</text>
+        <rect x="90" y="40" width="32" height="28" rx="3" class="c-future"/><text x="106" y="59" text-anchor="middle" class="tm">3</text>
+        <rect x="128" y="40" width="32" height="28" rx="3" class="c-future"/><text x="144" y="59" text-anchor="middle" class="tm">4</text>
+        <rect x="166" y="40" width="32" height="28" rx="3" class="c-future"/><text x="182" y="59" text-anchor="middle" class="tm">5</text>
+        <rect x="204" y="40" width="32" height="28" rx="3" class="c-future"/><text x="220" y="59" text-anchor="middle" class="tm">6</text>
+        <text x="14" y="92" class="tacc">turn lane reads turns 1–2</text>
+        <rect x="14" y="108" width="70" height="8" rx="2" class="bar-acc"/>
+        <text x="14" y="136" class="t">call lane sees 2 turns</text>
+        <text x="14" y="164" class="tm">18 turn + 23 call questions</text>
+        <!-- pass 2 -->
+        <text x="264" y="22" class="tb">Pass 2 · provisional</text>
+        <rect x="264" y="40" width="32" height="28" rx="3" class="c-seen"/><text x="280" y="59" text-anchor="middle" class="t">1</text>
+        <rect x="302" y="40" width="32" height="28" rx="3" class="c-seen"/><text x="318" y="59" text-anchor="middle" class="t">2</text>
+        <rect x="340" y="40" width="32" height="28" rx="3" class="c-new"/><text x="356" y="59" text-anchor="middle" class="t">3</text>
+        <rect x="378" y="40" width="32" height="28" rx="3" class="c-new"/><text x="394" y="59" text-anchor="middle" class="t">4</text>
+        <rect x="416" y="40" width="32" height="28" rx="3" class="c-future"/><text x="432" y="59" text-anchor="middle" class="tm">5</text>
+        <rect x="454" y="40" width="32" height="28" rx="3" class="c-future"/><text x="470" y="59" text-anchor="middle" class="tm">6</text>
+        <text x="264" y="92" class="tacc">turn lane reads turns 3–4</text>
+        <rect x="264" y="108" width="146" height="8" rx="2" class="bar-acc"/>
+        <text x="264" y="136" class="t">call lane sees 4 turns</text>
+        <text x="264" y="164" class="tm">18 turn + 23 call questions</text>
+        <!-- pass 3 -->
+        <text x="514" y="22" class="tb">Pass 3 · final</text>
+        <rect x="514" y="40" width="32" height="28" rx="3" class="c-seen"/><text x="530" y="59" text-anchor="middle" class="t">1</text>
+        <rect x="552" y="40" width="32" height="28" rx="3" class="c-seen"/><text x="568" y="59" text-anchor="middle" class="t">2</text>
+        <rect x="590" y="40" width="32" height="28" rx="3" class="c-seen"/><text x="606" y="59" text-anchor="middle" class="t">3</text>
+        <rect x="628" y="40" width="32" height="28" rx="3" class="c-seen"/><text x="644" y="59" text-anchor="middle" class="t">4</text>
+        <rect x="666" y="40" width="32" height="28" rx="3" class="c-new"/><text x="682" y="59" text-anchor="middle" class="t">5</text>
+        <rect x="704" y="40" width="32" height="28" rx="3" class="c-new"/><text x="720" y="59" text-anchor="middle" class="t">6</text>
+        <text x="514" y="92" class="tacc">turn lane reads turns 5–6</text>
+        <rect x="514" y="108" width="222" height="8" rx="2" class="bar-acc"/>
+        <text x="514" y="136" class="t">call lane sees all 6 turns</text>
+        <text x="514" y="164" class="tm">18 turn + 23 call questions</text>
+        <text x="14" y="190" class="tm">Counts are for the five transcript skills of the default scorecard, with one employee and one customer turn per pass.</text>
+      </svg>
+    </div>
+    <figcaption>The number of questions per pass stays flat as the call grows. What grows is the transcript that is resent as shared input, which is the remaining cost of a long call (<a href="#limits">section 15</a>).</figcaption>
+  </figure>
+  <h3>How many questions</h3>
+  <p>With <em>S</em> transcript skills, <em>B</em> behaviours on them and <em>E</em> conditional positive behaviours, a pass asks <code>2S + E + 1</code> call-lane questions plus <code>B</code> per new employee turn and <code>2</code> per new customer turn. For the default scorecard that is 5 + 5 + 12 + 1 = 23 call-lane questions and 16 per employee turn. A request above 300 questions is split into parallel requests against the same input; if any one of them fails, the whole pass fails and the readings stay as they were, because a half-read call would look complete.</p>
+  <h3>How the transcript is presented</h3>
+  <p>The shared input is plain text with one line per turn and a bracketed label, so a question can point at exactly one turn:</p>
+<pre><code>Customer support call about: Cannot connect smart hub
+EMPLOYEE is Avery Morgan, the support employee being assessed. CUSTOMER is Robert Davis.
+The call is still in progress. This is the transcript so far.
+
+[turn-17] CUSTOMER: I need to leave soon. Can my partner call if it does not finish?
+[turn-18] EMPLOYEE: Yes, I can add them now. Just give me their full name and email address.</code></pre>
+  <p>Each turn's text is flattened to a single line first. Transcript content is untrusted, and without that step a turn containing a line break and a fake <code>[turn-99]</code> label could pose as another turn.</p>
+  <p>The model never sees question keys. Keys are short and opaque (<code>t_17_9</code>), and a table kept beside the request records what each one means, so user-defined skill and behaviour ids never have to satisfy a provider's key rules.</p>
+</section>
+
+<!-- 6 -->
+<section id="worked">
+  <h2><span class="num">6</span>One call, worked through</h2>
+  <p><code>call-1002</code> is a seeded, fictional 28-turn call. The employee starts well: thanks the customer for what they already tried, verifies the account at turn 4 and diagnoses a failed firmware update. Then the customer asks to add their partner to the account, and the employee offers to do it with just an email address (turns 18 and 20). When the customer objects, the employee changes the subject with a guarantee they cannot make (turns 22 and 24).</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 760 250" role="img" aria-label="Timeline of call-1002. Identity is verified at turn 4. An unverified account change is detected at turns 18 and 20 and an unsupported promise at turns 22 and 24. Customer sentiment sits near neutral until turn 17 and then falls to negative for the rest of the call.">
+        <!-- labels -->
+        <text x="106" y="68" text-anchor="middle" class="tacc">verifies identity</text>
+        <line x1="106" y1="73" x2="106" y2="82" class="lead-acc"/>
+        <text x="496" y="46" text-anchor="middle" class="tbad">unverified account change (critical)</text>
+        <path d="M470 82 V74 H522 V82 M496 74 V52" class="lead-bad"/>
+        <text x="600" y="68" text-anchor="middle" class="twarn">unsupported promise</text>
+        <path d="M574 82 V76 H626 V82" class="lead-warn"/>
+        <circle cx="106" cy="88" r="5" class="m-pos"/>
+        <circle cx="470" cy="88" r="5" class="m-bad"/><circle cx="522" cy="88" r="5" class="m-bad"/>
+        <circle cx="574" cy="88" r="5" class="m-warn"/><circle cx="626" cy="88" r="5" class="m-warn"/>
+        <!-- 28 turn cells: employee turns 1,3,4,6,8,10,12,14,16,18,20,22,24,26,28 -->
+        <g>
+          <rect x="16" y="100" width="24" height="22" class="c-emp"/><rect x="42" y="100" width="24" height="22" class="c-cust"/>
+          <rect x="68" y="100" width="24" height="22" class="c-emp"/><rect x="94" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="120" y="100" width="24" height="22" class="c-cust"/><rect x="146" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="172" y="100" width="24" height="22" class="c-cust"/><rect x="198" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="224" y="100" width="24" height="22" class="c-cust"/><rect x="250" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="276" y="100" width="24" height="22" class="c-cust"/><rect x="302" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="328" y="100" width="24" height="22" class="c-cust"/><rect x="354" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="380" y="100" width="24" height="22" class="c-cust"/><rect x="406" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="432" y="100" width="24" height="22" class="c-cust"/><rect x="458" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="484" y="100" width="24" height="22" class="c-cust"/><rect x="510" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="536" y="100" width="24" height="22" class="c-cust"/><rect x="562" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="588" y="100" width="24" height="22" class="c-cust"/><rect x="614" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="640" y="100" width="24" height="22" class="c-cust"/><rect x="666" y="100" width="24" height="22" class="c-emp"/>
+          <rect x="692" y="100" width="24" height="22" class="c-cust"/><rect x="718" y="100" width="24" height="22" class="c-emp"/>
+        </g>
+        <g text-anchor="middle">
+          <text x="28" y="136" class="ts">1</text><text x="106" y="136" class="ts">4</text><text x="236" y="136" class="ts">9</text>
+          <text x="366" y="136" class="ts">14</text><text x="470" y="136" class="ts">18</text><text x="522" y="136" class="ts">20</text>
+          <text x="574" y="136" class="ts">22</text><text x="626" y="136" class="ts">24</text><text x="730" y="136" class="ts">28</text>
+        </g>
+        <!-- sentiment: y = 250 - s*22, drawn for levels 1..3 -->
+        <text x="16" y="164" class="tm">Customer sentiment in each customer turn (0 very negative to 4 very positive)</text>
+        <line x1="16" y1="184" x2="744" y2="184" class="grid"/><text x="744" y="196" text-anchor="end" class="ts">3 positive</text>
+        <line x1="16" y1="206" x2="744" y2="206" class="grid"/><text x="744" y="218" text-anchor="end" class="ts">2 neutral</text>
+        <line x1="16" y1="228" x2="744" y2="228" class="grid"/><text x="744" y="240" text-anchor="end" class="ts">1 negative</text>
+        <polyline class="ln-acc" points="54,216.3 132,205.8 184,206.2 236,195.9 288,219.2 340,198.3 392,205.3 444,212.8 496,224.5 548,227.6 600,227.6 652,225.8 704,224.9"/>
+        <g class="dot-acc">
+          <circle cx="54" cy="216.3" r="3"/><circle cx="132" cy="205.8" r="3"/><circle cx="184" cy="206.2" r="3"/><circle cx="236" cy="195.9" r="3"/>
+          <circle cx="288" cy="219.2" r="3"/><circle cx="340" cy="198.3" r="3"/><circle cx="392" cy="205.3" r="3"/><circle cx="444" cy="212.8" r="3"/>
+          <circle cx="496" cy="224.5" r="3"/><circle cx="548" cy="227.6" r="3"/><circle cx="600" cy="227.6" r="3"/><circle cx="652" cy="225.8" r="3"/><circle cx="704" cy="224.9" r="3"/>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Shaded cells are employee turns, open cells are customer turns. Detections at turns 18, 20, 22 and 24 were returned by both JEV and OpenAI. Sentiment values are from the JEV probe run; they fall as soon as the employee offers the unverified change and stay down.</figcaption>
+  </figure>
+  <p>Composed, the OpenAI run on the complete call reads as follows.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Skill</th><th>Most likely level</th><th>Behaviours</th></tr></thead>
+      <tbody>
+        <tr><th>Empathy</th><td>Adequate</td><td><span class="pill good">demonstrated</span> Acknowledges the emotion (turn 3) · <span class="pill warn">missed</span> Restates the problem · <span class="pill bad">violated</span> Dismisses the customer (turns 20, 22, 24)</td></tr>
+        <tr><th>Accuracy</th><td>Unreliable</td><td><span class="pill warn">missed</span> Sets honest expectations · <span class="pill warn">missed</span> Corrects their own error · <span class="pill bad">violated</span> Unsupported promise (turns 22, 24, P = 1.00)</td></tr>
+        <tr><th>Security</th><td>Risky</td><td><span class="pill warn">missed</span> Verifies identity (strongest turn P = 0.59) · <span class="pill bad">violated</span> Unverified account change (turns 18, 20, P = 1.00)</td></tr>
+        <tr><th>Resolution</th><td>Partial</td><td><span class="pill good">demonstrated</span> Investigates (turns 6, 8) · Delivers the fix (turn 16) · Owned next step (turn 26)</td></tr>
+        <tr><th>Communication</th><td>Understandable</td><td><span class="pill good">demonstrated</span> Explains the why · Confirms key details · <span class="pill quiet">not applicable</span> Summarises the outcome</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The coaching for the same run: a critical flag for the unverified account change, strengths in confirming details, investigating and giving an owned next step, opportunities in dismissing the customer, the unsupported promise and never restating the problem, and a focus of moving Accuracy from "Unreliable" to "Mostly accurate". Escalation risk came back as "Elevated".</p>
+  <div class="note warn">
+    <p><strong>One row here is a warning about thresholds.</strong> OpenAI gave "Verifies identity" 0.59 for turn 4, a hair under the 0.6 detection threshold, so the behaviour reads as missed. JEV gave the same turn 0.98. The employee plainly does verify at turn 4. A fixed threshold shared by two differently calibrated models will produce errors like this, and only labelled examples can tell you where each provider's threshold belongs. That is what <a href="#ground-truth">section 12</a> is for.</p>
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="composition">
+  <h2><span class="num">7</span>From answers to a score</h2>
+  <p>Composition is one pure function, <code>composeEvaluation(definition, state, turns, stage)</code>. It takes the stored readings and returns the evaluation, with no network and no randomness. Because it is pure, a threshold can be changed and every stored call re-composed without paying for a single new request. The constants it uses live in one object and are stamped on every evaluation through the method version.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Constant</th><th class="n">Value</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><th><code>detectThreshold</code></th><td class="n">0.60</td><td>A behaviour counts as detected in a turn at or above this probability.</td></tr>
+        <tr><th><code>expectedThreshold</code></th><td class="n">0.50</td><td>A positive behaviour counts as called for at or above this probability.</td></tr>
+        <tr><th><code>minCoverage</code></th><td class="n">0.10</td><td>Below this share of judgeable scorecard weight there is no overall score yet.</td></tr>
+        <tr><th><code>observableThreshold</code></th><td class="n">0.50</td><td>A skill is treated as judgeable for coaching at or above this.</td></tr>
+        <tr><th><code>reviewAdjacentMass</code></th><td class="n">0.75</td><td>Below this, the model is torn between distant levels and a person should look.</td></tr>
+        <tr><th><code>shiftThreshold</code></th><td class="n">0.40</td><td>Smallest change in valence between customer turns that counts as a shift.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <h3>Behaviour status</h3>
+  <p>A behaviour's status comes from two readings: the strongest tag across employee turns, and (for conditional positive behaviours) the probability that it was called for.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Polarity</th><th>Condition</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><th rowspan="3">Positive</th><td>Detected in at least one turn</td><td><span class="pill good">demonstrated</span></td></tr>
+        <tr><td>Not detected, and called for (P ≥ 0.5)</td><td><span class="pill warn">missed</span></td></tr>
+        <tr><td>Not detected, and not called for</td><td><span class="pill quiet">not applicable</span></td></tr>
+        <tr><th rowspan="2">Negative</th><td>Detected in at least one turn</td><td><span class="pill bad">violated</span></td></tr>
+        <tr><td>Never detected</td><td><span class="pill good">clear</span></td></tr>
+        <tr><th>Either</th><td>The skill needs audio or video the call does not have</td><td><span class="pill quiet">not assessed</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>"Missed" needs the second reading. Without it, a call in which nobody asked for a guarantee would mark "Sets honest expectations" as a failure. A behaviour with no <code>expectedWhen</code> is expected on every call, and can only be called missed once the call is over; while the call is live it stays "not applicable", which the interface can show as "not yet".</p>
+  <h3>Skill score</h3>
+  <p>The model returns a probability for each rubric level. The skill's expected level is the weighted average of the level indices, and the normalised score is that level divided by the top index, times 100. The evaluation keeps the whole distribution, the most likely single level and the model's confidence in it, because two very different distributions can share one average.</p>
+  <h3>Overall score: weight by how fairly each skill can be judged</h3>
+  <p>The gate reading for each skill is its <strong>observability</strong>. Each skill counts in proportion to its weight times its observability:</p>
+<pre><code>overall  = Σ (weight × observability × score) ÷ Σ (weight × observability)
+coverage = Σ (weight × observability) ÷ Σ weight</code></pre>
+  <p>Coverage is the share of the scorecard the call has given a fair basis to judge. A live score always travels with it, so "74 on 48% of the scorecard" is read differently from "74 on 93%". If coverage is under 10% there is no overall score at all.</p>
+  <p>This is the JEV batch result for <code>call-1002</code>, with the arithmetic shown.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Skill</th><th class="n">Weight</th><th class="n">Observability</th><th class="n">Score</th><th class="n">Effective weight</th><th class="n">Contribution</th></tr></thead>
+      <tbody>
+        <tr><th>Empathy</th><td class="n">20</td><td class="n">0.87</td><td class="n">68.8</td><td class="n">17.40</td><td class="n">1,197.1</td></tr>
+        <tr><th>Accuracy</th><td class="n">20</td><td class="n">0.96</td><td class="n">35.5</td><td class="n">19.20</td><td class="n">681.6</td></tr>
+        <tr><th>Security</th><td class="n">20</td><td class="n">0.91</td><td class="n">35.8</td><td class="n">18.20</td><td class="n">651.6</td></tr>
+        <tr><th>Resolution</th><td class="n">25</td><td class="n">0.96</td><td class="n">69.8</td><td class="n">24.00</td><td class="n">1,675.2</td></tr>
+        <tr><th>Communication</th><td class="n">15</td><td class="n">0.95</td><td class="n">71.5</td><td class="n">14.25</td><td class="n">1,018.9</td></tr>
+        <tr class="total"><th>Total</th><td class="n">100</td><td class="n"></td><td class="n"></td><td class="n">93.05</td><td class="n">5,224.4</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">5,224.4 ÷ 93.05 = 56.1 overall. Coverage is 93.05 ÷ 100 = 0.931. Both match what the API returned.</p>
+  <h3>Why the weighting is soft, and why it applies after the call too</h3>
+  <p>Observability is used as a continuous weight, with no cut-off. A cut-off would make the live score jump the moment a gate crossed it, and would discard the information that a skill is, say, 60% judgeable.</p>
+  <p>The gate is asked on the final pass as well, with different wording. Early in the design it was forced to 1 at the end, on the theory that a finished call can be judged on everything. That is false. A two-minute trial cancellation gives an employee almost no chance to show empathy; on the seeded call <code>call-1005</code> the gate for Empathy came back at 0.32. Forcing it to 1 would have counted a generic "Adequate" at full weight. A coach would mark that skill "not applicable", and the system now does the proportional equivalent.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 760 256" role="img" aria-label="Live replay of call-1001 on JEV. The score falls to 18 at turn 4 after the employee brushes off the customer, then climbs to 84 by turn 24, while coverage rises from 12 percent to 93 percent.">
+        <g class="grid">
+          <line x1="60" y1="220" x2="730" y2="220"/><line x1="60" y1="175" x2="730" y2="175"/><line x1="60" y1="130" x2="730" y2="130"/><line x1="60" y1="85" x2="730" y2="85"/><line x1="60" y1="40" x2="730" y2="40"/>
+        </g>
+        <g text-anchor="end">
+          <text x="52" y="224" class="ts">0</text><text x="52" y="179" class="ts">25</text><text x="52" y="134" class="ts">50</text><text x="52" y="89" class="ts">75</text><text x="52" y="44" class="ts">100</text>
+        </g>
+        <g text-anchor="middle">
+          <text x="115" y="238" class="ts">turn 2</text><text x="225" y="238" class="ts">6</text><text x="390" y="238" class="ts">12</text><text x="555" y="238" class="ts">18</text><text x="720" y="238" class="ts">24</text>
+        </g>
+        <polyline class="ln-dash" points="115,198 170,133.4 225,94.7 280,88.8 335,81.2 390,73.7 445,63 500,62.3 555,60.2 610,58.5 665,57.5 720,53.1"/>
+        <polyline class="ln-acc" points="115,160.4 170,186.9 225,108.6 280,104.4 335,105.9 390,104.4 445,94.9 500,86.8 555,76.7 610,71.9 665,70.6 720,69"/>
+        <circle cx="720" cy="69" r="4" class="dot-acc"/>
+        <circle cx="170" cy="186.9" r="4" class="dot-ring"/>
+        <text x="182" y="206" class="t">18 at turn 4: the employee brushed off the duplicate charge at turn 3</text>
+        <text x="730" y="28" text-anchor="end" class="tm">dashed: coverage, % of scorecard judgeable</text>
+        <text x="600" y="104" text-anchor="end" class="tacc">live score</text>
+        <text x="716" y="88" text-anchor="end" class="tb">84</text>
+      </svg>
+    </div>
+    <figcaption>Twelve passes over the 24-turn seeded call <code>call-1001</code>, scored every two turns on JEV. The low early score is real evidence about the employee's opening, reported with the low coverage it rested on.</figcaption>
+  </figure>
+</section>
+
+<!-- 8 -->
+<section id="journey">
+  <h2><span class="num">8</span>The customer's side: sentiment, emotion and risk</h2>
+  <p>These signals describe the customer. They never enter the employee's score. A customer can be furious for reasons the employee did not cause, and an employee can do everything right and still deliver bad news. What the signals are for is context: they show a coach which moments mattered.</p>
+  <h3>Two readings per customer turn</h3>
+  <ul>
+    <li><strong>Sentiment</strong> is an ordered rubric with five described levels, from "Very negative: angry, hostile, or threatening to leave or escalate" to "Very positive: delighted or openly grateful". The expected level (0 to 4) is rescaled to a <strong>valence</strong> between −1 and +1 with <code>(level − 2) ÷ 2</code>. An ordered scale gives a number that can be plotted and differenced.</li>
+    <li><strong>Emotion</strong> is a choice among six labels, each with a description: anxious, cooperative, frustrated, neutral, reassured, skeptical. A label says <em>what kind</em> of negative: anxious and frustrated call for different responses.</li>
+  </ul>
+  <p>Two details of the emotion question come from how choice questions behave. A choice always spreads its probability across the options given, even when none fits, so "neutral" is an explicit option with its own description. And the Gemini API sorts option keys alphabetically before evaluating them, so no key depends on its position; a catch-all called "none_of_the_above" would sort into the middle of the list.</p>
+  <p>Reading every customer turn separately replaced a single label for the call. The longest seeded call ends with a satisfied customer, and a single label would have said only that. The per-turn readings show a customer who started at a valence of about −0.5, hit bottom at turn 6 after being told to restart the router a third time, and recovered once the employee apologised and restated the problem.</p>
+  <h3>Shifts and the arc</h3>
+  <p>A <strong>shift</strong> is a change in valence of at least 0.4 between two consecutive customer turns. Each shift records the employee turns that sit between them, which is what links emotion to behaviour: if a detected behaviour falls in those turns, its coaching point is marked with the direction the customer moved. A positive behaviour before an upward shift is a strength that visibly worked. A negative behaviour before a downward shift is the first thing to coach.</p>
+  <p>The <strong>arc</strong> is one label for the whole journey, classified from the average of the first two readings, the average of the last two, and the lowest point.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Arc</th><th>Rule, checked in this order</th></tr></thead>
+      <tbody>
+        <tr><th>recovered</th><td>The low point is at or below −0.35 and the end is at or above +0.2</td></tr>
+        <tr><th>improved</th><td>End minus start is at least +0.35</td></tr>
+        <tr><th>declined</th><td>End minus start is at most −0.35</td></tr>
+        <tr><th>steady positive / neutral / negative</th><td>Otherwise, by whether the average valence is above +0.2, below −0.2 or between</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>"Recovered" is checked first because it is the story a coach most wants to find: the customer was lost and the employee won them back.</p>
+  <h3>Escalation risk</h3>
+  <p>One rubric question on every pass asks how likely the customer is to escalate, complain or leave if the call ended now, on four levels from "Low" to "High". It is a call-level reading and is replaced on each pass, so in a live session it behaves like a gauge.</p>
+</section>
+
+<!-- 9 -->
+<section id="coaching">
+  <h2><span class="num">9</span>Coaching without generated text</h2>
+  <p>The model cannot write, so coaching is assembled. <code>buildCoaching</code> walks the composed skills and picks sentences that already exist in the scorecard.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Output</th><th>Built from</th><th>Text shown</th></tr></thead>
+      <tbody>
+        <tr><th>Strengths (up to 3)</th><td>Demonstrated behaviours, ranked by skill weight times detection probability. One that preceded an upward sentiment shift goes to the top.</td><td>The behaviour's name and statement, with its turns</td></tr>
+        <tr><th>Opportunities (up to 3)</th><td>Violated behaviours first, then missed ones ranked by skill weight times how clearly they were called for.</td><td>The behaviour's name and its tip</td></tr>
+        <tr><th>Flags</th><td>Any critical behaviour that was detected</td><td>The behaviour's name, tip and turns</td></tr>
+        <tr><th>Focus</th><td>The judgeable skill losing the most weighted points: the largest <code>weight × (100 − score)</code></td><td>The current level's label, and the next level's label and description as the target</td></tr>
+        <tr><th>Review reasons</th><td>Signals that a person should check this evaluation</td><td>A sentence per reason</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The focus is chosen by points lost, weighted, and by nothing else. The lowest-scoring skill is often a low-weight one that would move the overall score least. And the target is the <em>next</em> level's description because "get to Exceptional" is no use to someone sitting at "Partial"; the rubric already contains the sentence that describes one step up.</p>
+  <h3>When an evaluation asks for a human</h3>
+  <p>An evaluation is marked as needing review for any of three reasons.</p>
+  <ul>
+    <li><strong>A critical behaviour was detected.</strong> A possible security breach is always worth a person's time.</li>
+    <li><strong>The model is torn between distant levels.</strong> The <em>adjacent mass</em> of a skill is the probability on its most likely level plus the levels immediately either side. Below 0.75 the model is putting real weight on levels two or more steps apart, which means it does not know whether the performance was good or bad.</li>
+    <li><strong>The rubric and the behaviours contradict each other.</strong> A skill rated at the top level although a problem behaviour was detected in more than one turn, or rated in the bottom two levels although every expected behaviour was detected and none was violated. They were asked independently, so one of them is wrong. A single slip does not trigger this, because the top rubric level for Empathy explicitly includes repairing a misstep.</li>
+  </ul>
+  <h3>Why low confidence alone is not the trigger</h3>
+  <p>The first version flagged any skill whose confidence, the probability of its most likely level, was under 0.5. On the first four calls scored it flagged all four. The cause was ordinary: with five levels, a model that is split 0.47 to 0.45 between "Accurate" and "Precise" has a confidence of 0.47 and no real doubt about the employee. Hesitating between neighbours is how a well-calibrated model should rate a performance that sits between two descriptions.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Distribution over levels 0 to 4</th><th class="n">Confidence</th><th class="n">Adjacent mass</th><th>Reviewed?</th></tr></thead>
+      <tbody>
+        <tr><td>0.00 · 0.10 · 0.51 · 0.25 · 0.14</td><td class="n">0.51</td><td class="n">0.86</td><td>No. Centred on "Mostly accurate" with neighbours either side.</td></tr>
+        <tr><td>0.00 · 0.00 · 0.00 · 0.47 · 0.53</td><td class="n">0.53</td><td class="n">1.00</td><td>No. Between two adjacent levels.</td></tr>
+        <tr><td>0.27 · 0.18 · 0.52 · 0.03 · 0.00</td><td class="n">0.52</td><td class="n">0.73</td><td>Yes. A quarter of the probability says "Misleading", two levels below the pick.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="cap">All three rows are real distributions from the seeded calls on JEV. With the adjacent-mass rule, 2 of the 9 seeded calls were marked for review in a full batch.</p>
+</section>
+
+<!-- 10 -->
+<section id="realtime">
+  <h2><span class="num">10</span>Scoring during the call</h2>
+  <p>A live session is a call whose turns are still arriving. The scoring pass is the same function used for a finished transcript; only two things differ. The stage is <strong>provisional</strong> until the input ends and <strong>final</strong> on the last pass, which changes the wording of a few questions. And the readings from earlier passes are handed back in, so turns already read are skipped.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 760 244" role="img" aria-label="Three sources push turns into a live session. The session starts a scoring pass when enough turns are waiting or the input has ended, at most one pass at a time. The pass sends questions to a decision provider, saves the evaluation, and re-checks whether another pass is owed.">
+        <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ah"/></marker></defs>
+        <rect x="10" y="24" width="170" height="42" rx="6" class="box"/><text x="22" y="42" class="tb">Replay</text><text x="22" y="58" class="tm">stored turns on a timer</text>
+        <rect x="10" y="84" width="170" height="42" rx="6" class="box"/><text x="22" y="102" class="tb">Stream</text><text x="22" y="118" class="tm">turns POSTed as spoken</text>
+        <rect x="10" y="144" width="170" height="42" rx="6" class="box"/><text x="22" y="162" class="tb">Voice practice call</text><text x="22" y="178" class="tm">a voice model transcribes</text>
+        <line x1="180" y1="45" x2="238" y2="88" class="ln" marker-end="url(#ah2)"/>
+        <line x1="180" y1="105" x2="238" y2="105" class="ln" marker-end="url(#ah2)"/>
+        <line x1="180" y1="165" x2="238" y2="122" class="ln" marker-end="url(#ah2)"/>
+        <rect x="240" y="65" width="130" height="80" rx="6" class="box"/>
+        <text x="305" y="98" text-anchor="middle" class="tb">Live session</text><text x="305" y="116" text-anchor="middle" class="tm">turns + readings</text>
+        <line x1="370" y1="105" x2="428" y2="105" class="ln" marker-end="url(#ah2)"/><text x="399" y="97" text-anchor="middle" class="tm">start</text>
+        <rect x="430" y="65" width="130" height="80" rx="6" class="box-acc"/>
+        <text x="495" y="98" text-anchor="middle" class="tb">Scoring pass</text><text x="495" y="116" text-anchor="middle" class="tm">one in flight</text>
+        <line x1="560" y1="94" x2="618" y2="94" class="ln" marker-end="url(#ah2)"/><text x="589" y="86" text-anchor="middle" class="tm">questions</text>
+        <line x1="620" y1="118" x2="562" y2="118" class="ln" marker-end="url(#ah2)"/><text x="589" y="134" text-anchor="middle" class="tm">answers</text>
+        <rect x="620" y="65" width="130" height="80" rx="6" class="box"/>
+        <text x="685" y="98" text-anchor="middle" class="tb">Decision provider</text><text x="685" y="116" text-anchor="middle" class="tm">Gemini · OpenAI · JEV</text>
+        <path d="M495 145 V200 H305 V147" class="ln" marker-end="url(#ah2)"/>
+        <text x="400" y="218" text-anchor="middle" class="tm">save the evaluation, then check whether another pass is owed</text>
+      </svg>
+    </div>
+    <figcaption>Whatever feeds a session, it ends in the same two things: new turns on the session and a check on whether a pass is owed.</figcaption>
+  </figure>
+  <h3>One pass in flight, and turns coalesce</h3>
+  <p>A pass is owed when the number of unscored turns reaches the session's "score every N turns" setting, and always once the input is complete. At most one pass per session runs at a time. Turns that arrive while a pass is running simply wait, and the next pass picks all of them up together. So a slow provider makes passes larger and less frequent. It never builds a queue of stale requests, and the session never falls further behind than one pass.</p>
+  <p>Each pass writes a full evaluation. The interface subscribes to the session over Server-Sent Events (<code>GET /api/live/:id/events</code>) and is pushed the whole session after every change: a new turn, a pass starting, a pass finishing. Each push carries the latest evaluation, the score history and the request ledger. A reset gives a replay a fresh run, so the abandoned run's evaluations and requests stay attributable, and a result that returns after a reset is dropped because its run id no longer matches.</p>
+  <h3>Sources</h3>
+  <ul>
+    <li><strong>Replay</strong> reveals a stored transcript one turn per interval. It is how the seeded demo calls are played.</li>
+    <li><strong>Stream</strong> is an ingest API. <code>POST /api/live/stream</code> opens a call, <code>POST /api/live/:id/turns</code> appends a turn with a speaker and text, and a control action of <code>end</code> says the call is over. Anything that produces turns can use it: a contact-centre transcription feed, a meeting bot, a test script.</li>
+    <li><strong>Voice practice call</strong> uses a real-time voice model, Gemini Live (<code>gemini-3.8-live</code>), to play the customer while a person speaks as the employee. The Live API transcribes both directions as it goes: input transcription is the employee, output transcription is the customer. That gives speaker-attributed turns with no separate speech-to-text step, and they enter scoring through the same path as a stream. The model sits behind an interface, so another real-time model can replace it.</li>
+  </ul>
+  <h3>How a voice call becomes turns</h3>
+  <p>A practice call is one WebSocket from the browser. Microphone audio goes up as 16 kHz PCM, with an optional camera frame once a second; the customer's voice comes back as 24 kHz PCM. The server holds the voice model's connection and its API key, so the browser never talks to the model directly. Three details turn that continuous exchange into scoreable turns:</p>
+  <ul>
+    <li><strong>Turn boundaries come from the voice model.</strong> The model starting to reply means the employee has finished. The employee's turn is closed 600 ms later, because their transcription can trail the first syllables of the reply, and it is always appended before the customer's turn that answers it.</li>
+    <li><strong>Each turn's audio is cut from the stream by time.</strong> The Live API reports when the speaker started and stopped as offsets into the audio sent so far. The server keeps a rolling 45-second window of microphone audio and slices the turn out by those offsets, with 0.3 seconds of padding and a 30-second cap. The customer's clip is simply the audio the model generated for that turn.</li>
+    <li><strong>Media rides with the turn.</strong> The clip, and up to three camera frames spread across the turn, are attached when the turn is appended, so the pass that reads the turn's words reads its sound and picture too. Clips live in memory for the length of the session and are never written to disk.</li>
+  </ul>
+  <p>The design question in the practice call is what a scoring system looks like when audio is piped through a real-time model. The answer here is that the real-time model's job is the conversation and the transcript, and the decision model's job is judgement. They are separate requests with separate latency budgets, and the scoring side does not care which model produced the turns.</p>
+</section>
+
+<!-- 11 -->
+<section id="channels">
+  <h2><span class="num">11</span>Transcript, audio and video</h2>
+  <p>If you have the audio, do you still need the transcript? If you have video, do you need either? The answer the design settled on, and which a set of experiments against the live Gemini Decisions API then tested: <strong>the transcript is always kept, and audio and video are added to it for what words cannot carry.</strong> The experiments, their raw results and a longer set of notes are in <a href="research/modalities/NOTES.md"><code>docs/research/modalities/NOTES.md</code></a>; the numbers in this section come from there.</p>
+  <h3>Why the transcript stays</h3>
+  <ul>
+    <li><strong>It is the cheapest carrier of what was said.</strong> Audio was billed at 30 tokens per second in every run (the documentation says 25), so a 10-minute call is about 18,000 tokens of audio. The same call is roughly 3,000 tokens of transcript. On a 67-second test call, the recording answered turn-level questions exactly as well as the transcript (26 of 29 correct for both) at 6 times the tokens and 2.6 times the latency.</li>
+    <li><strong>It is the addressing scheme.</strong> A question can say "the turn labelled [turn-18]" and a coach can read and quote that turn. A recording has no labels to point at. Asking about "the fourth time the employee speaks" got 15 of 29 right with 11 false positives; asking by time range worked, but the time ranges come from a transcript or diarisation in the first place.</li>
+    <li><strong>Repeated input is billed in full, and it is slow.</strong> The Decisions API has no context caching. Resending the growing recording on every pass over a 10-minute call would cost around 360,000 audio tokens, against 18,000 for reading each second once. Latency is the stronger argument: a request took about 0.4 seconds plus 10 ms per second of audio, so a pass over nine minutes of recording took about six seconds.</li>
+    <li><strong>It comes free with a real-time model.</strong> The Live API produces the transcript alongside the audio.</li>
+  </ul>
+  <h3>What the other channels add</h3>
+  <p>Audio carries how something was said: pace, warmth, irritation, a sigh. Video carries what was visible: whether the employee was facing the camera or reading another screen. Both signals are real, and measurably so:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Channel</th><th>Test</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><th>Audio</th><td>Actors saying the same neutral sentence in different deliveries</td><td>Sentiment 0.89 (on the 0 to 4 scale) for the angry delivery against 1.95 for the neutral one; "sounds irritated" at 0.72 against 0.25</td></tr>
+        <tr><th>Video</th><td>Single frames of one agent in different states</td><td>Presence rated 0.7 to 1.0 when slumped or on a phone against 2.5 to 3.6 when attentive or engaged; "looks away" at 0.78 to 0.86 against 0.13 to 0.14</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Neither replaces the other, and neither replaces the transcript. A real video clip does carry its own sound (a spoken sentence was recognised from a video block), so one short video clip per turn could stand in for separate frames and audio; that is a planned next step, because it needs the browser to record per-turn clips. Today the practice call captures video as still frames, and frames have no sound. Two cautions from the same experiments: audio adds little when the voice is synthetic, because a text-to-speech voice mostly repeats what its words already say, and the model never answers "there is nothing here". Three seconds of silence came back as an ordinary "neutral" rating.</p>
+  <p>So every skill declares the <strong>channel</strong> it is judged from.</p>
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 760 222" role="img" aria-label="Three channels. The verbal channel sends the transcript and feeds the five transcript skills and the customer journey. The vocal channel sends an audio clip of one turn and feeds Vocal delivery and voice sentiment. The visual channel sends frames of one turn and feeds On-camera presence.">
+        <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ah"/></marker></defs>
+        <text x="10" y="20" class="tm">SENT WITH THE QUESTIONS</text><text x="270" y="20" class="tm">ASKED</text><text x="550" y="20" class="tm">FEEDS</text>
+        <rect x="10" y="32" width="220" height="50" rx="6" class="box"/><text x="22" y="53" class="tb">Verbal: the transcript so far</text><text x="22" y="70" class="tm">text, about 5 tokens per second</text>
+        <rect x="270" y="32" width="240" height="50" rx="6" class="box"/><text x="282" y="53" class="t">Rubrics, gates, behaviours per turn,</text><text x="282" y="70" class="t">sentiment and emotion from words</text>
+        <rect x="550" y="32" width="200" height="50" rx="6" class="box"/><text x="562" y="53" class="t">Five transcript skills,</text><text x="562" y="70" class="t">customer journey, risk</text>
+        <rect x="10" y="94" width="220" height="50" rx="6" class="box-acc"/><text x="22" y="115" class="tb">Vocal: audio clip of one turn</text><text x="22" y="132" class="tm">30 tokens per second</text>
+        <rect x="270" y="94" width="240" height="50" rx="6" class="box"/><text x="282" y="115" class="t">Tone rubric and behaviours;</text><text x="282" y="132" class="t">customer sentiment from the voice</text>
+        <rect x="550" y="94" width="200" height="50" rx="6" class="box"/><text x="562" y="115" class="t">Vocal delivery;</text><text x="562" y="132" class="t">sentiment fused with words</text>
+        <rect x="10" y="156" width="220" height="50" rx="6" class="box-acc"/><text x="22" y="177" class="tb">Visual: frames of one turn</text><text x="22" y="194" class="tm">264 tokens per low-res image</text>
+        <rect x="270" y="156" width="240" height="50" rx="6" class="box"/><text x="282" y="177" class="t">Presence rubric and behaviours</text><text x="282" y="194" class="t">on what the frames show</text>
+        <rect x="550" y="156" width="200" height="50" rx="6" class="box"/><text x="562" y="181" class="t">On-camera presence</text>
+        <line x1="230" y1="57" x2="268" y2="57" class="ln" marker-end="url(#ah3)"/><line x1="510" y1="57" x2="548" y2="57" class="ln" marker-end="url(#ah3)"/>
+        <line x1="230" y1="119" x2="268" y2="119" class="ln" marker-end="url(#ah3)"/><line x1="510" y1="119" x2="548" y2="119" class="ln" marker-end="url(#ah3)"/>
+        <line x1="230" y1="181" x2="268" y2="181" class="ln" marker-end="url(#ah3)"/><line x1="510" y1="181" x2="548" y2="181" class="ln" marker-end="url(#ah3)"/>
+      </svg>
+    </div>
+    <figcaption>Media is sent as a short clip of the one turn being read, never as the whole recording. An 8-second turn is about 240 tokens of audio.</figcaption>
+  </figure>
+  <h3>How a clip is sent</h3>
+  <p>Media questions travel in their own lane. Each turn's clip gets a request of its own, so a question never has to say which of several recordings it means. A clip is read once and never sent again. Three decisions in this lane were changed by measurement.</p>
+<pre><code>The attached audio clip is one turn of a customer support call, spoken by the CUSTOMER.
+
+  + one audio block (the clip of that turn)
+
+Question: Listen to the attached audio clip of the CUSTOMER. Judging by the sound of
+their voice (tone, pace and emphasis) rather than the words, how does the customer feel?</code></pre>
+  <ul>
+    <li><strong>No transcript travels with a clip.</strong> The first version sent the last four turns as text beside the audio, for context. That text pulled the reading towards the words: an angry voice saying something neutral fell from 0.79 to 0.31 on "sounds irritated" once its words sat next to it. A clip now carries one line saying whose voice or picture it is. The words are still read, by the transcript lane.</li>
+    <li><strong>One turn per request.</strong> Several labelled clips in one request can be addressed separately, but a neighbouring clip moved one answer by a full sentiment level.</li>
+    <li><strong>A visual behaviour is asked of each frame, and combined in code.</strong> Asked over a set of frames, a brief lapse is averaged away: looking away in two frames of six scored 0.33, under the detection threshold. Asked frame by frame, those two frames scored 0.87 and 0.89. So each frame is labelled, each behaviour is asked of each frame, and the turn's reading is the highest frame for a problem behaviour and the average for a good habit. The rubric is asked once over the set, where an overall impression is what is wanted.</li>
+  </ul>
+  <p>There are three kinds of clip request:</p>
+  <ul>
+    <li><strong>An employee turn with audio</strong> is asked the rubric and the behaviours of every vocal skill, with the instruction to "judge only how the employee sounds in this clip, not the words they chose".</li>
+    <li><strong>An employee turn with video frames</strong> (up to three, spread across the turn) is asked the rubric of every visual skill over the frames, and its behaviours frame by frame.</li>
+    <li><strong>A customer turn with audio</strong> is asked one question: sentiment from the sound of the voice, on the same five levels used for sentiment from words.</li>
+  </ul>
+  <p>A clip is only sent if there is something in it. Audio shorter than a second, or too quiet to contain speech, is dropped in code before any question is asked, because the model would rate the silence. The transcript questions are unaffected: they go out as before, against the transcript alone, in the same pass.</p>
+  <h3>How media skills are scored</h3>
+  <p>A transcript skill gets one rubric rating for the call so far. A vocal or visual skill cannot work that way without resending the recording, and it does not need to. Tone is a property of each utterance. So a media skill's rubric is asked once per employee turn, on that turn's clip, and the turn ratings are averaged: the expected level is the mean of the turns' expected levels and the level distribution is the mean of their distributions. Its behaviours are tagged from the same clip. Like transcript turns, each clip is read once.</p>
+  <h3>One scorecard for three kinds of call</h3>
+  <p>A call with no audio leaves "Vocal delivery" <strong>unassessed</strong>. Its observability is 0, its behaviours read "not assessed", and the observability weighting from <a href="#composition">section 7</a> removes it from the overall score with no special case. The same scorecard therefore scores a chat transcript, a phone call and a video call, and the scores stay comparable on the skills they share. The evaluation records which channels contributed.</p>
+  <h3>Words and voice can disagree</h3>
+  <p>When a customer turn has audio, sentiment is read twice: once from the words and once from the voice, each without sight of the other. The journey uses their average, weighted equally, and keeps both readings. A turn where the two are a full level or more apart is marked as a <strong>mixed signal</strong>. Equal weighting is a starting point and should not be tuned without coach labels. Keeping both matters more than the weighting: a customer who says "fine, whatever works" in a flat, clipped voice has high sentiment in words and low in voice, and that gap is exactly what a coach wants pointed out.</p>
+  <div class="note">
+    <p><strong>Provider support.</strong> Only a provider with media input can read the vocal and visual channels, which today means Gemini. On OpenAI Decisions and JEV, media questions are not sent and the media skills stay unassessed. Nothing is approximated from the transcript in their place.</p>
+  </div>
+</section>
+
+<!-- 12 -->
+<section id="ground-truth">
+  <h2><span class="num">12</span>Ground truth from coaches</h2>
+  <p>Nothing above establishes that the scores are right. Two providers gave the same turn 0.59 and 0.98. The thresholds in <a href="#composition">section 7</a> are defaults chosen by looking at a handful of calls. The only way to know whether a score deserves trust, and the only principled way to set a threshold, is to compare the system with people who know what good looks like on calls they have rated themselves.</p>
+  <h3>The review</h3>
+  <p>A coach opens a call and rates it on the active scorecard: a level for each skill, a three-way label for each behaviour, and notes.</p>
+  <ul>
+    <li><strong>It is blind.</strong> The coach rates before seeing the AI's evaluation, and the comparison appears only after they submit. A coach who sees "AI: Strong" first will anchor on it, and the agreement number would then measure the AI's influence on the coach.</li>
+    <li><strong>It uses the same rubric.</strong> The coach picks from the same described levels the model chose between, so the two ratings are directly comparable with no mapping in between.</li>
+    <li><strong>"Not applicable" is a first-class answer.</strong> A coach who cannot fairly judge a skill leaves it unrated, and that skill is left out of the comparison. Behaviour labels are <em>yes</em> (it happened), <em>no</em> (it was called for and did not happen, or for a negative behaviour, it did not happen) and <em>n/a</em>.</li>
+    <li><strong>One review per coach per call, pinned to a scorecard version.</strong> Saving again replaces that coach's earlier ratings. A draft is work in progress; only submitted reviews count as ground truth.</li>
+  </ul>
+  <p>A rating is compared with an AI rating only when both were made on a rubric with the same number of levels for that skill. A rating made against an older, differently shaped rubric is left out. It is never stretched to fit.</p>
+  <h3>What to review next</h3>
+  <p>Coach time is the scarce resource, so the review queue orders calls by how much a review would teach: calls nobody has reviewed first, then calls the AI marked as needing review, then lowest AI confidence. The queue shows that the AI is unsure. It does not show the score or its direction, so the ordering does not break blindness.</p>
+  <h3>Reading the agreement report</h3>
+  <p>For each provider, the report pairs every submitted review with that provider's most recent final evaluation of the same call and compares them skill by skill.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Metric</th><th>What it is</th><th>How to read it</th></tr></thead>
+      <tbody>
+        <tr><th>Exact agreement</th><td>Share of skill ratings where the AI's most likely level equals the coach's level</td><td>Strict. On a five-level rubric two careful coaches often differ by one.</td></tr>
+        <tr><th>Within one level</th><td>Share where they differ by at most one level</td><td>The practical measure. Misses of two or more levels are the ones that change a coaching conversation.</td></tr>
+        <tr><th>Mean absolute error</th><td>Average gap between the AI's expected level and the coach's level, in levels</td><td>"On average the AI is 0.6 of a level away."</td></tr>
+        <tr><th>Bias</th><td>The same gap with its sign kept</td><td>Positive means the AI is more lenient than coaches. A consistent bias can be corrected; scatter cannot.</td></tr>
+        <tr><th>Quadratic weighted kappa</th><td>Agreement corrected for chance, with a miss penalised by the square of its size</td><td>0 is chance, 1 is perfect. It suits ordinal rubrics: a two-level miss costs four times a one-level miss, and a model that rates everything "Strong" gets no credit when most calls are in fact strong.</td></tr>
+        <tr><th>Overall score error</th><td>The AI's 0 to 100 score against the coach's, computed on the AI's weights over the skills the coach rated</td><td>Whether the headline number can be trusted even when individual skills wobble.</td></tr>
+        <tr><th>Behaviour agreement</th><td>Share of behaviours where the AI's status matches the coach's label</td><td>Three-way agreement across yes, no and n/a.</td></tr>
+        <tr><th>Behaviour precision</th><td>Of the behaviours the AI said happened, the share the coach also saw</td><td>Low precision means false alarms. Raise <code>detectThreshold</code>.</td></tr>
+        <tr><th>Behaviour recall</th><td>Of the behaviours the coach saw, the share the AI detected</td><td>Low recall means missed evidence. Lower the threshold or sharpen the statement.</td></tr>
+        <tr><th>Calibration</th><td>Skill ratings grouped by AI confidence (under 50%, 50–69%, 70–89%, 90% and up), with the exact-agreement rate in each group</td><td>A calibrated model is right about as often as it says. If the 90% group agrees 60% of the time, confidence cannot be used for routing yet.</td></tr>
+        <tr><th>Disagreements</th><td>The largest misses, biggest gap first and most confident first within a gap</td><td>A reading list. Confident, large misses usually point at an ambiguous level description.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Kappa is reported as undefined when it cannot be computed honestly: fewer than two pairs, skills with different numbers of levels pooled together, or no variation in the ratings.</p>
+  <h3>The human baseline</h3>
+  <p>When two coaches have rated the same call, the report computes the same statistics between them. That number is the ceiling. If two experienced coaches agree exactly 65% of the time, an AI at 62% is performing like a coach, and an AI at 90% would be suspicious. Without the baseline an agreement figure has nothing to be compared with.</p>
+  <h3>Agreement per run</h3>
+  <p>Every scoring run also reports its agreement with the coach reviews of the calls it scored, computed from the flat result rows. That turns a scorecard edit or a provider switch into an experiment: score the reviewed calls again and see whether agreement went up.</p>
+</section>
+
+<!-- 13 -->
+<section id="data-model">
+  <h2><span class="num">13</span>Data model</h2>
+  <p>The database is SQLite with thirteen tables in four groups. Each table is a TypeORM entity kept beside the module that owns it, and the schema is created by migrations rather than synchronised from the entities, so it changes only when a migration says so. Three ideas shape it.</p>
+  <ul>
+    <li><strong>Scorecards are versioned and immutable.</strong> Runs, live sessions, evaluations and coach reviews each record the version they were made against.</li>
+    <li><strong>Everything the model produced is an evaluation.</strong> A batch run writes one final evaluation per call. A live session is a scoring run whose evaluations are provisional until the last. There is no separate "snapshot" concept, and a live session's score history is a query over its run's evaluations.</li>
+    <li><strong>Measurement is first-class.</strong> <code>provider_requests</code> is a ledger with one row per API call, successful or not, holding latency, tokens, question count and estimated cost. <code>skill_results</code> and <code>behavior_results</code> repeat an evaluation's key numbers as flat rows, so agreement and trends are plain SQL with no JSON parsing.</li>
+  </ul>
+  <figure>
+    <div class="fig-scroll">
+      <svg viewBox="0 0 780 250" role="img" aria-label="Four groups of tables. Definition holds scorecards and their versions. Execution holds calls, scoring runs, run calls, live sessions and provider requests. Results holds evaluations with flat skill and behaviour results. Ground truth holds coach reviews with skill ratings and behaviour labels. Versions pin execution, execution fills results, and results are compared with ground truth.">
+        <defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="ah"/></marker></defs>
+        <rect x="10" y="34" width="160" height="96" rx="6" class="box"/>
+        <text x="20" y="56" class="tb">Definition</text>
+        <text x="20" y="82" class="tmono">scorecards</text><text x="20" y="104" class="tmono">scorecard_versions</text>
+        <rect x="210" y="34" width="160" height="162" rx="6" class="box"/>
+        <text x="220" y="56" class="tb">Execution</text>
+        <text x="220" y="82" class="tmono">calls</text><text x="220" y="104" class="tmono">scoring_runs</text><text x="220" y="126" class="tmono">run_calls</text><text x="220" y="148" class="tmono">live_sessions</text><text x="220" y="170" class="tmono">provider_requests</text>
+        <rect x="410" y="34" width="160" height="118" rx="6" class="box-acc"/>
+        <text x="420" y="56" class="tb">Results</text>
+        <text x="420" y="82" class="tmono">evaluations</text><text x="420" y="104" class="tmono">skill_results</text><text x="420" y="126" class="tmono">behavior_results</text>
+        <rect x="610" y="34" width="160" height="118" rx="6" class="box"/>
+        <text x="620" y="56" class="tb">Ground truth</text>
+        <text x="620" y="82" class="tmono">coach_reviews</text><text x="620" y="104" class="tmono">coach_skill_ratings</text><text x="620" y="126" class="tmono">coach_behavior_labels</text>
+        <line x1="170" y1="70" x2="208" y2="70" class="ln" marker-end="url(#ah4)"/><text x="190" y="24" text-anchor="middle" class="tm">pins</text>
+        <line x1="370" y1="70" x2="408" y2="70" class="ln" marker-end="url(#ah4)"/><text x="390" y="24" text-anchor="middle" class="tm">fills</text>
+        <line x1="572" y1="100" x2="608" y2="100" class="ln" marker-start="url(#ah4)" marker-end="url(#ah4)"/><text x="590" y="24" text-anchor="middle" class="tm">compared</text>
+        <text x="10" y="222" class="tm">scorecard_versions is referenced by scoring_runs, live_sessions, evaluations and coach_reviews.</text>
+        <text x="10" y="240" class="tm">skill_results and coach_skill_ratings meet on (call, skill); that join is the agreement report.</text>
+      </svg>
+    </div>
+    <figcaption>A scorecard version pins every run. A run fills evaluations and the request ledger. Evaluations are compared with coach reviews of the same call.</figcaption>
+  </figure>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Table</th><th>One row is</th><th>Worth knowing</th></tr></thead>
+      <tbody>
+        <tr><th><code>scorecards</code></th><td>A named scorecard</td><td></td></tr>
+        <tr><th><code>scorecard_versions</code></th><td>One immutable published definition</td><td>The definition is stored whole as JSON; the active scorecard is the newest version.</td></tr>
+        <tr><th><code>calls</code></th><td>A call and its transcript</td><td><code>source</code> is <code>seed</code> or <code>stream</code>. A call has no stored status; it is derived from its runs and evaluations.</td></tr>
+        <tr><th><code>scoring_runs</code></th><td>One batch run or one live session's run</td><td>Records provider, scorecard version and method version.</td></tr>
+        <tr><th><code>run_calls</code></th><td>One call's progress within a batch run</td><td>Holds a safe error message when a call fails.</td></tr>
+        <tr><th><code>provider_requests</code></th><td>One provider API call</td><td>Stage, turn count, question count, tokens, latency, estimated cost, success.</td></tr>
+        <tr><th><code>evaluations</code></th><td>One composed evaluation, provisional or final</td><td>Scalar columns for querying, plus the full document as JSON for display.</td></tr>
+        <tr><th><code>skill_results</code></th><td>One skill within an evaluation</td><td>Channel, whether it was assessed, level, expected level, confidence, observability.</td></tr>
+        <tr><th><code>behavior_results</code></th><td>One behaviour within an evaluation</td><td>Status and strongest detection probability.</td></tr>
+        <tr><th><code>live_sessions</code></th><td>The playback state of a live call</td><td>Holds the accumulated readings (<code>state</code>) between passes.</td></tr>
+        <tr><th><code>coach_reviews</code></th><td>One coach's review of one call</td><td>Unique per (call, coach); draft or submitted.</td></tr>
+        <tr><th><code>coach_skill_ratings</code></th><td>A coach's level for one skill</td><td></td></tr>
+        <tr><th><code>coach_behavior_labels</code></th><td>A coach's yes / no / n/a for one behaviour</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>A database created by the earlier schema is kept. The first migration renames its tables to <code>legacy_v1_*</code> and the second creates the new tables beside them, so earlier results stay readable with any SQLite client. Nothing is dropped. This was run against a copy of a real earlier database: its two evaluations were still there afterwards, under <code>legacy_v1_evaluations</code>.</p>
+</section>
+
+<!-- 14 -->
+<section id="measured">
+  <h2><span class="num">14</span>What we measured</h2>
+  <div class="note warn">
+    <p>These are a few observations from one development machine over the public internet on fictional calls. They show the method is practical. They are not a benchmark, and they say nothing about accuracy, which only coach reviews can establish.</p>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Observation</th><th class="n">JEV</th><th class="n">OpenAI Decisions</th></tr></thead>
+      <tbody>
+        <tr><th>357 questions about a 74-turn call in one request</th><td class="n">444 ms</td><td class="n">1,188 ms</td></tr>
+        <tr><th>136 questions about a 28-turn call in one request</th><td class="n">374 ms</td><td class="n">1,086 ms</td></tr>
+        <tr><th>Input tokens for those 136 questions</th><td class="n">13,385</td><td class="n">28,698</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Run on JEV</th><th class="n">Requests</th><th class="n">Questions</th><th class="n">Input tokens</th><th class="n">Est. cost</th><th class="n">Request latency</th></tr></thead>
+      <tbody>
+        <tr><th>Batch: all 9 seeded calls, complete transcripts</th><td class="n">14</td><td class="n">2,541</td><td class="n">189,190</td><td class="n">$0.0079</td><td class="n">154 ms median, 456 ms p95</td></tr>
+        <tr><th>Live replay: 24-turn call, a pass every 2 turns</th><td class="n">12</td><td class="n">506</td><td class="n">46,142</td><td class="n">$0.0019</td><td class="n">111 ms mean, 171 ms p95</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The two tables above were measured with an earlier draft of the scorecard. The runs below use the scorecard as shipped (five transcript skills, sixteen behaviours) and include Gemini Decisions.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Run</th><th class="n">Requests</th><th class="n">Questions</th><th class="n">Input tokens</th><th class="n">Est. cost</th><th class="n">Request latency</th></tr></thead>
+      <tbody>
+        <tr><th>Gemini: one 28-turn call, complete transcript</th><td class="n">1</td><td class="n">289</td><td class="n">28,835</td><td class="n">$0.0029</td><td class="n">1,044 ms</td></tr>
+        <tr><th>Gemini batch: all 9 seeded calls</th><td class="n">11</td><td class="n">2,081</td><td class="n">213,331</td><td class="n">$0.0213</td><td class="n">801 ms median, 1,660 ms p95</td></tr>
+        <tr><th>JEV batch: all 9 seeded calls</th><td class="n">11</td><td class="n">2,081</td><td class="n">160,861</td><td class="n">$0.0068</td><td class="n">200 ms median, 433 ms p95</td></tr>
+        <tr><th>Gemini live replay: 24-turn call, a pass every 2 turns</th><td class="n">12</td><td class="n">506</td><td class="n">56,559</td><td class="n">$0.0057</td><td class="n">364 ms mean, 550 ms p95</td></tr>
+        <tr><th>Voice practice call, 6 turns, transcript + audio</th><td class="n">13</td><td class="n">227</td><td class="n">27,925</td><td class="n">$0.0028</td><td class="n">526 ms mean, 848 ms p95</td></tr>
+        <tr><th>Voice practice call, 6 turns, transcript + audio + frames</th><td class="n">16</td><td class="n">236</td><td class="n">32,319</td><td class="n">$0.0032</td><td class="n">593 ms mean, 878 ms p95</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The two batches scored the same nine calls on the same questions and averaged 68.8 (Gemini) and 69.2 (JEV). In the practice calls, a clip request was small and slower per question than a transcript request: an employee audio clip with three questions was 600 to 1,100 tokens and 660 to 850 ms, a customer voice-sentiment question about 550 tokens and 540 to 790 ms, and three camera frames with three questions 1,280 to 1,450 tokens and 830 to 880 ms.</p>
+  <p>Two things stand out. Latency was nearly flat in the number of questions, which is what makes asking one question per behaviour per turn affordable. And the per-question token cost differed by about a factor of two between the two providers for identical questions, so cost comparisons have to be measured, not inferred from the price per token. Gemini and OpenAI charge the same rate, yet JEV scored the batch for a third of Gemini's cost because it counted fewer tokens for the same questions at a lower rate.</p>
+  <p>The cost estimates use each provider's published input rate ($0.042 per million tokens for JEV, $0.10 for OpenAI Decisions and Gemini Decision 1) with output free.</p>
+</section>
+
+<!-- 15 -->
+<section id="limits">
+  <h2><span class="num">15</span>Limits and open questions</h2>
+  <div class="note">
+    <p id="gemini-verification"><strong>What was run against the live Gemini APIs.</strong> All of it, on 11 November 2026, the day the Decisions API launched. Gemini Decisions scored the seeded transcripts in batch and in live replays through the adapter written from its documentation, with no changes needed. The Gemini Live practice call ran end to end, with synthesised employee speech standing in for a microphone: Gemini Live answered as the customer, both sides were transcribed into turns, and the per-turn audio clips and camera frames were read by Gemini Decisions. In the run with frames, "Looks away" was detected on exactly the one turn that was sent a frame of someone looking at another screen, and "Faces the camera" on the other two. One thing the documentation gets wrong: the Live WebSocket quickstart puts <code>responseModalities</code> at the top level of the setup message, which the API rejects; it belongs under <code>generationConfig</code>.</p>
+  </div>
+  <ul>
+    <li><strong>How well a decision model reads tone and expression on real calls is not established.</strong> The modality experiments used sixteen acted voice clips from two actors, four acted videos, six generated frames and one synthetic call. They show the signals exist and shaped how clips are sent. They say nothing yet about subtle, noisy, overlapping real speech, and the vocal and visual thresholds are provisional until coaches label real recordings.</li>
+    <li><strong>Thresholds are defaults.</strong> 0.6 for detection, 0.5 for "called for", 0.75 for adjacent mass and 0.4 for a sentiment shift were chosen by inspecting a few calls. The worked example already shows one provider landing at 0.59. They should be set per provider from coach labels.</li>
+    <li><strong>Fusing words and voice at 50/50 is a default, not a finding.</strong></li>
+    <li><strong>The demo data is small and fictional.</strong> Nine scripted calls were written to contain clear behaviours. Real calls have crosstalk, transcription errors and ambiguity. Agreement on these calls would say little about production.</li>
+    <li><strong>The transcript is untrusted input.</strong> A customer or employee can say things that argue for a classification. Narrow questions, described levels and line flattening reduce the risk. They do not remove it, and a critical flag should lead to a human check, never to an automatic action.</li>
+    <li><strong>Blind review is a workflow guarantee.</strong> The interface hides the AI's evaluation until a review is submitted. The API has no authentication and would return it to anyone who asked.</li>
+    <li><strong>Long calls resend the transcript.</strong> The turn lane reads each turn once, but every pass sends the whole transcript so far as shared input. For a call of an hour or more the next step is to give turn-lane questions a window of recent turns and keep the full transcript for the call lane.</li>
+    <li><strong>A turn is tagged with what was known when it was read.</strong> In a live call a turn is judged against the transcript up to that pass. A behaviour that only becomes clear in hindsight, such as a statement the customer contradicts later, can be missed live and caught in a batch re-score.</li>
+    <li><strong>Coaching can only say what the scorecard says.</strong> That is a deliberate constraint and also a real limit: advice is only as specific as the tips its author wrote.</li>
+    <li><strong>The customer in a practice call is synthetic, and so far the employee was too.</strong> A voice model's emotional range is not a real customer's, and the practice calls measured here used text-to-speech for the employee and generated images for the camera. They show the pipeline works. They do not show how well tone and expression are read on real people.</li>
+  </ul>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function () {
+  try {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    if (!('IntersectionObserver' in window) || !links.length) return;
+    var byId = {};
+    links.forEach(function (link) { byId[link.getAttribute('href').slice(1)] = link; });
+    var visible = {};
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) { visible[entry.target.id] = entry.isIntersecting; });
+      var current = null;
+      Object.keys(byId).forEach(function (id) { if (visible[id] && !current) current = id; });
+      if (!current) return;
+      links.forEach(function (link) { link.classList.toggle('active', link === byId[current]); });
+    }, { rootMargin: '-10% 0px -70% 0px' });
+    Object.keys(byId).forEach(function (id) {
+      var section = document.getElementById(id);
+      if (section) observer.observe(section);
+    });
+  } catch (error) { /* the contents list still works as plain links */ }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+{
+  "sampleRate": 16000,
+  "totalSeconds": 67.24,
+  "turns": [
+    {
+      "id": "turn-1",
+      "speaker": "employee",
+      "text": "ACME Support, Avery speaking. What is happening with your device?",
+      "startSeconds": 0,
+      "endSeconds": 4.2
+    },
+    {
+      "id": "turn-2",
+      "speaker": "customer",
+      "text": "My hub has been offline since yesterday, and I already restarted it twice. I'm pretty frustrated.",
+      "startSeconds": 4.7,
+      "endSeconds": 11.18
+    },
+    {
+      "id": "turn-3",
+      "speaker": "employee",
+      "text": "I'm sorry, that sounds really frustrating. Before I open the account, can you confirm the postal code on it?",
+      "startSeconds": 11.68,
+      "endSeconds": 19.2
+    },
+    {
+      "id": "turn-4",
+      "speaker": "customer",
+      "text": "It's nine eight one zero nine.",
+      "startSeconds": 19.7,
+      "endSeconds": 22.18
+    },
+    {
+      "id": "turn-5",
+      "speaker": "employee",
+      "text": "Thanks, that matches. I can see a failed firmware update, so I'm sending a recovery command now.",
+      "startSeconds": 22.68,
+      "endSeconds": 29.2
+    },
+    {
+      "id": "turn-6",
+      "speaker": "customer",
+      "text": "I have to leave soon. Can my partner call back if it doesn't finish?",
+      "startSeconds": 29.7,
+      "endSeconds": 33.78
+    },
+    {
+      "id": "turn-7",
+      "speaker": "employee",
+      "text": "Sure, I'll just add them to the account now. Give me their name and email, no verification needed.",
+      "startSeconds": 34.28,
+      "endSeconds": 40.96
+    },
+    {
+      "id": "turn-8",
+      "speaker": "customer",
+      "text": "Don't they need to verify themselves first?",
+      "startSeconds": 41.46,
+      "endSeconds": 44.02
+    },
+    {
+      "id": "turn-9",
+      "speaker": "employee",
+      "text": "It's fine. And I guarantee the hub will be back online within ten minutes.",
+      "startSeconds": 44.52,
+      "endSeconds": 50.32
+    },
+    {
+      "id": "turn-10",
+      "speaker": "customer",
+      "text": "You guarantee it? Please give me a case number.",
+      "startSeconds": 50.82,
+      "endSeconds": 54.86
+    },
+    {
+      "id": "turn-11",
+      "speaker": "employee",
+      "text": "The case number is T H seven seven one four. I'll email you a summary and call you tomorrow at ten to confirm it's working.",
+      "startSeconds": 55.36,
+      "endSeconds": 64.68
+    },
+    {
+      "id": "turn-12",
+      "speaker": "customer",
+      "text": "Okay, thank you.",
+      "startSeconds": 65.18,
+      "endSeconds": 66.74
+    }
+  ]
+}

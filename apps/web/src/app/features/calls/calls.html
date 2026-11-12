@@ -1,0 +1,101 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Call library</p>
+    <h1>Calls</h1>
+    <p>Every call with its latest evaluation. Open one to see the coaching and the evidence.</p>
+  </div>
+</header>
+
+<div class="layout" [class.with-detail]="selectedId() !== null">
+  <section class="panel list" aria-label="Calls">
+    <div class="panel-head">
+      <label class="field search">
+        <span>Search</span>
+        <input
+          #search
+          class="input"
+          type="search"
+          placeholder="Subject, customer or employee"
+          [value]="query()"
+          (input)="query.set(search.value)"
+        />
+      </label>
+      <span class="muted small numeric">{{ filtered().length }} calls</span>
+    </div>
+
+    @if (loadError(); as message) {
+      <app-state-message kind="error" title="Could not load calls" [detail]="message">
+        <button type="button" class="btn" (click)="reload()">Try again</button>
+      </app-state-message>
+    } @else if (calls.isLoading() && filtered().length === 0) {
+      <app-state-message kind="loading" title="Loading calls" />
+    } @else {
+      <ul class="rows">
+        @for (call of filtered(); track call.id) {
+          <li>
+            <button
+              type="button"
+              class="row-button"
+              [class.selected]="call.id === selectedId()"
+              [attr.aria-current]="call.id === selectedId() ? 'true' : null"
+              (click)="open(call.id)"
+            >
+              <span class="who">
+                <strong>{{ call.subject }}</strong>
+                <span class="muted small">
+                  {{ call.customerName }} with {{ call.agentName }} ·
+                  {{ call.startedAt | date: 'MMM d' }} · {{ call.durationSeconds | duration }} ·
+                  {{ call.turnCount }} turns
+                </span>
+                <span class="row">
+                  <span
+                    class="chip"
+                    [class.chip-good]="call.status === 'completed'"
+                    [class.chip-info]="call.status === 'processing'"
+                    [class.chip-bad]="call.status === 'failed'"
+                  >
+                    {{ statusLabels[call.status] }}
+                  </span>
+                  @if (call.latest; as latest) {
+                    <span class="chip">{{ latest.provider | providerLabel }}</span>
+                    @if (latest.criticalFlags > 0) {
+                      <span class="chip chip-bad" title="A critical behaviour was detected">
+                        Critical
+                      </span>
+                    }
+                    @if (latest.needsReview) {
+                      <span class="chip chip-warn" title="The evaluation asks for a human look">
+                        Needs review
+                      </span>
+                    }
+                  }
+                  @if (call.submittedReviews > 0) {
+                    <span class="chip chip-info">
+                      {{ call.submittedReviews }} coach
+                      {{ call.submittedReviews === 1 ? 'review' : 'reviews' }}
+                    </span>
+                  }
+                  @if (call.source === 'stream') {
+                    <span class="chip">Streamed</span>
+                  }
+                </span>
+                @if (call.error) {
+                  <span class="field-error">{{ call.error }}</span>
+                }
+              </span>
+              <span class="score numeric" [class]="tone(call)">
+                {{ call.latest?.overallScore | score }}
+              </span>
+            </button>
+          </li>
+        } @empty {
+          <li><app-state-message title="No calls match" detail="Try a different search." /></li>
+        }
+      </ul>
+    }
+  </section>
+
+  @if (selectedId(); as callId) {
+    <app-call-detail-panel [callId]="callId" (closed)="open(null)" />
+  }
+</div>

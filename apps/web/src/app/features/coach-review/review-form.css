@@ -1,0 +1,97 @@
+.skill {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+legend {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+}
+
+.skill-name {
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+
+.levels {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.level {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.level:hover {
+  background: var(--cream);
+}
+
+.level:has(input:checked) {
+  background: var(--teal-soft);
+}
+
+.level > span {
+  display: grid;
+}
+
+input[type='radio'] {
+  margin-top: 3px;
+  accent-color: var(--teal);
+}
+
+.behaviors {
+  display: grid;
+  gap: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line-soft);
+}
+
+.behavior {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+}
+
+.behavior p {
+  flex: 1 1 260px;
+}
+
+.choices {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.choices label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+}
+
+.choices input {
+  margin-top: 0;
+}
+
+.footer {
+  position: sticky;
+  bottom: 0;
+  align-items: center;
+  padding: var(--space-3) 0;
+  background: var(--paper);
+}

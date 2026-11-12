@@ -1,0 +1,77 @@
+{
+  "ranAt": "2026-11-12T01:12:48.324Z",
+  "words": 182,
+  "seconds": 67.24,
+  "rows": [
+    {
+      "label": "one-character input, 1 yes/no",
+      "questions": 1,
+      "textTokens": 131,
+      "ms": [
+        503,
+        276,
+        325
+      ]
+    },
+    {
+      "label": "transcript (12 turns, 67 s spoken), 1 yes/no",
+      "questions": 1,
+      "textTokens": 449,
+      "ms": [
+        287,
+        251,
+        275
+      ]
+    },
+    {
+      "label": "transcript, 10 yes/no",
+      "questions": 10,
+      "textTokens": 1232,
+      "ms": [
+        289,
+        328,
+        370
+      ]
+    },
+    {
+      "label": "transcript, 100 yes/no",
+      "questions": 100,
+      "textTokens": 9062,
+      "ms": [
+        536,
+        397,
+        403
+      ]
+    },
+    {
+      "label": "transcript, 300 yes/no",
+      "questions": 300,
+      "textTokens": 26462,
+      "ms": [
+        826,
+        749,
+        812
+      ]
+    },
+    {
+      "label": "transcript, 1 five-level rubric",
+      "questions": 1,
+      "textTokens": 495,
+      "ms": [
+        280,
+        384,
+        299
+      ]
+    },
+    {
+      "label": "transcript, 10 five-level rubrics",
+      "questions": 10,
+      "textTokens": 1692,
+      "ms": [
+        317,
+        304,
+        280
+      ]
+    }
+  ]
+}

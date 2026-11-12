@@ -1,0 +1,70 @@
+@if (geometry(); as chart) {
+  <svg
+    class="chart"
+    [attr.viewBox]="'0 0 ' + box.width + ' ' + box.height"
+    role="img"
+    aria-label="Customer sentiment by customer turn, from negative at the bottom to positive at the top"
+  >
+    <line
+      class="neutral"
+      [attr.x1]="box.padding"
+      [attr.x2]="box.width - box.padding"
+      [attr.y1]="chart.neutralY"
+      [attr.y2]="chart.neutralY"
+    />
+    <polyline class="line" [attr.points]="chart.line" />
+    @for (shift of chart.shifts; track shift.turnId) {
+      <text
+        class="shift"
+        [class.up]="shift.direction === 'up'"
+        [attr.x]="shift.x"
+        [attr.y]="shift.direction === 'up' ? shift.y - 8 : shift.y + 17"
+        text-anchor="middle"
+        aria-hidden="true"
+      >
+        {{ shift.direction === 'up' ? '▲' : '▼' }}
+      </text>
+    }
+    @for (mark of chart.marks; track mark.turnId) {
+      <circle
+        class="mark"
+        [class]="'mark-' + mark.tone"
+        [attr.cx]="mark.x"
+        [attr.cy]="mark.y"
+        r="4.5"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="describe(mark.turnId, mark.emotion, mark.valence)"
+        (click)="showTurn(mark.turnId)"
+        (keydown.enter)="showTurn(mark.turnId)"
+      >
+        <title>{{ describe(mark.turnId, mark.emotion, mark.valence) }}</title>
+      </circle>
+    }
+  </svg>
+
+  <div class="row-between">
+    <div class="stack-tight">
+      <strong>{{ arcLabel() }}</strong>
+      @if (journey(); as path) {
+        <span class="muted small row">
+          Lowest point
+          <app-turn-link [turnId]="path.lowTurnId" />
+          · {{ path.shifts.length }} sharp {{ path.shifts.length === 1 ? 'shift' : 'shifts' }}
+          (▲ up, ▼ down)
+        </span>
+      }
+    </div>
+    @if (risk(); as escalation) {
+      <span
+        class="chip"
+        [class]="riskTone()"
+        title="How likely the customer is to escalate, complain or leave if the call ended now"
+      >
+        Escalation risk: {{ escalation.label }}
+      </span>
+    }
+  </div>
+} @else {
+  <p class="muted small">The journey appears once a customer turn has been read.</p>
+}

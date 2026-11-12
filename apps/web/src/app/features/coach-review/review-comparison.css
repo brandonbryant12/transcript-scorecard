@@ -1,0 +1,13 @@
+:host {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.table th[scope='row'] {
+  color: var(--ink);
+  font-size: var(--text-md);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+}

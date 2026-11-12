@@ -3,18 +3,28 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "description": "Shared contracts and pure scoring logic for the API and the web app.",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
-    "effect": "^3.17.13"
+    "zod": "^4.0.0"
   },
   "devDependencies": {
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
-  }
+    "typescript": "~6.0.2",
+    "vitest": "^4.1.2"
+  },
+  "sideEffects": false
 }

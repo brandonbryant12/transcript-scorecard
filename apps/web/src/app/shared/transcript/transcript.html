@@ -1,0 +1,68 @@
+<div class="stream" #stream>
+  @for (row of rows(); track row.turn.id) {
+    <article
+      class="turn"
+      [class.customer]="row.turn.speaker === 'customer'"
+      [class.focused]="highlighted() === row.turn.id"
+      [attr.data-turn-id]="row.turn.id"
+    >
+      <header>
+        <strong>{{ row.speakerName }}</strong>
+        <span class="muted small numeric">
+          {{ row.turn.id | turnLabel }} · {{ row.turn.startSeconds | duration }}
+        </span>
+      </header>
+      <p class="bubble">{{ row.turn.text }}</p>
+
+      @if (row.moments.length > 0) {
+        <ul class="annotations" aria-label="Behaviours detected in this turn">
+          @for (moment of row.moments; track moment.behaviorId) {
+            <li
+              class="chip"
+              [class.chip-good]="moment.polarity === 'positive'"
+              [class.chip-warn]="moment.polarity === 'negative' && !moment.critical"
+              [class.chip-bad]="moment.critical"
+              [title]="'Detected with probability ' + (moment.probability | percent)"
+            >
+              @if (moment.critical) {
+                <span aria-hidden="true">!</span>
+              }
+              {{ moment.name }}
+            </li>
+          }
+        </ul>
+      }
+
+      @if (row.feeling; as feeling) {
+        <div class="annotations feeling">
+          <span class="dot" [class]="'dot-' + feeling.tone" aria-hidden="true"></span>
+          <span class="emotion">{{ feeling.point.emotion }}</span>
+          @if (feeling.voice === null) {
+            <span class="muted small">{{ feeling.words }}</span>
+          } @else {
+            <span class="muted small">words: {{ feeling.words }} · voice: {{ feeling.voice }}</span>
+            @if (feeling.point.mixedSignal) {
+              <span class="chip chip-warn" title="The customer's voice and words disagree">
+                mixed signal
+              </span>
+            }
+          }
+        </div>
+      }
+    </article>
+  } @empty {
+    @if (caption() === null) {
+      <p class="empty muted">{{ emptyMessage() }}</p>
+    }
+  }
+
+  @if (caption(); as inProgress) {
+    <article class="turn in-progress" [class.customer]="inProgress.speaker === 'customer'">
+      <header>
+        <strong>{{ inProgress.speaker === 'employee' ? agentName() : customerName() }}</strong>
+        <span class="muted small">speaking…</span>
+      </header>
+      <p class="bubble">{{ inProgress.text }}</p>
+    </article>
+  }
+</div>

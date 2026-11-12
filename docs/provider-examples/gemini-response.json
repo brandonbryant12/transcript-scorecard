@@ -1,0 +1,551 @@
+{
+  "status": 200,
+  "body": {
+    "answers": {
+      "o_2": {
+        "confidence": 0.9784680170222347,
+        "noul": 0.9784680170222347,
+        "type": "noul"
+      },
+      "t_2_5": {
+        "confidence": 0.9768815109921551,
+        "noul": 0.02311848900784491,
+        "type": "noul"
+      },
+      "c_1_s": {
+        "confidence": 0.8672729723797646,
+        "score": 1.0410286580120554,
+        "probabilities": {
+          "0": 0.05140723234077822,
+          "1": 0.8672729723797646,
+          "2": 0.07127936485162513,
+          "3": 0.008964765782287441,
+          "4": 0.001075664645544556
+        },
+        "legend": {
+          "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+          "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+          "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+          "3": "Positive: satisfied, relieved or appreciative",
+          "4": "Very positive: delighted or openly grateful"
+        },
+        "type": "score"
+      },
+      "t_2_15": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_0_8": {
+        "confidence": 0.9771045974339383,
+        "noul": 0.022895402566061755,
+        "type": "noul"
+      },
+      "e_14": {
+        "confidence": 0.9122955797013422,
+        "noul": 0.08770442029865778,
+        "type": "noul"
+      },
+      "t_4_4": {
+        "confidence": 0.9853802323276186,
+        "noul": 0.01461976767238142,
+        "type": "noul"
+      },
+      "t_4_3": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "o_1": {
+        "confidence": 0.5192434449927774,
+        "noul": 0.4807565550072226,
+        "type": "noul"
+      },
+      "e_1": {
+        "confidence": 0.99,
+        "noul": 0.99,
+        "type": "noul"
+      },
+      "s_2": {
+        "confidence": 0.8634724260141129,
+        "score": 3.007296100721815,
+        "probabilities": {
+          "0": 0.002579491541806415,
+          "1": 0.006859162256019349,
+          "2": 0.04916801016439441,
+          "3": 0.8634724260141129,
+          "4": 0.07792091002366701
+        },
+        "legend": {
+          "0": "Breach: Changes or exposes account access or personal details with no identity verification.",
+          "1": "Risky: Offers to skip verification, or verifies only after acting on the account.",
+          "2": "Partial: Verifies, but incompletely or inconsistently across the call.",
+          "3": "Sound: Verifies identity before accessing or changing the account.",
+          "4": "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+        },
+        "type": "score"
+      },
+      "risk": {
+        "confidence": 0.9187753527867012,
+        "score": 0.09440477150530337,
+        "probabilities": {
+          "0": 0.9187753527867012,
+          "1": 0.07103995820014637,
+          "2": 0.007189253734300054,
+          "3": 0.0029954352788522983
+        },
+        "legend": {
+          "0": "Low: the customer is satisfied or calmly working with the employee",
+          "1": "Guarded: some frustration or doubt, but still engaged",
+          "2": "Elevated: clear dissatisfaction, repeated pushback, or loss of trust",
+          "3": "High: asks for a supervisor, threatens to complain or cancel, or has given up on the employee"
+        },
+        "type": "score"
+      },
+      "t_4_12": {
+        "confidence": 0.8238539973113138,
+        "noul": 0.1761460026886862,
+        "type": "noul"
+      },
+      "e_13": {
+        "confidence": 0.99,
+        "noul": 0.99,
+        "type": "noul"
+      },
+      "s_0": {
+        "confidence": 0.6684392210476752,
+        "score": 2.9979853536788204,
+        "probabilities": {
+          "0": 0.0061362058855725255,
+          "1": 0.02614470954199027,
+          "2": 0.1152982365526218,
+          "3": 0.6684392210476752,
+          "4": 0.1839816269721403
+        },
+        "legend": {
+          "0": "Dismissive: Ignores or contradicts what the customer said; shows no recognition of how they feel.",
+          "1": "Minimal: A token acknowledgement, then straight back to script; the customer has to repeat themselves.",
+          "2": "Adequate: Polite and responsive, but the acknowledgement is generic and the problem is not played back.",
+          "3": "Strong: Names the customer's situation or feeling specifically and responds to what they actually said.",
+          "4": "Exceptional: Consistently reflects the customer's words and priorities, repairs any misstep, and leaves them feeling heard."
+        },
+        "type": "score"
+      },
+      "t_4_11": {
+        "confidence": 0.9807850679294192,
+        "noul": 0.9807850679294192,
+        "type": "noul"
+      },
+      "e_0": {
+        "confidence": 0.9756612524712841,
+        "noul": 0.9756612524712841,
+        "type": "noul"
+      },
+      "t_4_5": {
+        "confidence": 0.9811043769937597,
+        "noul": 0.018895623006240307,
+        "type": "noul"
+      },
+      "s_3": {
+        "confidence": 0.6760051023576901,
+        "score": 3.2125066445096184,
+        "probabilities": {
+          "0": 0.0009744305974227765,
+          "1": 0.0035155911265843357,
+          "2": 0.04852187868162359,
+          "3": 0.6760051023576901,
+          "4": 0.27098299723667923
+        },
+        "legend": {
+          "0": "Unresolved: No fix and no plan; the customer is left where they started.",
+          "1": "Weak next step: A vague or unowned follow-up with no timeframe.",
+          "2": "Partial: Some progress, but part of the issue is still open or unowned.",
+          "3": "Resolved: The issue is fixed, or has a specific next step with an owner and a timeframe.",
+          "4": "Resolved and proactive: Fixed and confirmed with the customer, with future problems anticipated and prevented."
+        },
+        "type": "score"
+      },
+      "e_15": {
+        "confidence": 0.9514409903104134,
+        "noul": 0.9514409903104134,
+        "type": "noul"
+      },
+      "e_11": {
+        "confidence": 0.9652064004702526,
+        "noul": 0.9652064004702526,
+        "type": "noul"
+      },
+      "s_4": {
+        "confidence": 0.5517446502966464,
+        "score": 3.0399272321327824,
+        "probabilities": {
+          "0": 0.006857509845453452,
+          "1": 0.021309124247045973,
+          "2": 0.1584853527238098,
+          "3": 0.5517446502966464,
+          "4": 0.2616033628870444
+        },
+        "legend": {
+          "0": "Confusing: The customer cannot tell what is happening or what to do.",
+          "1": "Often unclear: Jargon, missing steps or contradictions force the customer to ask again.",
+          "2": "Understandable: The customer can follow, but key details are not confirmed.",
+          "3": "Clear: Plain language, one step at a time, with key details confirmed.",
+          "4": "Exceptionally clear: Explains the why as well as the what, confirms details back, and closes with a summary."
+        },
+        "type": "score"
+      },
+      "t_4_8": {
+        "confidence": 0.6837620863215661,
+        "noul": 0.31623791367843385,
+        "type": "noul"
+      },
+      "c_5_s": {
+        "confidence": 0.5808557672461739,
+        "score": 3.2603734390571173,
+        "probabilities": {
+          "0": 0.0008844620897633909,
+          "1": 0.004295162623754673,
+          "2": 0.07117372873319558,
+          "3": 0.5808557672461739,
+          "4": 0.34279087930711233
+        },
+        "legend": {
+          "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+          "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+          "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+          "3": "Positive: satisfied, relieved or appreciative",
+          "4": "Very positive: delighted or openly grateful"
+        },
+        "type": "score"
+      },
+      "o_3": {
+        "confidence": 0.960447440558416,
+        "noul": 0.960447440558416,
+        "type": "noul"
+      },
+      "o_0": {
+        "confidence": 0.928268747494308,
+        "noul": 0.928268747494308,
+        "type": "noul"
+      },
+      "c_5_e": {
+        "confidence": 0.8645955965408485,
+        "choice": "reassured",
+        "probabilities": {
+          "cooperative": 0.058884298971831846,
+          "skeptical": 0.003459349648983907,
+          "reassured": 0.8645955965408485,
+          "anxious": 0.018170903500045243,
+          "neutral": 0.047756044372444795,
+          "frustrated": 0.007133806965845672
+        },
+        "type": "choice"
+      },
+      "t_4_13": {
+        "confidence": 0.9374739852043145,
+        "noul": 0.9374739852043145,
+        "type": "noul"
+      },
+      "t_4_1": {
+        "confidence": 0.8282773918076438,
+        "noul": 0.17172260819235616,
+        "type": "noul"
+      },
+      "t_0_13": {
+        "confidence": 0.9810253784118761,
+        "noul": 0.018974621588123956,
+        "type": "noul"
+      },
+      "t_2_8": {
+        "confidence": 0.9819428949798438,
+        "noul": 0.9819428949798438,
+        "type": "noul"
+      },
+      "t_0_6": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_4_9": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_2_7": {
+        "confidence": 0.989572556384124,
+        "noul": 0.010427443615875994,
+        "type": "noul"
+      },
+      "t_0_11": {
+        "confidence": 0.9862167932816928,
+        "noul": 0.013783206718307187,
+        "type": "noul"
+      },
+      "t_2_6": {
+        "confidence": 0.9771166095194034,
+        "noul": 0.0228833904805966,
+        "type": "noul"
+      },
+      "c_1_e": {
+        "confidence": 0.9361168587410315,
+        "choice": "anxious",
+        "probabilities": {
+          "frustrated": 0.038068156791062714,
+          "anxious": 0.9361168587410315,
+          "neutral": 0.005584101701574665,
+          "reassured": 0.007873584015916885,
+          "cooperative": 0.009495000583517684,
+          "skeptical": 0.002862298166896879
+        },
+        "type": "choice"
+      },
+      "t_0_0": {
+        "confidence": 0.9872211549970312,
+        "noul": 0.012778845002968763,
+        "type": "noul"
+      },
+      "e_5": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_2_2": {
+        "confidence": 0.9767486087281959,
+        "noul": 0.023251391271804096,
+        "type": "noul"
+      },
+      "t_2_11": {
+        "confidence": 0.9894767483757013,
+        "noul": 0.01052325162429867,
+        "type": "noul"
+      },
+      "c_3_s": {
+        "confidence": 0.6309683461743532,
+        "score": 1.7500549191723807,
+        "probabilities": {
+          "0": 0.01707894611649477,
+          "1": 0.2866494251495849,
+          "2": 0.6309683461743532,
+          "3": 0.05974432856417886,
+          "4": 0.005558953995388168
+        },
+        "legend": {
+          "0": "Very negative: angry, hostile, or threatening to leave or escalate",
+          "1": "Negative: frustrated, worried, doubtful or dissatisfied",
+          "2": "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+          "3": "Positive: satisfied, relieved or appreciative",
+          "4": "Very positive: delighted or openly grateful"
+        },
+        "type": "score"
+      },
+      "e_4": {
+        "confidence": 0.9691130552390906,
+        "noul": 0.030886944760909384,
+        "type": "noul"
+      },
+      "o_4": {
+        "confidence": 0.5806154190127432,
+        "noul": 0.5806154190127432,
+        "type": "noul"
+      },
+      "e_8": {
+        "confidence": 0.9736792043937231,
+        "noul": 0.9736792043937231,
+        "type": "noul"
+      },
+      "e_12": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_2_12": {
+        "confidence": 0.8947280667422299,
+        "noul": 0.10527193325777011,
+        "type": "noul"
+      },
+      "e_10": {
+        "confidence": 0.5644972817718142,
+        "noul": 0.5644972817718142,
+        "type": "noul"
+      },
+      "t_0_2": {
+        "confidence": 0.9894444971317787,
+        "noul": 0.010555502868221283,
+        "type": "noul"
+      },
+      "t_4_14": {
+        "confidence": 0.953780297727481,
+        "noul": 0.046219702272518995,
+        "type": "noul"
+      },
+      "s_1": {
+        "confidence": 0.5276267133097601,
+        "score": 3.293784216589751,
+        "probabilities": {
+          "0": 0.00278494261087709,
+          "1": 0.009447341559124823,
+          "2": 0.06955363748980281,
+          "3": 0.5276267133097601,
+          "4": 0.3905873650304351
+        },
+        "legend": {
+          "0": "Misleading: Gives wrong information or guarantees that the call shows to be false, and does not correct them.",
+          "1": "Unreliable: Several unsupported claims or contradictions; corrections come only when the customer pushes.",
+          "2": "Mostly accurate: Generally correct, with one notable unsupported claim or a gap the customer has to probe.",
+          "3": "Accurate: Information is correct and consistent; limits and uncertainty are stated when asked.",
+          "4": "Precise: Correct, consistent, and proactively clear about what is known, unknown and outside the employee's control."
+        },
+        "type": "score"
+      },
+      "t_2_10": {
+        "confidence": 0.9811099224330118,
+        "noul": 0.01889007756698826,
+        "type": "noul"
+      },
+      "t_2_14": {
+        "confidence": 0.9465630469536647,
+        "noul": 0.05343695304633529,
+        "type": "noul"
+      },
+      "t_2_4": {
+        "confidence": 0.9798529580495928,
+        "noul": 0.02014704195040718,
+        "type": "noul"
+      },
+      "t_0_10": {
+        "confidence": 0.9810753659852283,
+        "noul": 0.018924634014771683,
+        "type": "noul"
+      },
+      "t_4_0": {
+        "confidence": 0.9689422681570061,
+        "noul": 0.03105773184299391,
+        "type": "noul"
+      },
+      "e_2": {
+        "confidence": 0.8969682400421221,
+        "noul": 0.10303175995787792,
+        "type": "noul"
+      },
+      "t_2_13": {
+        "confidence": 0.7965890158057218,
+        "noul": 0.7965890158057218,
+        "type": "noul"
+      },
+      "t_0_9": {
+        "confidence": 0.9645313904868728,
+        "noul": 0.035468609513127296,
+        "type": "noul"
+      },
+      "t_2_0": {
+        "confidence": 0.9752723228924814,
+        "noul": 0.9752723228924814,
+        "type": "noul"
+      },
+      "t_4_15": {
+        "confidence": 0.524359227782739,
+        "noul": 0.524359227782739,
+        "type": "noul"
+      },
+      "t_0_4": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_0_7": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_0_3": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_4_10": {
+        "confidence": 0.8700937917201431,
+        "noul": 0.8700937917201431,
+        "type": "noul"
+      },
+      "t_4_6": {
+        "confidence": 0.9864174657454096,
+        "noul": 0.013582534254590436,
+        "type": "noul"
+      },
+      "t_0_12": {
+        "confidence": 0.9756266361972881,
+        "noul": 0.024373363802711944,
+        "type": "noul"
+      },
+      "t_4_2": {
+        "confidence": 0.970601897911386,
+        "noul": 0.029398102088614014,
+        "type": "noul"
+      },
+      "t_2_1": {
+        "confidence": 0.9113800947725997,
+        "noul": 0.08861990522740026,
+        "type": "noul"
+      },
+      "t_0_1": {
+        "confidence": 0.986980088025063,
+        "noul": 0.01301991197493696,
+        "type": "noul"
+      },
+      "t_4_7": {
+        "confidence": 0.9434625431412,
+        "noul": 0.05653745685879992,
+        "type": "noul"
+      },
+      "t_2_3": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_2_9": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_0_14": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "c_3_e": {
+        "confidence": 0.5194726090085728,
+        "choice": "cooperative",
+        "probabilities": {
+          "anxious": 0.2827606325594912,
+          "neutral": 0.14594244346989832,
+          "skeptical": 0.008514072506638631,
+          "cooperative": 0.5194726090085728,
+          "reassured": 0.033262721544132574,
+          "frustrated": 0.010047520911266376
+        },
+        "type": "choice"
+      },
+      "t_0_15": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      },
+      "t_0_5": {
+        "confidence": 0.99,
+        "noul": 0.01,
+        "type": "noul"
+      }
+    },
+    "usage": {
+      "total_tokens": 7845,
+      "total_input_tokens": 7845,
+      "input_tokens_by_modality": [
+        {
+          "modality": "text",
+          "tokens": 7845
+        }
+      ],
+      "total_output_tokens": 0
+    }
+  }
+}

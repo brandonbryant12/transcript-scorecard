@@ -1,0 +1,147 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Ground truth</p>
+    <h1>Coach review</h1>
+    <p>
+      Rate a call on the scorecard yourself. The review is blind: you will not see the AI's
+      evaluation of a call until you have submitted your own.
+    </p>
+  </div>
+  <label class="field coach-name">
+    <span>Your name</span>
+    <input
+      #nameInput
+      class="input"
+      type="text"
+      maxlength="60"
+      autocomplete="name"
+      placeholder="e.g. Sam Rivera"
+      [value]="coachName()"
+      (change)="updateCoachName(nameInput.value)"
+    />
+  </label>
+</header>
+
+@if (loadError(); as message) {
+  <div class="notice notice-error" role="alert">{{ message }}</div>
+}
+
+<div class="layout">
+  <section class="panel queue" aria-label="Review queue">
+    <div class="panel-head">
+      <h2>Queue</h2>
+      <span class="muted small">Unreviewed first</span>
+    </div>
+    <ul>
+      @for (item of queueItems(); track item.callId) {
+        <li>
+          <button
+            type="button"
+            class="queue-item"
+            [class.selected]="item.callId === selectedCallId()"
+            [attr.aria-current]="item.callId === selectedCallId() ? 'true' : null"
+            (click)="open(item.callId)"
+          >
+            <strong>{{ item.subject }}</strong>
+            <span class="muted small">
+              {{ item.customerName }} with {{ item.agentName }} · {{ item.turnCount }} turns
+            </span>
+            <span class="row">
+              @if (reviewedByMe(item)) {
+                <span class="chip chip-good">Reviewed by you</span>
+              } @else if (item.submittedReviews > 0) {
+                <span class="chip chip-info">
+                  {{ item.submittedReviews }}
+                  {{ item.submittedReviews === 1 ? 'review' : 'reviews' }}
+                </span>
+              } @else {
+                <span class="chip">Not reviewed</span>
+              }
+              @if (item.aiNeedsReview) {
+                <span
+                  class="chip chip-warn"
+                  title="The AI flagged its own evaluation of this call as uncertain. Your review is most valuable here."
+                >
+                  AI is unsure
+                </span>
+              }
+            </span>
+          </button>
+        </li>
+      } @empty {
+        <li>
+          @if (queue.isLoading()) {
+            <app-state-message kind="loading" title="Loading the queue" />
+          } @else {
+            <app-state-message title="No calls to review" />
+          }
+        </li>
+      }
+    </ul>
+  </section>
+
+  @if (selectedCallId() === null) {
+    <section class="panel empty-pane">
+      <app-state-message
+        title="Choose a call to review"
+        detail="Read the transcript, then rate each skill against its rubric and mark the behaviours you observed."
+      />
+    </section>
+  } @else if (loading() && call() === null) {
+    <section class="panel empty-pane">
+      <app-state-message kind="loading" title="Loading the call" />
+    </section>
+  } @else if (call(); as current) {
+    <section class="panel transcript-pane" aria-label="Transcript">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">{{ current.customerName }} with {{ current.agentName }}</p>
+          <h2>{{ current.subject }}</h2>
+        </div>
+      </div>
+      <app-transcript
+        class="transcript"
+        [turns]="current.transcript"
+        [agentName]="current.agentName"
+        [customerName]="current.customerName"
+      />
+    </section>
+
+    <section class="form-pane stack" aria-label="Your review">
+      @if (error(); as message) {
+        <div class="notice notice-error" role="alert">{{ message }}</div>
+      }
+      @if (savedNotice(); as message) {
+        <div class="notice notice-good" role="status">{{ message }}</div>
+      }
+
+      @if (isSubmitted() && saved(); as review) {
+        <div class="panel panel-body">
+          <p class="eyebrow comparison-label">You and the AI</p>
+          @if (revealed(); as result) {
+            <app-review-comparison [review]="review" [evaluation]="result.evaluation" />
+          } @else {
+            <app-state-message kind="loading" title="Loading the AI's evaluation" />
+          }
+        </div>
+      }
+
+      @if (definition(); as scorecardDefinition) {
+        <div class="row-between">
+          <h2>{{ isSubmitted() ? 'Your submitted review' : 'Your review' }}</h2>
+          <span class="muted small">Scorecard v{{ scorecardVersion() }}</span>
+        </div>
+        <app-review-form
+          [definition]="scorecardDefinition"
+          [(review)]="formModel"
+          [saving]="saving()"
+          [blockedReason]="blockedReason()"
+          (saveDraft)="save(false)"
+          (submitReview)="save(true)"
+        />
+      } @else {
+        <app-state-message kind="loading" title="Loading the scorecard" />
+      }
+    </section>
+  }
+</div>

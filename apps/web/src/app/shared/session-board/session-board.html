@@ -1,0 +1,63 @@
+@let current = session();
+@let result = evaluation();
+
+<section class="panel transcript-panel" aria-label="Transcript">
+  <header class="panel-head">
+    <div>
+      <p class="eyebrow">Transcript</p>
+      <h2>{{ current?.call?.subject ?? placeholderTitle() }}</h2>
+    </div>
+    @if (progress(); as text) {
+      <span class="muted small numeric">{{ text }}</span>
+    }
+  </header>
+  <app-transcript
+    class="transcript"
+    [turns]="current?.transcript ?? []"
+    [evaluation]="result"
+    [agentName]="current?.call?.agentName ?? 'Employee'"
+    [customerName]="current?.call?.customerName ?? 'Customer'"
+    [live]="isLive()"
+    [caption]="caption()"
+    [emptyMessage]="emptyMessage()"
+  />
+</section>
+
+<div class="insights">
+  @if (current?.error; as failure) {
+    <div class="notice notice-error" role="alert">{{ failure }}</div>
+  }
+
+  <section class="panel panel-body" aria-label="Score">
+    <app-score-card
+      [evaluation]="result"
+      [previousScore]="previousScore()"
+      [processing]="current?.isProcessing ?? false"
+    />
+  </section>
+
+  @if (result) {
+    <section class="panel panel-body" aria-label="Coaching">
+      <p class="eyebrow section-label">Coach's view</p>
+      <app-coach-panel [coaching]="result.coaching" />
+    </section>
+
+    <section class="panel panel-body" aria-label="Customer journey">
+      <p class="eyebrow section-label">Customer journey</p>
+      <app-journey-chart [journey]="result.journey" [risk]="result.risk" />
+    </section>
+
+    <section class="skills" aria-label="Skills">
+      @for (skill of result.skills; track skill.skillId) {
+        <app-skill-card [skill]="skill" [history]="historyFor(skill.skillId)" />
+      }
+    </section>
+  }
+
+  @if (current && current.totals.requests > 0) {
+    <section class="panel panel-body" aria-label="Scoring cost and latency">
+      <p class="eyebrow section-label">Scoring telemetry</p>
+      <app-telemetry-panel [session]="current" />
+    </section>
+  }
+</div>

@@ -1,0 +1,3354 @@
+{
+  "ranAt": "2026-11-11T21:11:27.019Z",
+  "model": "gemini-decision-1",
+  "singleFrames": [
+    {
+      "state": "attentive",
+      "resolution": "unspecified",
+      "status": 200,
+      "ms": 851,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8565228117658,
+          "noul": 0.14347718823419994,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8837053843211339,
+          "noul": 0.8837053843211339,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.42970300386424437,
+          "score": 2.625250151144171,
+          "probabilities": {
+            "0": 0.016411906771806116,
+            "1": 0.05318624382355027,
+            "2": 0.35992024321685484,
+            "3": 0.42970300386424437,
+            "4": 0.14077860232354442
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "attentive",
+      "resolution": "low",
+      "status": 200,
+      "ms": 576,
+      "tokens": {
+        "text": 397,
+        "image": 264
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.4743753099766733,
+          "score": 2.497103283204895,
+          "probabilities": {
+            "0": 0.012966615066487998,
+            "1": 0.04885640819058974,
+            "2": 0.4743753099766733,
+            "3": 0.3557104120040372,
+            "4": 0.10809125476221178
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8695241953519756,
+          "noul": 0.8695241953519756,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.8607091224246245,
+          "noul": 0.13929087757537548,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "attentive",
+      "resolution": "medium",
+      "status": 200,
+      "ms": 570,
+      "tokens": {
+        "text": 397,
+        "image": 527
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.41161412341208503,
+          "score": 2.61562041433549,
+          "probabilities": {
+            "0": 0.01437739342301761,
+            "1": 0.05833188091200375,
+            "2": 0.3701301229121717,
+            "3": 0.41161412341208503,
+            "4": 0.14554647934072196
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8819320570618724,
+          "noul": 0.8819320570618724,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.8535058130637918,
+          "noul": 0.14649418693620814,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "attentive",
+      "resolution": "high",
+      "status": 200,
+      "ms": 359,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8565228117658,
+          "noul": 0.14347718823419994,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.42970300386424437,
+          "score": 2.625250151144171,
+          "probabilities": {
+            "0": 0.016411906771806116,
+            "1": 0.05318624382355027,
+            "2": 0.35992024321685484,
+            "3": 0.42970300386424437,
+            "4": 0.14077860232354442
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8837053843211339,
+          "noul": 0.8837053843211339,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "attentive",
+      "resolution": "ultra_high",
+      "status": 200,
+      "ms": 1244,
+      "tokens": {
+        "text": 397,
+        "image": 2205
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8218531036318043,
+          "noul": 0.17814689636819567,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8539266852975136,
+          "noul": 0.8539266852975136,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.44159606569206955,
+          "score": 2.4782548404150986,
+          "probabilities": {
+            "0": 0.01757056432069238,
+            "1": 0.06897515078045481,
+            "2": 0.44159606569206955,
+            "3": 0.361345318576628,
+            "4": 0.11051290063015515
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "engaged",
+      "resolution": "unspecified",
+      "status": 200,
+      "ms": 543,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.8733919696998889,
+          "noul": 0.8733919696998889,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.8806846717279768,
+          "noul": 0.11931532827202321,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.7224391514274913,
+          "score": 3.6327981819016713,
+          "probabilities": {
+            "0": 0.002970484821600619,
+            "1": 0.009005410117368442,
+            "2": 0.06271869482628112,
+            "3": 0.20286625880725848,
+            "4": 0.7224391514274913
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "engaged",
+      "resolution": "low",
+      "status": 200,
+      "ms": 410,
+      "tokens": {
+        "text": 397,
+        "image": 264
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.873173351197259,
+          "noul": 0.12682664880274094,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.47791620387555406,
+          "score": 3.2945638880486676,
+          "probabilities": {
+            "0": 0.005996337885798538,
+            "1": 0.018809861423260795,
+            "2": 0.12774357932296937,
+            "3": 0.36953401749241716,
+            "4": 0.47791620387555406
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8687749389117058,
+          "noul": 0.8687749389117058,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "engaged",
+      "resolution": "medium",
+      "status": 200,
+      "ms": 743,
+      "tokens": {
+        "text": 397,
+        "image": 527
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8866619923195715,
+          "noul": 0.11333800768042851,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.581461584138033,
+          "score": 3.4221386831451914,
+          "probabilities": {
+            "0": 0.003485957067060051,
+            "1": 0.01631086653312043,
+            "2": 0.11624329672542023,
+            "3": 0.28249829553636624,
+            "4": 0.581461584138033
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8949392831971525,
+          "noul": 0.8949392831971525,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "engaged",
+      "resolution": "high",
+      "status": 200,
+      "ms": 340,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.8733919696998889,
+          "noul": 0.8733919696998889,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.7224391514274913,
+          "score": 3.6327981819016713,
+          "probabilities": {
+            "0": 0.002970484821600619,
+            "1": 0.009005410117368442,
+            "2": 0.06271869482628112,
+            "3": 0.20286625880725848,
+            "4": 0.7224391514274913
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.8806846717279768,
+          "noul": 0.11931532827202321,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "engaged",
+      "resolution": "ultra_high",
+      "status": 200,
+      "ms": 1149,
+      "tokens": {
+        "text": 397,
+        "image": 2205
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8824657452699914,
+          "noul": 0.11753425473000859,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.5471056888411165,
+          "score": 3.3958424533478464,
+          "probabilities": {
+            "0": 0.0033651623822355753,
+            "1": 0.012872457968291354,
+            "2": 0.11542283240998076,
+            "3": 0.3212338583983757,
+            "4": 0.5471056888411165
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8835257182435191,
+          "noul": 0.8835257182435191,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "flat",
+      "resolution": "unspecified",
+      "status": 200,
+      "ms": 828,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.5606781747175529,
+          "score": 2.26634019575549,
+          "probabilities": {
+            "0": 0.027356599343575923,
+            "1": 0.07133160127471824,
+            "2": 0.5606781747175529,
+            "3": 0.2888822536109461,
+            "4": 0.05175137105320693
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.8420469595555099,
+          "noul": 0.15795304044449013,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.829462697063965,
+          "noul": 0.829462697063965,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "flat",
+      "resolution": "low",
+      "status": 200,
+      "ms": 720,
+      "tokens": {
+        "text": 397,
+        "image": 264
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8579637216045961,
+          "noul": 0.1420362783954039,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.5457181338982375,
+          "score": 2.2265030483873107,
+          "probabilities": {
+            "0": 0.03155584334064783,
+            "1": 0.09457905177903529,
+            "2": 0.5457181338982375,
+            "3": 0.2721001551165171,
+            "4": 0.056046815865562226
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8553720202824832,
+          "noul": 0.8553720202824832,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "flat",
+      "resolution": "medium",
+      "status": 200,
+      "ms": 672,
+      "tokens": {
+        "text": 397,
+        "image": 527
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.8796413860320073,
+          "noul": 0.8796413860320073,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.6439791653233506,
+          "score": 2.170532529625015,
+          "probabilities": {
+            "0": 0.021186929719851692,
+            "1": 0.0839820189122968,
+            "2": 0.6439791653233506,
+            "3": 0.20481536411198606,
+            "4": 0.046036521932514764
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.8347384910932516,
+          "noul": 0.16526150890674843,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "flat",
+      "resolution": "high",
+      "status": 200,
+      "ms": 329,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.5606781747175529,
+          "score": 2.26634019575549,
+          "probabilities": {
+            "0": 0.027356599343575923,
+            "1": 0.07133160127471824,
+            "2": 0.5606781747175529,
+            "3": 0.2888822536109461,
+            "4": 0.05175137105320693
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.829462697063965,
+          "noul": 0.829462697063965,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.8420469595555099,
+          "noul": 0.15795304044449013,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "flat",
+      "resolution": "ultra_high",
+      "status": 200,
+      "ms": 1351,
+      "tokens": {
+        "text": 397,
+        "image": 2205
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.867430400532619,
+          "noul": 0.867430400532619,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.6439157995316492,
+          "score": 2.187957645191881,
+          "probabilities": {
+            "0": 0.020029311085489377,
+            "1": 0.07243272360215929,
+            "2": 0.6439157995316492,
+            "3": 0.22679534059638481,
+            "4": 0.03682682518431724
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.9078483103420354,
+          "noul": 0.09215168965796455,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "away_screen",
+      "resolution": "unspecified",
+      "status": 200,
+      "ms": 948,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.7670886743468904,
+          "noul": 0.7670886743468904,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4585072873313467,
+          "score": 1.5986542024124732,
+          "probabilities": {
+            "0": 0.09430627375720432,
+            "1": 0.4585072873313467,
+            "2": 0.24064181263073114,
+            "3": 0.16731521530320737,
+            "4": 0.03922941097751053
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8480097502197806,
+          "noul": 0.15199024978021933,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "away_screen",
+      "resolution": "low",
+      "status": 200,
+      "ms": 577,
+      "tokens": {
+        "text": 397,
+        "image": 264
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.8775797140273901,
+          "noul": 0.12242028597260993,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4572637778579698,
+          "score": 1.513092648211404,
+          "probabilities": {
+            "0": 0.13241963896348286,
+            "1": 0.4572637778579698,
+            "2": 0.2137583892262129,
+            "3": 0.15792068390832933,
+            "4": 0.038637510044005056
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.7787628802942199,
+          "noul": 0.7787628802942199,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "away_screen",
+      "resolution": "medium",
+      "status": 200,
+      "ms": 649,
+      "tokens": {
+        "text": 397,
+        "image": 527
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.7888406936276625,
+          "noul": 0.7888406936276625,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8620821058770313,
+          "noul": 0.1379178941229687,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.39030867965352434,
+          "score": 1.6520598366589205,
+          "probabilities": {
+            "0": 0.1165557149921493,
+            "1": 0.39030867965352434,
+            "2": 0.2606953640287395,
+            "3": 0.18940053635443058,
+            "4": 0.043039704971156334
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "away_screen",
+      "resolution": "high",
+      "status": 200,
+      "ms": 332,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.4585072873313467,
+          "score": 1.5986542024124732,
+          "probabilities": {
+            "0": 0.09430627375720432,
+            "1": 0.4585072873313467,
+            "2": 0.24064181263073114,
+            "3": 0.16731521530320737,
+            "4": 0.03922941097751053
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8480097502197806,
+          "noul": 0.15199024978021933,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.7670886743468904,
+          "noul": 0.7670886743468904,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "away_screen",
+      "resolution": "ultra_high",
+      "status": 200,
+      "ms": 1245,
+      "tokens": {
+        "text": 397,
+        "image": 2205
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.8347683213549308,
+          "noul": 0.16523167864506919,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.36138206344727214,
+          "score": 1.8018200332209298,
+          "probabilities": {
+            "0": 0.09721273180728596,
+            "1": 0.36138206344727214,
+            "2": 0.2475010391538144,
+            "3": 0.23018077090048197,
+            "4": 0.06372339469114575
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.7958995178604232,
+          "noul": 0.7958995178604232,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "down_phone",
+      "resolution": "unspecified",
+      "status": 200,
+      "ms": 862,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.7637880907542405,
+          "noul": 0.2362119092457595,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.8342032635626667,
+          "noul": 0.8342032635626667,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.49669733981953806,
+          "score": 0.7970525911288308,
+          "probabilities": {
+            "0": 0.37374018106530804,
+            "1": 0.49669733981953806,
+            "2": 0.09457783003227814,
+            "3": 0.028739005086766817,
+            "4": 0.0062456439961089925
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "down_phone",
+      "resolution": "low",
+      "status": 200,
+      "ms": 589,
+      "tokens": {
+        "text": 397,
+        "image": 264
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8174709730452829,
+          "noul": 0.8174709730452829,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8333746469271782,
+          "noul": 0.16662535307282175,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.49087103458446735,
+          "score": 0.9673279899891128,
+          "probabilities": {
+            "0": 0.31484670911176355,
+            "1": 0.49087103458446735,
+            "2": 0.12304624722338715,
+            "3": 0.0545795753636572,
+            "4": 0.016656433716724896
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "down_phone",
+      "resolution": "medium",
+      "status": 200,
+      "ms": 680,
+      "tokens": {
+        "text": 397,
+        "image": 527
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.862488651178066,
+          "noul": 0.13751134882193408,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.7557272338292563,
+          "noul": 0.7557272338292563,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4826541870007055,
+          "score": 1.0225177299366295,
+          "probabilities": {
+            "0": 0.2922619567057306,
+            "1": 0.4826541870007055,
+            "2": 0.14856894137542268,
+            "3": 0.06333399948748582,
+            "4": 0.01318091543065532
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "down_phone",
+      "resolution": "high",
+      "status": 200,
+      "ms": 343,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8342032635626667,
+          "noul": 0.8342032635626667,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.7637880907542405,
+          "noul": 0.2362119092457595,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.49669733981953806,
+          "score": 0.7970525911288308,
+          "probabilities": {
+            "0": 0.37374018106530804,
+            "1": 0.49669733981953806,
+            "2": 0.09457783003227814,
+            "3": 0.028739005086766817,
+            "4": 0.0062456439961089925
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "down_phone",
+      "resolution": "ultra_high",
+      "status": 200,
+      "ms": 1137,
+      "tokens": {
+        "text": 397,
+        "image": 2205
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.5372567601685301,
+          "score": 0.9797488177815481,
+          "probabilities": {
+            "0": 0.2750840966394494,
+            "1": 0.5372567601685301,
+            "2": 0.13081488259807617,
+            "3": 0.046514749958912034,
+            "4": 0.010329510635032398
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.8633999075100439,
+          "noul": 0.8633999075100439,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8242531453093135,
+          "noul": 0.1757468546906865,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "slumped",
+      "resolution": "unspecified",
+      "status": 200,
+      "ms": 784,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.7166974560695429,
+          "noul": 0.28330254393045706,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.5447898995409695,
+          "score": 0.7450928902650981,
+          "probabilities": {
+            "0": 0.5447898995409695,
+            "1": 0.2284868993420913,
+            "2": 0.16994057733212317,
+            "3": 0.05040565888050397,
+            "4": 0.006376964904312127
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.7910297605554105,
+          "noul": 0.7910297605554105,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "slumped",
+      "resolution": "low",
+      "status": 200,
+      "ms": 608,
+      "tokens": {
+        "text": 397,
+        "image": 264
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.8570946353376663,
+          "noul": 0.8570946353376663,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8123145743150064,
+          "noul": 0.18768542568499358,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.5504724321903963,
+          "score": 0.691199453263068,
+          "probabilities": {
+            "0": 0.5504724321903963,
+            "1": 0.2565007798673481,
+            "2": 0.15051116972800582,
+            "3": 0.036386138917290964,
+            "4": 0.006129479296958843
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "slumped",
+      "resolution": "medium",
+      "status": 200,
+      "ms": 614,
+      "tokens": {
+        "text": 397,
+        "image": 527
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.4592909238947619,
+          "score": 0.8728077057395857,
+          "probabilities": {
+            "0": 0.4592909238947619,
+            "1": 0.27669413301452844,
+            "2": 0.20302459145190258,
+            "3": 0.05389701673397674,
+            "4": 0.007093334904830469
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.7541919576051518,
+          "noul": 0.7541919576051518,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.7332883336936046,
+          "noul": 0.2667116663063954,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "slumped",
+      "resolution": "high",
+      "status": 200,
+      "ms": 334,
+      "tokens": {
+        "text": 397,
+        "image": 1100
+      },
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.7166974560695429,
+          "noul": 0.28330254393045706,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.5447898995409695,
+          "score": 0.7450928902650981,
+          "probabilities": {
+            "0": 0.5447898995409695,
+            "1": 0.2284868993420913,
+            "2": 0.16994057733212317,
+            "3": 0.05040565888050397,
+            "4": 0.006376964904312127
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.7910297605554105,
+          "noul": 0.7910297605554105,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "state": "slumped",
+      "resolution": "ultra_high",
+      "status": 200,
+      "ms": 798,
+      "tokens": {
+        "text": 397,
+        "image": 2205
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.5246088615583712,
+          "score": 0.8077416477905234,
+          "probabilities": {
+            "0": 0.5246088615583712,
+            "1": 0.20830557080321171,
+            "2": 0.20809311764865646,
+            "3": 0.05271995826904349,
+            "4": 0.0062724917207170605
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.7941129003506562,
+          "noul": 0.7941129003506562,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.5689521829574056,
+          "noul": 0.4310478170425945,
+          "type": "noul"
+        }
+      },
+      "error": null
+    }
+  ],
+  "framesPerTurn": [
+    {
+      "label": "1 frame (first)",
+      "frames": [
+        "attentive"
+      ],
+      "ms": 345,
+      "tokens": {
+        "text": 409,
+        "image": 264
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.4737126865816693,
+          "score": 2.441299220076762,
+          "probabilities": {
+            "0": 0.017981673991628592,
+            "1": 0.06554392401600467,
+            "2": 0.4737126865816693,
+            "3": 0.34271693874537057,
+            "4": 0.10004477666532677
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.8567485984185824,
+          "noul": 0.14325140158141755,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8798184468706748,
+          "noul": 0.8798184468706748,
+          "type": "noul"
+        }
+      }
+    },
+    {
+      "label": "1 frame (middle)",
+      "frames": [
+        "away_screen"
+      ],
+      "ms": 272,
+      "tokens": {
+        "text": 409,
+        "image": 264
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.6978999421427797,
+          "noul": 0.6978999421427797,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8682247694163007,
+          "noul": 0.1317752305836993,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.4442338258628201,
+          "score": 1.6209154050398045,
+          "probabilities": {
+            "0": 0.11274552312309641,
+            "1": 0.4442338258628201,
+            "2": 0.20702495495047285,
+            "3": 0.18135111497840317,
+            "4": 0.05464458108520728
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      }
+    },
+    {
+      "label": "3 frames (0,2,4)",
+      "frames": [
+        "attentive",
+        "away_screen",
+        "attentive"
+      ],
+      "ms": 305,
+      "tokens": {
+        "text": 413,
+        "image": 792
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.30985483056117913,
+          "score": 2.0819912537913243,
+          "probabilities": {
+            "0": 0.03733798665486564,
+            "1": 0.28760543120488935,
+            "2": 0.30985483056117913,
+            "3": 0.2861308448521867,
+            "4": 0.0790709067268791
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.6271067259067657,
+          "noul": 0.37289327409323425,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.6762228541555478,
+          "noul": 0.32377714584445216,
+          "type": "noul"
+        }
+      }
+    },
+    {
+      "label": "3 frames (1,3,5)",
+      "frames": [
+        "attentive",
+        "away_screen",
+        "engaged"
+      ],
+      "ms": 326,
+      "tokens": {
+        "text": 413,
+        "image": 792
+      },
+      "answers": {
+        "looks_away": {
+          "confidence": 0.5022639933799076,
+          "noul": 0.49773600662009243,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.6861035046920496,
+          "noul": 0.31389649530795044,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.303523910443132,
+          "score": 2.316863707691969,
+          "probabilities": {
+            "0": 0.028232387371303555,
+            "1": 0.22684249844893753,
+            "2": 0.2930776685164362,
+            "3": 0.303523910443132,
+            "4": 0.1483235352201908
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      }
+    },
+    {
+      "label": "6 frames",
+      "frames": [
+        "attentive",
+        "attentive",
+        "away_screen",
+        "away_screen",
+        "attentive",
+        "engaged"
+      ],
+      "ms": 380,
+      "tokens": {
+        "text": 419,
+        "image": 1584
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.30814704392431463,
+          "score": 2.376589468038447,
+          "probabilities": {
+            "0": 0.028799412646379738,
+            "1": 0.22417810985288375,
+            "2": 0.26376575394653395,
+            "3": 0.30814704392431463,
+            "4": 0.1751096796298879
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.63079825694848,
+          "noul": 0.3692017430515199,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.6028361974929661,
+          "noul": 0.39716380250703387,
+          "type": "noul"
+        }
+      }
+    }
+  ],
+  "frameAddressing": {
+    "frames": [
+      "attentive",
+      "attentive",
+      "away_screen",
+      "away_screen",
+      "attentive",
+      "engaged"
+    ],
+    "answers": {
+      "f4_away": {
+        "confidence": 0.8478959852872673,
+        "noul": 0.15210401471273272,
+        "type": "noul"
+      },
+      "f0_away": {
+        "confidence": 0.8421350873920378,
+        "noul": 0.15786491260796218,
+        "type": "noul"
+      },
+      "f1_away": {
+        "confidence": 0.8440405226804002,
+        "noul": 0.15595947731959983,
+        "type": "noul"
+      },
+      "f2_away": {
+        "confidence": 0.8659432296662254,
+        "noul": 0.8659432296662254,
+        "type": "noul"
+      },
+      "f5_away": {
+        "confidence": 0.8714205671320076,
+        "noul": 0.12857943286799248,
+        "type": "noul"
+      },
+      "f3_away": {
+        "confidence": 0.8897708608756126,
+        "noul": 0.8897708608756126,
+        "type": "noul"
+      }
+    },
+    "tokens": {
+      "text": 648,
+      "image": 1584
+    }
+  },
+  "conflicts": [
+    {
+      "id": "warm voice + looking at phone",
+      "together": {
+        "tokens": {
+          "text": 656,
+          "image": 264,
+          "audio": 139
+        },
+        "ms": 416,
+        "answers": {
+          "visual_looks_away": {
+            "confidence": 0.7792119256545523,
+            "noul": 0.7792119256545523,
+            "type": "noul"
+          },
+          "visual_faces_camera": {
+            "confidence": 0.7051218972713,
+            "noul": 0.29487810272869996,
+            "type": "noul"
+          },
+          "visual_presence": {
+            "confidence": 0.5903048462147527,
+            "score": 1.2080726608244892,
+            "probabilities": {
+              "0": 0.15375865440116163,
+              "1": 0.5903048462147527,
+              "2": 0.16903003552217188,
+              "3": 0.06791811188226257,
+              "4": 0.01898835197965128
+            },
+            "legend": {
+              "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+              "1": "Distracted: Frequently looking away from the camera or at another screen.",
+              "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+              "3": "Attentive: Facing the camera with steady attention.",
+              "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+            },
+            "type": "score"
+          },
+          "vocal_irritated_tone": {
+            "confidence": 0.8449547278174092,
+            "noul": 0.15504527218259082,
+            "type": "noul"
+          },
+          "vocal_delivery": {
+            "confidence": 0.4244526971414464,
+            "score": 2.697481296131969,
+            "probabilities": {
+              "0": 0.019777466024095428,
+              "1": 0.09570733286568565,
+              "2": 0.25591707201657327,
+              "3": 0.4244526971414464,
+              "4": 0.20414543195219936
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          }
+        }
+      },
+      "audioOnly": {
+        "delivery": {
+          "confidence": 0.4757358306099728,
+          "score": 2.8986985542594486,
+          "probabilities": {
+            "0": 0.013105721882198948,
+            "1": 0.06565545407378502,
+            "2": 0.18808818269021407,
+            "3": 0.4757358306099728,
+            "4": 0.25741481074382916
+          },
+          "legend": {
+            "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+            "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+            "2": "Neutral: Even and professional, without warmth.",
+            "3": "Warm: Calm, friendly and unhurried.",
+            "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+          },
+          "type": "score"
+        },
+        "irritated_tone": {
+          "confidence": 0.8466824601605691,
+          "noul": 0.15331753983943083,
+          "type": "noul"
+        }
+      },
+      "frameOnly": {
+        "faces_camera": {
+          "confidence": 0.8333746469271782,
+          "noul": 0.16662535307282175,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.49087103458446735,
+          "score": 0.9673279899891128,
+          "probabilities": {
+            "0": 0.31484670911176355,
+            "1": 0.49087103458446735,
+            "2": 0.12304624722338715,
+            "3": 0.0545795753636572,
+            "4": 0.016656433716724896
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.8174709730452829,
+          "noul": 0.8174709730452829,
+          "type": "noul"
+        }
+      }
+    },
+    {
+      "id": "warm voice + engaged",
+      "together": {
+        "tokens": {
+          "text": 656,
+          "image": 264,
+          "audio": 139
+        },
+        "ms": 390,
+        "answers": {
+          "visual_looks_away": {
+            "confidence": 0.8901140131302743,
+            "noul": 0.10988598686972577,
+            "type": "noul"
+          },
+          "visual_faces_camera": {
+            "confidence": 0.8918162767008753,
+            "noul": 0.8918162767008753,
+            "type": "noul"
+          },
+          "vocal_delivery": {
+            "confidence": 0.5066681827738957,
+            "score": 3.0784542030966655,
+            "probabilities": {
+              "0": 0.010056916423041696,
+              "1": 0.04186467498892118,
+              "2": 0.12452796173525424,
+              "3": 0.5066681827738957,
+              "4": 0.3168822640788872
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "visual_presence": {
+            "confidence": 0.6921421058840996,
+            "score": 3.6225405757434554,
+            "probabilities": {
+              "0": 0.0012837834825908093,
+              "1": 0.009318864593746482,
+              "2": 0.04711245050537908,
+              "3": 0.250142795534184,
+              "4": 0.6921421058840996
+            },
+            "legend": {
+              "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+              "1": "Distracted: Frequently looking away from the camera or at another screen.",
+              "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+              "3": "Attentive: Facing the camera with steady attention.",
+              "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+            },
+            "type": "score"
+          },
+          "vocal_irritated_tone": {
+            "confidence": 0.8726681615045805,
+            "noul": 0.12733183849541954,
+            "type": "noul"
+          }
+        }
+      },
+      "audioOnly": {
+        "irritated_tone": {
+          "confidence": 0.8466824601605691,
+          "noul": 0.15331753983943083,
+          "type": "noul"
+        },
+        "delivery": {
+          "confidence": 0.4757358306099728,
+          "score": 2.8986985542594486,
+          "probabilities": {
+            "0": 0.013105721882198948,
+            "1": 0.06565545407378502,
+            "2": 0.18808818269021407,
+            "3": 0.4757358306099728,
+            "4": 0.25741481074382916
+          },
+          "legend": {
+            "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+            "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+            "2": "Neutral: Even and professional, without warmth.",
+            "3": "Warm: Calm, friendly and unhurried.",
+            "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+          },
+          "type": "score"
+        }
+      },
+      "frameOnly": {
+        "looks_away": {
+          "confidence": 0.873173351197259,
+          "noul": 0.12682664880274094,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8687749389117058,
+          "noul": 0.8687749389117058,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.47791620387555406,
+          "score": 3.2945638880486676,
+          "probabilities": {
+            "0": 0.005996337885798538,
+            "1": 0.018809861423260795,
+            "2": 0.12774357932296937,
+            "3": 0.36953401749241716,
+            "4": 0.47791620387555406
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      }
+    },
+    {
+      "id": "rushed voice + engaged",
+      "together": {
+        "tokens": {
+          "text": 652,
+          "image": 264,
+          "audio": 69
+        },
+        "ms": 366,
+        "answers": {
+          "vocal_irritated_tone": {
+            "confidence": 0.8739215372745587,
+            "noul": 0.12607846272544132,
+            "type": "noul"
+          },
+          "vocal_delivery": {
+            "confidence": 0.4933878896543129,
+            "score": 3.0458789817582788,
+            "probabilities": {
+              "0": 0.01354247297647477,
+              "1": 0.04829355437448211,
+              "2": 0.13084128677903137,
+              "3": 0.4933878896543129,
+              "4": 0.3139347962156988
+            },
+            "legend": {
+              "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+              "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+              "2": "Neutral: Even and professional, without warmth.",
+              "3": "Warm: Calm, friendly and unhurried.",
+              "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+            },
+            "type": "score"
+          },
+          "visual_presence": {
+            "confidence": 0.7434697433167883,
+            "score": 3.689092614639307,
+            "probabilities": {
+              "0": 0.0010199041659878416,
+              "1": 0.006063424494191813,
+              "2": 0.039190567191134056,
+              "3": 0.21025636083189803,
+              "4": 0.7434697433167883
+            },
+            "legend": {
+              "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+              "1": "Distracted: Frequently looking away from the camera or at another screen.",
+              "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+              "3": "Attentive: Facing the camera with steady attention.",
+              "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+            },
+            "type": "score"
+          },
+          "visual_looks_away": {
+            "confidence": 0.8747309980001854,
+            "noul": 0.12526900199981467,
+            "type": "noul"
+          },
+          "visual_faces_camera": {
+            "confidence": 0.8729306678403249,
+            "noul": 0.8729306678403249,
+            "type": "noul"
+          }
+        }
+      },
+      "audioOnly": {
+        "irritated_tone": {
+          "confidence": 0.8449319126620567,
+          "noul": 0.15506808733794333,
+          "type": "noul"
+        },
+        "delivery": {
+          "confidence": 0.4216189289116018,
+          "score": 2.6535722479490875,
+          "probabilities": {
+            "0": 0.026336058669448315,
+            "1": 0.11434430573384578,
+            "2": 0.23821583562999002,
+            "3": 0.4216189289116018,
+            "4": 0.19948487105511417
+          },
+          "legend": {
+            "0": "Abrasive: Sounds irritated, sarcastic or condescending.",
+            "1": "Tense: Sounds rushed, impatient or flat, as if reading a script.",
+            "2": "Neutral: Even and professional, without warmth.",
+            "3": "Warm: Calm, friendly and unhurried.",
+            "4": "Reassuring: Calm and warm, with a tone that actively steadies the listener."
+          },
+          "type": "score"
+        }
+      },
+      "frameOnly": {
+        "presence": {
+          "confidence": 0.47791620387555406,
+          "score": 3.2945638880486676,
+          "probabilities": {
+            "0": 0.005996337885798538,
+            "1": 0.018809861423260795,
+            "2": 0.12774357932296937,
+            "3": 0.36953401749241716,
+            "4": 0.47791620387555406
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "looks_away": {
+          "confidence": 0.873173351197259,
+          "noul": 0.12682664880274094,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8687749389117058,
+          "noul": 0.8687749389117058,
+          "type": "noul"
+        }
+      }
+    }
+  ],
+  "realFaces": [
+    {
+      "emotion": "neutral",
+      "tokens": {
+        "text": 502,
+        "image": 792
+      },
+      "ms": 776,
+      "answers": {
+        "presence": {
+          "confidence": 0.4109059311090792,
+          "score": 2.7713342359925237,
+          "probabilities": {
+            "0": 0.0257916773356308,
+            "1": 0.06529873094360487,
+            "2": 0.2593484653625294,
+            "3": 0.4109059311090792,
+            "4": 0.23865519524915563
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.8747488639844524,
+          "noul": 0.8747488639844524,
+          "type": "noul"
+        },
+        "face": {
+          "confidence": 0.6399745620179004,
+          "choice": "neutral",
+          "probabilities": {
+            "neutral": 0.6399745620179004,
+            "sad": 0.14572324011795557,
+            "angry": 0.0730459565434708,
+            "happy": 0.14125624132067324
+          },
+          "type": "choice"
+        },
+        "looks_away": {
+          "confidence": 0.8254713638552537,
+          "noul": 0.17452863614474637,
+          "type": "noul"
+        }
+      }
+    },
+    {
+      "emotion": "happy",
+      "tokens": {
+        "text": 502,
+        "image": 792
+      },
+      "ms": 719,
+      "answers": {
+        "face": {
+          "confidence": 0.9015501676529668,
+          "choice": "happy",
+          "probabilities": {
+            "sad": 0.01681981578850329,
+            "neutral": 0.0673372431619079,
+            "happy": 0.9015501676529668,
+            "angry": 0.014292773396622011
+          },
+          "type": "choice"
+        },
+        "looks_away": {
+          "confidence": 0.8421844009908869,
+          "noul": 0.15781559900911313,
+          "type": "noul"
+        },
+        "faces_camera": {
+          "confidence": 0.8814749876882196,
+          "noul": 0.8814749876882196,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.7788546289968106,
+          "score": 3.7044931195197996,
+          "probabilities": {
+            "0": 0.004609453902683503,
+            "1": 0.010079116932582306,
+            "2": 0.040374913903795356,
+            "3": 0.16608188626412815,
+            "4": 0.7788546289968106
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      }
+    },
+    {
+      "emotion": "sad",
+      "tokens": {
+        "text": 502,
+        "image": 792
+      },
+      "ms": 469,
+      "answers": {
+        "faces_camera": {
+          "confidence": 0.5794242086578917,
+          "noul": 0.5794242086578917,
+          "type": "noul"
+        },
+        "looks_away": {
+          "confidence": 0.6427624313764717,
+          "noul": 0.35723756862352835,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.36550746644080034,
+          "score": 2.0500689817016227,
+          "probabilities": {
+            "0": 0.08624688882020873,
+            "1": 0.21051632988727892,
+            "2": 0.36550746644080034,
+            "3": 0.24237954047410495,
+            "4": 0.09534977437760708
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "face": {
+          "confidence": 0.445746169904868,
+          "choice": "sad",
+          "probabilities": {
+            "happy": 0.05392837364060261,
+            "angry": 0.15228825120286074,
+            "neutral": 0.3480372052516686,
+            "sad": 0.445746169904868
+          },
+          "type": "choice"
+        }
+      }
+    },
+    {
+      "emotion": "angry",
+      "tokens": {
+        "text": 502,
+        "image": 792
+      },
+      "ms": 869,
+      "answers": {
+        "presence": {
+          "confidence": 0.30232143431234554,
+          "score": 2.212226888683015,
+          "probabilities": {
+            "0": 0.1264949799297366,
+            "1": 0.1346498664596344,
+            "2": 0.30232143431234554,
+            "3": 0.2732007235944445,
+            "4": 0.163332995703839
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "faces_camera": {
+          "confidence": 0.7783129286613332,
+          "noul": 0.7783129286613332,
+          "type": "noul"
+        },
+        "face": {
+          "confidence": 0.7836709280164743,
+          "choice": "angry",
+          "probabilities": {
+            "happy": 0.03181734742097129,
+            "sad": 0.0554444704935897,
+            "neutral": 0.12906725406896463,
+            "angry": 0.7836709280164743
+          },
+          "type": "choice"
+        },
+        "looks_away": {
+          "confidence": 0.754050887484616,
+          "noul": 0.245949112515384,
+          "type": "noul"
+        }
+      }
+    }
+  ],
+  "videoBlocks": [
+    {
+      "emotion": "neutral",
+      "label": "video original 720p, low",
+      "seconds": 3.31,
+      "bytes": 3447717,
+      "status": 200,
+      "ms": 1913,
+      "tokens": {
+        "text": 466,
+        "image": 198,
+        "audio": 105
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.4155693824819664,
+          "score": 3.0043200738016793,
+          "probabilities": {
+            "0": 0.013363855413904842,
+            "1": 0.050420632730657465,
+            "2": 0.1876966119343814,
+            "3": 0.4155693824819664,
+            "4": 0.33294951743908996
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "voice": {
+          "confidence": 0.5548940143492704,
+          "choice": "neutral",
+          "probabilities": {
+            "happy": 0.12173210479805205,
+            "angry": 0.19477609957584974,
+            "neutral": 0.5548940143492704,
+            "sad": 0.12859778127682778
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.7087743496282791,
+          "choice": "neutral",
+          "probabilities": {
+            "happy": 0.14839385813218947,
+            "angry": 0.05891799740206454,
+            "sad": 0.0839137948374669,
+            "neutral": 0.7087743496282791
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.7667635926675406,
+          "noul": 0.7667635926675406,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "neutral",
+      "label": "video 360p, low",
+      "seconds": 3.31,
+      "bytes": 48072,
+      "status": 200,
+      "ms": 630,
+      "tokens": {
+        "text": 466,
+        "image": 198,
+        "audio": 105
+      },
+      "answers": {
+        "voice": {
+          "confidence": 0.5692522776990393,
+          "choice": "neutral",
+          "probabilities": {
+            "sad": 0.10947889276393645,
+            "neutral": 0.5692522776990393,
+            "happy": 0.14355857255970939,
+            "angry": 0.1777102569773149
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.7428788703672267,
+          "noul": 0.7428788703672267,
+          "type": "noul"
+        },
+        "face": {
+          "confidence": 0.6413858725325658,
+          "choice": "neutral",
+          "probabilities": {
+            "angry": 0.048021620672251415,
+            "happy": 0.25406077373786706,
+            "sad": 0.05653173305731564,
+            "neutral": 0.6413858725325658
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.3958090402531341,
+          "score": 3.0418212876938187,
+          "probabilities": {
+            "0": 0.014009022693260867,
+            "1": 0.04563072087184265,
+            "2": 0.1847207093322381,
+            "3": 0.3958090402531341,
+            "4": 0.35983050684952433
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "neutral",
+      "label": "video 360p, high",
+      "seconds": 3.31,
+      "bytes": 48072,
+      "status": 200,
+      "ms": 792,
+      "tokens": {
+        "text": 466,
+        "image": 792,
+        "audio": 105
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.3994850782955487,
+          "score": 2.7796150418675474,
+          "probabilities": {
+            "0": 0.0406582359262447,
+            "1": 0.08441704645404682,
+            "2": 0.2025078983848924,
+            "3": 0.3994850782955487,
+            "4": 0.2729317409392675
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "face": {
+          "confidence": 0.6939333731793705,
+          "choice": "neutral",
+          "probabilities": {
+            "angry": 0.09604508880362875,
+            "happy": 0.1547946386756158,
+            "neutral": 0.6939333731793705,
+            "sad": 0.055226899341384986
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.675422971789177,
+          "noul": 0.675422971789177,
+          "type": "noul"
+        },
+        "voice": {
+          "confidence": 0.43523680738778703,
+          "choice": "neutral",
+          "probabilities": {
+            "happy": 0.10285424672354966,
+            "neutral": 0.43523680738778703,
+            "angry": 0.3213908792692221,
+            "sad": 0.1405180666194412
+          },
+          "type": "choice"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "neutral",
+      "label": "video 360p, no sound, low",
+      "seconds": 3.31,
+      "bytes": 31158,
+      "status": 200,
+      "ms": 322,
+      "tokens": {
+        "text": 460,
+        "image": 198,
+        "audio": 15
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.42309101454517345,
+          "score": 3.044185306220582,
+          "probabilities": {
+            "0": 0.008535571652831747,
+            "1": 0.03987920286724979,
+            "2": 0.18947189201058398,
+            "3": 0.42309101454517345,
+            "4": 0.339022318924161
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "voice": {
+          "confidence": 0.5363159711357232,
+          "choice": "neutral",
+          "probabilities": {
+            "angry": 0.08344158419324381,
+            "happy": 0.2553236896770843,
+            "sad": 0.12491875499394867,
+            "neutral": 0.5363159711357232
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.6253269566708817,
+          "noul": 0.37467304332911827,
+          "type": "noul"
+        },
+        "face": {
+          "confidence": 0.7357151310757444,
+          "choice": "neutral",
+          "probabilities": {
+            "angry": 0.03760387803517076,
+            "happy": 0.17115247072410095,
+            "sad": 0.05552852016498403,
+            "neutral": 0.7357151310757444
+          },
+          "type": "choice"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "neutral",
+      "label": "3 frames + audio clip",
+      "seconds": 3.31,
+      "ms": 540,
+      "tokens": {
+        "text": 468,
+        "image": 792,
+        "audio": 103
+      },
+      "answers": {
+        "presence": {
+          "confidence": 0.4774379516321675,
+          "score": 2.7830433778718584,
+          "probabilities": {
+            "0": 0.01635748526201001,
+            "1": 0.04923226638789732,
+            "2": 0.2631959651421212,
+            "3": 0.4774379516321675,
+            "4": 0.19377633157580393
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "heard": {
+          "confidence": 0.7669748758097293,
+          "noul": 0.7669748758097293,
+          "type": "noul"
+        },
+        "voice": {
+          "confidence": 0.6930020198652652,
+          "choice": "neutral",
+          "probabilities": {
+            "neutral": 0.6930020198652652,
+            "sad": 0.1008919300833292,
+            "angry": 0.1059803624972145,
+            "happy": 0.10012568755419095
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.8073789716567386,
+          "choice": "neutral",
+          "probabilities": {
+            "angry": 0.05657153881314127,
+            "happy": 0.05669046335323928,
+            "neutral": 0.8073789716567386,
+            "sad": 0.07935902617688081
+          },
+          "type": "choice"
+        }
+      }
+    },
+    {
+      "emotion": "happy",
+      "label": "video original 720p, low",
+      "seconds": 3.69,
+      "bytes": 4665000,
+      "status": 200,
+      "ms": 2152,
+      "tokens": {
+        "text": 470,
+        "image": 264,
+        "audio": 133
+      },
+      "answers": {
+        "heard": {
+          "confidence": 0.8458479261220144,
+          "noul": 0.8458479261220144,
+          "type": "noul"
+        },
+        "voice": {
+          "confidence": 0.8237474584356431,
+          "choice": "happy",
+          "probabilities": {
+            "sad": 0.029410844538442824,
+            "happy": 0.8237474584356431,
+            "neutral": 0.10067437976877917,
+            "angry": 0.046167317257134834
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.8975171540797355,
+          "choice": "happy",
+          "probabilities": {
+            "sad": 0.014894386441029004,
+            "angry": 0.01802853476749786,
+            "neutral": 0.06955992471173762,
+            "happy": 0.8975171540797355
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.793806225981604,
+          "score": 3.7390626786594874,
+          "probabilities": {
+            "0": 0.0026565375545344943,
+            "1": 0.007991345384688625,
+            "2": 0.030791243889136108,
+            "3": 0.1647546471900368,
+            "4": 0.793806225981604
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "happy",
+      "label": "video 360p, low",
+      "seconds": 3.69,
+      "bytes": 85884,
+      "status": 200,
+      "ms": 814,
+      "tokens": {
+        "text": 470,
+        "image": 264,
+        "audio": 133
+      },
+      "answers": {
+        "face": {
+          "confidence": 0.9069533367627172,
+          "choice": "happy",
+          "probabilities": {
+            "angry": 0.012231689763106365,
+            "sad": 0.009651327239944317,
+            "happy": 0.9069533367627172,
+            "neutral": 0.07116364623423219
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.7964322958880955,
+          "noul": 0.7964322958880955,
+          "type": "noul"
+        },
+        "voice": {
+          "confidence": 0.8105524275125311,
+          "choice": "happy",
+          "probabilities": {
+            "angry": 0.04621814090462545,
+            "sad": 0.038434394520188105,
+            "neutral": 0.10479503706265537,
+            "happy": 0.8105524275125311
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.8406731148938339,
+          "score": 3.8013319906295115,
+          "probabilities": {
+            "0": 0.0017529728693519476,
+            "1": 0.005570659995645495,
+            "2": 0.022940885664975333,
+            "3": 0.12906236657619327,
+            "4": 0.8406731148938339
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "happy",
+      "label": "video 360p, high",
+      "seconds": 3.69,
+      "bytes": 85884,
+      "status": 200,
+      "ms": 781,
+      "tokens": {
+        "text": 470,
+        "image": 1056,
+        "audio": 133
+      },
+      "answers": {
+        "voice": {
+          "confidence": 0.8591460825878497,
+          "choice": "happy",
+          "probabilities": {
+            "happy": 0.8591460825878497,
+            "sad": 0.02722334372714073,
+            "neutral": 0.07336506676028094,
+            "angry": 0.04026550692472853
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.9367886989989685,
+          "choice": "happy",
+          "probabilities": {
+            "happy": 0.9367886989989685,
+            "neutral": 0.04213023403535855,
+            "angry": 0.013594531265661689,
+            "sad": 0.007486535700011161
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.862526139828755,
+          "score": 3.838526687698061,
+          "probabilities": {
+            "0": 0.0011503311444210364,
+            "1": 0.0026491839928162167,
+            "2": 0.015250090711798458,
+            "3": 0.11842425432220927,
+            "4": 0.862526139828755
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "heard": {
+          "confidence": 0.7565268733246838,
+          "noul": 0.7565268733246838,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "happy",
+      "label": "video 360p, no sound, low",
+      "seconds": 3.69,
+      "bytes": 63525,
+      "status": 200,
+      "ms": 325,
+      "tokens": {
+        "text": 462,
+        "image": 264,
+        "audio": 20
+      },
+      "answers": {
+        "heard": {
+          "confidence": 0.7187433899885387,
+          "noul": 0.28125661001146124,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.8076112250721946,
+          "score": 3.7561924127606425,
+          "probabilities": {
+            "0": 0.001790343400732565,
+            "1": 0.007447310809635412,
+            "2": 0.031153160490083393,
+            "3": 0.15199796022735396,
+            "4": 0.8076112250721946
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "face": {
+          "confidence": 0.9229518111244809,
+          "choice": "happy",
+          "probabilities": {
+            "neutral": 0.059827789233894195,
+            "sad": 0.009009156838612748,
+            "happy": 0.9229518111244809,
+            "angry": 0.008211242803012239
+          },
+          "type": "choice"
+        },
+        "voice": {
+          "confidence": 0.8253306113573566,
+          "choice": "happy",
+          "probabilities": {
+            "happy": 0.8253306113573566,
+            "sad": 0.03228514840113065,
+            "neutral": 0.12462433426792163,
+            "angry": 0.017759905973591054
+          },
+          "type": "choice"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "happy",
+      "label": "3 frames + audio clip",
+      "seconds": 3.69,
+      "ms": 456,
+      "tokens": {
+        "text": 468,
+        "image": 792,
+        "audio": 113
+      },
+      "answers": {
+        "heard": {
+          "confidence": 0.7551660909482124,
+          "noul": 0.7551660909482124,
+          "type": "noul"
+        },
+        "face": {
+          "confidence": 0.8661160066809088,
+          "choice": "happy",
+          "probabilities": {
+            "sad": 0.017807565962210257,
+            "angry": 0.028074763076921,
+            "happy": 0.8661160066809088,
+            "neutral": 0.08800166427995991
+          },
+          "type": "choice"
+        },
+        "voice": {
+          "confidence": 0.6107108516882879,
+          "choice": "happy",
+          "probabilities": {
+            "angry": 0.08128744599784125,
+            "happy": 0.6107108516882879,
+            "neutral": 0.2510136654582145,
+            "sad": 0.05698803685565638
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.7491487960381153,
+          "score": 3.6648609797162837,
+          "probabilities": {
+            "0": 0.005019584018009997,
+            "1": 0.014797736532487817,
+            "2": 0.03963359120282614,
+            "3": 0.1914002922085607,
+            "4": 0.7491487960381153
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      }
+    },
+    {
+      "emotion": "sad",
+      "label": "video original 720p, low",
+      "seconds": 3.82,
+      "bytes": 4826136,
+      "status": 200,
+      "ms": 2806,
+      "tokens": {
+        "text": 470,
+        "image": 264,
+        "audio": 136
+      },
+      "answers": {
+        "heard": {
+          "confidence": 0.7687190235602468,
+          "noul": 0.7687190235602468,
+          "type": "noul"
+        },
+        "voice": {
+          "confidence": 0.42078930956516625,
+          "choice": "neutral",
+          "probabilities": {
+            "angry": 0.14345938070045913,
+            "happy": 0.10646446549912829,
+            "neutral": 0.42078930956516625,
+            "sad": 0.32928684423524623
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.49830775259559684,
+          "choice": "neutral",
+          "probabilities": {
+            "neutral": 0.49830775259559684,
+            "happy": 0.07533961928710307,
+            "angry": 0.11253332036639631,
+            "sad": 0.3138193077509038
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.3884771959852678,
+          "score": 2.6474536532055044,
+          "probabilities": {
+            "0": 0.030564285996355734,
+            "1": 0.08976183915935575,
+            "2": 0.2862632446728688,
+            "3": 0.3884771959852678,
+            "4": 0.20493343418615184
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "sad",
+      "label": "video 360p, low",
+      "seconds": 3.82,
+      "bytes": 63276,
+      "status": 200,
+      "ms": 743,
+      "tokens": {
+        "text": 470,
+        "image": 264,
+        "audio": 136
+      },
+      "answers": {
+        "voice": {
+          "confidence": 0.3628813337464618,
+          "choice": "sad",
+          "probabilities": {
+            "neutral": 0.3238046513283478,
+            "angry": 0.23308721196021231,
+            "happy": 0.080226802964978,
+            "sad": 0.3628813337464618
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.37396135559234567,
+          "score": 2.617096973337171,
+          "probabilities": {
+            "0": 0.034427269469037035,
+            "1": 0.08469709321988352,
+            "2": 0.30857065676734236,
+            "3": 0.37396135559234567,
+            "4": 0.1983436249513915
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "face": {
+          "confidence": 0.4476644191602411,
+          "choice": "neutral",
+          "probabilities": {
+            "happy": 0.03224681168384437,
+            "angry": 0.14960199869563018,
+            "neutral": 0.4476644191602411,
+            "sad": 0.37048677046028455
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.6937658418028609,
+          "noul": 0.6937658418028609,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "sad",
+      "label": "video 360p, high",
+      "seconds": 3.82,
+      "bytes": 63276,
+      "status": 200,
+      "ms": 907,
+      "tokens": {
+        "text": 470,
+        "image": 1056,
+        "audio": 136
+      },
+      "answers": {
+        "face": {
+          "confidence": 0.5559470950423291,
+          "choice": "neutral",
+          "probabilities": {
+            "happy": 0.05885097617944087,
+            "sad": 0.2578922548456777,
+            "neutral": 0.5559470950423291,
+            "angry": 0.1273096739325524
+          },
+          "type": "choice"
+        },
+        "voice": {
+          "confidence": 0.3618716108031057,
+          "choice": "neutral",
+          "probabilities": {
+            "sad": 0.28463012471814164,
+            "neutral": 0.3618716108031057,
+            "happy": 0.08171885823488126,
+            "angry": 0.27177940624387137
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.39434848861625277,
+          "score": 2.7070933949669267,
+          "probabilities": {
+            "0": 0.02788475948481967,
+            "1": 0.0723435672072596,
+            "2": 0.28499418842788166,
+            "3": 0.39434848861625277,
+            "4": 0.22042899626378637
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        },
+        "heard": {
+          "confidence": 0.5935357633934654,
+          "noul": 0.5935357633934654,
+          "type": "noul"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "sad",
+      "label": "video 360p, no sound, low",
+      "seconds": 3.82,
+      "bytes": 41874,
+      "status": 200,
+      "ms": 311,
+      "tokens": {
+        "text": 462,
+        "image": 264,
+        "audio": 20
+      },
+      "answers": {
+        "voice": {
+          "confidence": 0.37374427804080335,
+          "choice": "neutral",
+          "probabilities": {
+            "sad": 0.3489651895000315,
+            "neutral": 0.37374427804080335,
+            "happy": 0.08629573466254896,
+            "angry": 0.19099479779661618
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.44799135543039986,
+          "choice": "neutral",
+          "probabilities": {
+            "neutral": 0.44799135543039986,
+            "happy": 0.033132239651818496,
+            "sad": 0.39862431401637777,
+            "angry": 0.12025209090140375
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.6464927007683643,
+          "noul": 0.35350729923163565,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.34607215188383134,
+          "score": 2.74908296654937,
+          "probabilities": {
+            "0": 0.023385157796590447,
+            "1": 0.08446091270615674,
+            "2": 0.27896075613098315,
+            "3": 0.34607215188383134,
+            "4": 0.2671210214824382
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "sad",
+      "label": "3 frames + audio clip",
+      "seconds": 3.82,
+      "ms": 420,
+      "tokens": {
+        "text": 468,
+        "image": 792,
+        "audio": 116
+      },
+      "answers": {
+        "face": {
+          "confidence": 0.47044408688953676,
+          "choice": "neutral",
+          "probabilities": {
+            "sad": 0.40393856211440105,
+            "neutral": 0.47044408688953676,
+            "angry": 0.09020912413526443,
+            "happy": 0.03540822686079785
+          },
+          "type": "choice"
+        },
+        "voice": {
+          "confidence": 0.4223839547557602,
+          "choice": "neutral",
+          "probabilities": {
+            "angry": 0.12984824502511613,
+            "neutral": 0.4223839547557602,
+            "happy": 0.06515756369407386,
+            "sad": 0.38261023652504994
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.6794688372708978,
+          "noul": 0.6794688372708978,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.31419324280821587,
+          "score": 2.195653588235106,
+          "probabilities": {
+            "0": 0.08354927771594832,
+            "1": 0.19739643373164142,
+            "2": 0.2818833784489801,
+            "3": 0.31419324280821587,
+            "4": 0.12297766729521425
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      }
+    },
+    {
+      "emotion": "angry",
+      "label": "video original 720p, low",
+      "seconds": 4.12,
+      "bytes": 5227371,
+      "status": 200,
+      "ms": 2341,
+      "tokens": {
+        "text": 470,
+        "image": 264,
+        "audio": 140
+      },
+      "answers": {
+        "voice": {
+          "confidence": 0.9549678231904993,
+          "choice": "angry",
+          "probabilities": {
+            "happy": 0.006378204838709624,
+            "neutral": 0.018216487096350365,
+            "angry": 0.9549678231904993,
+            "sad": 0.02043748487444063
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.837409980207105,
+          "noul": 0.837409980207105,
+          "type": "noul"
+        },
+        "face": {
+          "confidence": 0.9340426268058686,
+          "choice": "angry",
+          "probabilities": {
+            "sad": 0.019884895622427748,
+            "angry": 0.9340426268058686,
+            "happy": 0.003673896588235078,
+            "neutral": 0.04239858098346869
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.3810990421346977,
+          "score": 2.9632837825264766,
+          "probabilities": {
+            "0": 0.03965999279865417,
+            "1": 0.0632194167448216,
+            "2": 0.17239644772261545,
+            "3": 0.3436251005992111,
+            "4": 0.3810990421346977
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "angry",
+      "label": "video 360p, low",
+      "seconds": 4.12,
+      "bytes": 103224,
+      "status": 200,
+      "ms": 584,
+      "tokens": {
+        "text": 470,
+        "image": 264,
+        "audio": 140
+      },
+      "answers": {
+        "voice": {
+          "confidence": 0.9567213201903635,
+          "choice": "angry",
+          "probabilities": {
+            "sad": 0.01715616793073772,
+            "happy": 0.006950650578457566,
+            "angry": 0.9567213201903635,
+            "neutral": 0.019171861300441358
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.9130786454775305,
+          "choice": "angry",
+          "probabilities": {
+            "neutral": 0.05908345587407312,
+            "angry": 0.9130786454775305,
+            "sad": 0.022046398473053123,
+            "happy": 0.005791500175343154
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.8977028798692978,
+          "noul": 0.8977028798692978,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.3590212888759649,
+          "score": 2.819720993826297,
+          "probabilities": {
+            "0": 0.06250372859965839,
+            "1": 0.07854376668957881,
+            "2": 0.1947015758715348,
+            "3": 0.3052296399632631,
+            "4": 0.3590212888759649
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "angry",
+      "label": "video 360p, high",
+      "seconds": 4.12,
+      "bytes": 103224,
+      "status": 200,
+      "ms": 672,
+      "tokens": {
+        "text": 470,
+        "image": 1056,
+        "audio": 140
+      },
+      "answers": {
+        "voice": {
+          "confidence": 0.9456364038151831,
+          "choice": "angry",
+          "probabilities": {
+            "sad": 0.015906827066963967,
+            "angry": 0.9456364038151831,
+            "neutral": 0.030371236157209776,
+            "happy": 0.008085532960643235
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.9193922696105795,
+          "choice": "angry",
+          "probabilities": {
+            "happy": 0.00478586037810364,
+            "sad": 0.015109505048598388,
+            "neutral": 0.060712364962718555,
+            "angry": 0.9193922696105795
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.7955310064310045,
+          "noul": 0.7955310064310045,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.38581778091410585,
+          "score": 2.7251702732922625,
+          "probabilities": {
+            "0": 0.04759170624644737,
+            "1": 0.05534619905399527,
+            "2": 0.2663032618229283,
+            "3": 0.38581778091410585,
+            "4": 0.24494105196252322
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "angry",
+      "label": "video 360p, no sound, low",
+      "seconds": 4.12,
+      "bytes": 76059,
+      "status": 200,
+      "ms": 305,
+      "tokens": {
+        "text": 462,
+        "image": 264,
+        "audio": 20
+      },
+      "answers": {
+        "face": {
+          "confidence": 0.7552779441125108,
+          "choice": "angry",
+          "probabilities": {
+            "angry": 0.7552779441125108,
+            "happy": 0.019441171992990915,
+            "neutral": 0.16873564428132853,
+            "sad": 0.05654523961316977
+          },
+          "type": "choice"
+        },
+        "voice": {
+          "confidence": 0.7701947416346557,
+          "choice": "angry",
+          "probabilities": {
+            "neutral": 0.13831684965603355,
+            "sad": 0.06429264430450794,
+            "angry": 0.7701947416346557,
+            "happy": 0.027195764404802755
+          },
+          "type": "choice"
+        },
+        "heard": {
+          "confidence": 0.644774389776501,
+          "noul": 0.355225610223499,
+          "type": "noul"
+        },
+        "presence": {
+          "confidence": 0.32600690266665117,
+          "score": 2.6206042419930933,
+          "probabilities": {
+            "0": 0.048554760907015444,
+            "1": 0.09027727190258311,
+            "2": 0.2941689980022223,
+            "3": 0.32600690266665117,
+            "4": 0.240992066521528
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      },
+      "error": null
+    },
+    {
+      "emotion": "angry",
+      "label": "3 frames + audio clip",
+      "seconds": 4.12,
+      "ms": 483,
+      "tokens": {
+        "text": 470,
+        "image": 792,
+        "audio": 128
+      },
+      "answers": {
+        "heard": {
+          "confidence": 0.7393231859876483,
+          "noul": 0.7393231859876483,
+          "type": "noul"
+        },
+        "voice": {
+          "confidence": 0.9345792883723896,
+          "choice": "angry",
+          "probabilities": {
+            "happy": 0.013814989869767395,
+            "neutral": 0.03354804736247701,
+            "sad": 0.01805767439536593,
+            "angry": 0.9345792883723896
+          },
+          "type": "choice"
+        },
+        "face": {
+          "confidence": 0.9397218330499367,
+          "choice": "angry",
+          "probabilities": {
+            "sad": 0.01709581559625944,
+            "happy": 0.005575770096991941,
+            "angry": 0.9397218330499367,
+            "neutral": 0.0376065812568118
+          },
+          "type": "choice"
+        },
+        "presence": {
+          "confidence": 0.4266294924409988,
+          "score": 2.9814953451199373,
+          "probabilities": {
+            "0": 0.025399169093611066,
+            "1": 0.044758569693817744,
+            "2": 0.17800138849158337,
+            "3": 0.4266294924409988,
+            "4": 0.3252113802799891
+          },
+          "legend": {
+            "0": "Disengaged: Turned away, slumped, or visibly doing something else.",
+            "1": "Distracted: Frequently looking away from the camera or at another screen.",
+            "2": "Neutral: Facing the camera with a flat or unreadable expression.",
+            "3": "Attentive: Facing the camera with steady attention.",
+            "4": "Engaged: Facing the camera with an open, responsive expression such as nodding or smiling."
+          },
+          "type": "score"
+        }
+      }
+    }
+  ],
+  "fused": {
+    "happy": {
+      "text": 1.9711749725768666,
+      "textAudio": 1.968448514816245,
+      "textFrames": 2.6262688418515254,
+      "all": 3.1147107428884784,
+      "audioOnly": 1.455667236982664,
+      "framesOnly": 3.2535327411579136
+    },
+    "angry": {
+      "text": 1.9711749725768666,
+      "textAudio": 0.9591879614317904,
+      "textFrames": 1.2559478422411374,
+      "all": 0.6401276489760022,
+      "audioOnly": 0.6945489427578773,
+      "framesOnly": 0.8149933110008042
+    }
+  }
+}

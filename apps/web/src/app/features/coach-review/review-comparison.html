@@ -1,0 +1,51 @@
+@if (evaluation(); as result) {
+  <p>
+    Your review is submitted. The AI ({{ result.provider | providerLabel }}) chose the same level as
+    you on <strong>{{ agreed() }} of {{ compared() }}</strong> rated skills.
+  </p>
+  <div class="table-scroll">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Skill</th>
+          <th scope="col">Your level</th>
+          <th scope="col">AI level</th>
+          <th scope="col">Match</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.skillId) {
+          <tr>
+            <th scope="row">{{ row.name }}</th>
+            <td>{{ row.coach }}</td>
+            <td>
+              {{ row.ai }}
+              @if (row.confidence !== null) {
+                <div class="muted small">{{ row.confidence | percent }} confident</div>
+              }
+            </td>
+            <td>
+              @if (row.gap === null) {
+                <span class="muted">—</span>
+              } @else if (row.gap === 0) {
+                <span class="chip chip-good">Same level</span>
+              } @else {
+                <span
+                  class="chip"
+                  [class.chip-warn]="row.gap === 1 || row.gap === -1"
+                  [class.chip-bad]="row.gap > 1 || row.gap < -1"
+                >
+                  AI {{ row.gap > 0 ? '+' : '' }}{{ row.gap }}
+                </span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <p class="muted">
+    Your review is submitted. This call has no AI evaluation yet, so there is nothing to compare.
+  </p>
+}

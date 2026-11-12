@@ -1,0 +1,181 @@
+<header class="page-header">
+  <div>
+    <p class="eyebrow">Batch scoring</p>
+    <h1>Runs</h1>
+    <p>
+      A run scores calls against one scorecard version with one provider. Every provider request is
+      logged, so runs can be compared on score, cost, latency and agreement with coaches.
+    </p>
+  </div>
+</header>
+
+<section class="panel panel-body stack" aria-label="Start a run">
+  <div class="row-between">
+    <app-provider-picker
+      [provider]="provider()"
+      (providerChange)="chooseProvider($event)"
+      [disabled]="starting() || running()"
+    />
+    <button type="button" class="btn btn-primary" [disabled]="!canStart()" (click)="startRun()">
+      {{ starting() ? 'Starting…' : running() ? 'Run in progress' : 'Score every call' }}
+    </button>
+  </div>
+
+  @if (actionError(); as message) {
+    <div class="notice notice-error" role="alert">{{ message }}</div>
+  }
+
+  @if (activeRun(); as run) {
+    <div class="stack-tight" aria-live="polite">
+      <div class="row-between">
+        <strong>
+          {{ run.provider | providerLabel }} · {{ statusLabels[run.status] }} ·
+          {{ run.completed }} of {{ run.total }} calls
+        </strong>
+        @if (run.failed > 0) {
+          <span class="chip chip-bad">{{ run.failed }} failed</span>
+        }
+      </div>
+      <div class="meter"><span [style.width.%]="activeProgress()"></span></div>
+      <ul class="results">
+        @for (result of run.results; track result.callId) {
+          <li>
+            <span>{{ result.subject }}</span>
+            @if (result.error) {
+              <span class="field-error">{{ result.error }}</span>
+            } @else {
+              <span class="numeric muted">
+                {{ result.overallScore === null ? result.status : (result.overallScore | score) }}
+              </span>
+            }
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</section>
+
+<section class="panel" aria-label="Recent runs">
+  <div class="panel-head">
+    <h2>Recent runs</h2>
+    <span class="muted small">Live replays appear here too, once they have called a provider.</span>
+  </div>
+
+  @if (loadError(); as message) {
+    <app-state-message kind="error" title="Could not load runs" [detail]="message">
+      <button type="button" class="btn" (click)="reload()">Try again</button>
+    </app-state-message>
+  } @else if (runList().length === 0) {
+    @if (runs.isLoading()) {
+      <app-state-message kind="loading" title="Loading runs" />
+    } @else {
+      <app-state-message
+        title="No runs yet"
+        detail="Start a batch run above, or replay a call in the live studio."
+      />
+    }
+  } @else {
+    <div class="table-scroll">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Run</th>
+            <th scope="col">Status</th>
+            <th scope="col" class="num">Calls</th>
+            <th scope="col" class="num">Avg score</th>
+            <th scope="col" class="num">Review</th>
+            <th scope="col" class="num">Requests</th>
+            <th scope="col" class="num">Questions</th>
+            <th scope="col" class="num">Input tokens</th>
+            <th scope="col" class="num">Est. cost</th>
+            <th scope="col" class="num">P50 / P95</th>
+            <th scope="col" class="num">Coach agreement</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (run of runList(); track run.id) {
+            @let metrics = run.metrics;
+            <tr>
+              <td>
+                <button
+                  type="button"
+                  class="btn-link"
+                  [attr.aria-expanded]="expanded().has(run.id)"
+                  (click)="toggle(run)"
+                >
+                  {{ run.provider | providerLabel }}
+                </button>
+                <div class="muted small">
+                  {{ run.kind === 'batch' ? 'Batch' : 'Live' }} · scorecard v{{
+                    run.scorecardVersion
+                  }}
+                  · {{ run.createdAt | date: 'MMM d, HH:mm' }}
+                </div>
+              </td>
+              <td>
+                <span
+                  class="chip"
+                  [class.chip-good]="run.status === 'completed'"
+                  [class.chip-info]="run.status === 'running' || run.status === 'queued'"
+                  [class.chip-warn]="run.status === 'completed_with_errors'"
+                  [class.chip-bad]="run.status === 'failed'"
+                >
+                  {{ statusLabels[run.status] }}
+                </span>
+              </td>
+              <td class="num">{{ run.completed }} / {{ run.total }}</td>
+              <td class="num">{{ metrics.averageScore | score }}</td>
+              <td class="num">{{ metrics.needsReview }}</td>
+              <td class="num">{{ metrics.requests | number }}</td>
+              <td class="num">{{ metrics.questions | number }}</td>
+              <td class="num">{{ metrics.inputTokens | number }}</td>
+              <td class="num">{{ metrics.estimatedCostUsd | usd }}</td>
+              <td class="num">
+                @if (metrics.latencyP50Ms !== null) {
+                  {{ metrics.latencyP50Ms | number: '1.0-0' }} /
+                  {{ metrics.latencyP95Ms | number: '1.0-0' }} ms
+                } @else {
+                  —
+                }
+              </td>
+              <td class="num">
+                @if (metrics.agreement; as agreement) {
+                  <span [title]="agreement.n + ' rated skills compared'">
+                    {{ agreement.exact | percent }} exact ·
+                    {{ agreement.adjacent | percent }} within one
+                  </span>
+                } @else {
+                  <span class="muted">No reviews</span>
+                }
+              </td>
+            </tr>
+            @if (expanded().get(run.id); as detail) {
+              <tr class="detail-row">
+                <td colspan="11">
+                  @if (detail.results.length > 0) {
+                    <ul class="results">
+                      @for (result of detail.results; track result.callId) {
+                        <li>
+                          <span>{{ result.subject }}</span>
+                          @if (result.error) {
+                            <span class="field-error">{{ result.error }}</span>
+                          } @else {
+                            <span class="numeric">{{ result.overallScore | score }}</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  } @else {
+                    <span class="muted small">
+                      A live replay scores one call; open it in the live studio or the call library.
+                    </span>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

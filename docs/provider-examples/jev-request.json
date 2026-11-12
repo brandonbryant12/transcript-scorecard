@@ -1,201 +1,403 @@
 {
-  "model": "jev-latest",
-  "state": {
-    "call": {
-      "subject": "Locked out after password reset",
-      "customer_name": "Sam Rivera",
-      "employee_name": "Priya Patel",
-      "transcript": [
-        {
-          "id": "turn-1",
-          "speaker": "employee",
-          "text": "ACME Support, this is Priya. How can I help?"
-        },
-        {
-          "id": "turn-2",
-          "speaker": "customer",
-          "text": "I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes."
-        },
-        {
-          "id": "turn-3",
-          "speaker": "employee",
-          "text": "That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?"
-        },
-        {
-          "id": "turn-4",
-          "speaker": "customer",
-          "text": "sam.rivera@example.com, and the phone ends in 4417."
-        },
-        {
-          "id": "turn-5",
-          "speaker": "employee",
-          "text": "Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417."
-        },
-        { "id": "turn-6", "speaker": "customer", "text": "Got the code and I'm in. Thank you!" }
-      ]
-    },
-    "evaluation_context": {
-      "purpose": "Quality assurance scorecard for a customer support employee",
-      "evidence_rule": "Base every judgment only on the supplied transcript"
-    }
-  },
-  "questions": {
-    "score__empathy": {
-      "type": "score",
-      "instructions": {
-        "task": "Evaluate the employee on Empathy & active listening.",
-        "definition": "Recognizes the customer’s emotion and responds to what they actually said.",
-        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+  "method": "POST",
+  "url": "https://api.typesafe.ai/v1/systemone",
+  "body": {
+    "model": "jev-latest",
+    "state": "Customer support call about: Locked out after a password reset\nEMPLOYEE is Marcus Bell, the support employee being assessed. CUSTOMER is Priya Natarajan.\nThis is the complete call.\n\n[turn-1] EMPLOYEE: Thanks for calling Contoso support, this is Marcus. How can I help today?\n[turn-2] CUSTOMER: I reset my password an hour ago and now it says my account is locked. I've got a client presentation in twenty minutes and everything is in there.\n[turn-3] EMPLOYEE: That's a stressful spot with a presentation so close, so let's move quickly. To make sure I'm talking to the account holder, can you confirm the email on the account and the code I've just sent to your phone?\n[turn-4] CUSTOMER: It's priya.n@example.com, and the code is 482 913.\n[turn-5] EMPLOYEE: Thank you, you're verified. Three failed sign-ins after the reset triggered the lock. I've cleared it now; please sign in with the new password while I stay on the line.\n[turn-6] CUSTOMER: I'm in. Thank you, that was quick.",
+    "questions": {
+      "s_0": {
+        "type": "score",
+        "instructions": "Rate the EMPLOYEE on \"Empathy & active listening\": Recognises how the customer feels and responds to what they actually said. Judge only what the transcript shows. Choose the level whose description fits best.",
+        "criteria": [
+          "Dismissive: Ignores or contradicts what the customer said; shows no recognition of how they feel.",
+          "Minimal: A token acknowledgement, then straight back to script; the customer has to repeat themselves.",
+          "Adequate: Polite and responsive, but the acknowledgement is generic and the problem is not played back.",
+          "Strong: Names the customer's situation or feeling specifically and responds to what they actually said.",
+          "Exceptional: Consistently reflects the customer's words and priorities, repairs any misstep, and leaves them feeling heard."
+        ]
       },
-      "criteria": [ "Dismissive", "Minimal acknowledgment", "Adequate", "Strong", "Exceptional" ]
-    },
-    "evidence__empathy": {
-      "type": "choice",
-      "instructions": {
-        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Empathy & active listening?",
-        "definition": "Recognizes the customer’s emotion and responds to what they actually said.",
-        "rubric": [ "Dismissive", "Minimal acknowledgment", "Adequate", "Strong", "Exceptional" ],
-        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      "o_0": {
+        "type": "noul",
+        "instructions": "Did this call give the EMPLOYEE a real opportunity to show \"Empathy & active listening\" (Recognises how the customer feels and responds to what they actually said.)? Answer no only if nothing in the call called for this skill."
       },
-      "criteria": {
-        "none": "No transcript turn provides direct evidence for the judgment.",
-        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
-        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
-        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
-        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
-        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
-        "turn-6": "Customer: Got the code and I'm in. Thank you!"
-      }
-    },
-    "score__accuracy": {
-      "type": "score",
-      "instructions": {
-        "task": "Evaluate the employee on Accuracy & policy alignment.",
-        "definition": "Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.",
-        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      "s_1": {
+        "type": "score",
+        "instructions": "Rate the EMPLOYEE on \"Accuracy & honesty\": Gives correct, consistent information and is honest about what is uncertain or outside their control. Judge only what the transcript shows. Choose the level whose description fits best.",
+        "criteria": [
+          "Misleading: Gives wrong information or guarantees that the call shows to be false, and does not correct them.",
+          "Unreliable: Several unsupported claims or contradictions; corrections come only when the customer pushes.",
+          "Mostly accurate: Generally correct, with one notable unsupported claim or a gap the customer has to probe.",
+          "Accurate: Information is correct and consistent; limits and uncertainty are stated when asked.",
+          "Precise: Correct, consistent, and proactively clear about what is known, unknown and outside the employee's control."
+        ]
       },
-      "criteria": [
-        "Materially incorrect",
-        "Multiple gaps",
-        "Mostly accurate",
-        "Accurate",
-        "Precise and complete"
-      ]
-    },
-    "evidence__accuracy": {
-      "type": "choice",
-      "instructions": {
-        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Accuracy & policy alignment?",
-        "definition": "Gives accurate, internally consistent guidance, follows identity and security verification requirements, and avoids unsupported promises.",
-        "rubric": [
-          "Materially incorrect",
-          "Multiple gaps",
-          "Mostly accurate",
-          "Accurate",
-          "Precise and complete"
-        ],
-        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      "o_1": {
+        "type": "noul",
+        "instructions": "Did this call give the EMPLOYEE a real opportunity to show \"Accuracy & honesty\" (Gives correct, consistent information and is honest about what is uncertain or outside their control.)? Answer no only if nothing in the call called for this skill."
       },
-      "criteria": {
-        "none": "No transcript turn provides direct evidence for the judgment.",
-        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
-        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
-        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
-        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
-        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
-        "turn-6": "Customer: Got the code and I'm in. Thank you!"
-      }
-    },
-    "score__resolution": {
-      "type": "score",
-      "instructions": {
-        "task": "Evaluate the employee on Resolution quality.",
-        "definition": "Moves the issue to a clear resolution or a well-owned next step.",
-        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      "s_2": {
+        "type": "score",
+        "instructions": "Rate the EMPLOYEE on \"Security & verification\": Verifies identity before touching the account and refuses to bend that rule. Judge only what the transcript shows. Choose the level whose description fits best.",
+        "criteria": [
+          "Breach: Changes or exposes account access or personal details with no identity verification.",
+          "Risky: Offers to skip verification, or verifies only after acting on the account.",
+          "Partial: Verifies, but incompletely or inconsistently across the call.",
+          "Sound: Verifies identity before accessing or changing the account.",
+          "Exemplary: Verifies before acting, explains why, and protects the account when asked to bend the rules."
+        ]
       },
-      "criteria": [
-        "Unresolved",
-        "Weak next step",
-        "Partial resolution",
-        "Resolved",
-        "Resolved with proactive follow-through"
-      ]
-    },
-    "evidence__resolution": {
-      "type": "choice",
-      "instructions": {
-        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Resolution quality?",
-        "definition": "Moves the issue to a clear resolution or a well-owned next step.",
-        "rubric": [
-          "Unresolved",
-          "Weak next step",
-          "Partial resolution",
-          "Resolved",
-          "Resolved with proactive follow-through"
-        ],
-        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      "o_2": {
+        "type": "noul",
+        "instructions": "Did this call give the EMPLOYEE a real opportunity to show \"Security & verification\" (Verifies identity before touching the account and refuses to bend that rule.)? Answer no only if nothing in the call called for this skill."
       },
-      "criteria": {
-        "none": "No transcript turn provides direct evidence for the judgment.",
-        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
-        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
-        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
-        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
-        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
-        "turn-6": "Customer: Got the code and I'm in. Thank you!"
-      }
-    },
-    "score__communication": {
-      "type": "score",
-      "instructions": {
-        "task": "Evaluate the employee on Clear communication.",
-        "definition": "Uses concise, understandable language and confirms important details.",
-        "guidance": "Judge only behavior supported by this call. Use the full ordered rubric."
+      "s_3": {
+        "type": "score",
+        "instructions": "Rate the EMPLOYEE on \"Resolution & ownership\": Moves the issue to a clear resolution or a specific, owned next step. Judge only what the transcript shows. Choose the level whose description fits best.",
+        "criteria": [
+          "Unresolved: No fix and no plan; the customer is left where they started.",
+          "Weak next step: A vague or unowned follow-up with no timeframe.",
+          "Partial: Some progress, but part of the issue is still open or unowned.",
+          "Resolved: The issue is fixed, or has a specific next step with an owner and a timeframe.",
+          "Resolved and proactive: Fixed and confirmed with the customer, with future problems anticipated and prevented."
+        ]
       },
-      "criteria": [ "Confusing", "Often unclear", "Understandable", "Clear", "Exceptionally clear" ]
-    },
-    "evidence__communication": {
-      "type": "choice",
-      "instructions": {
-        "task": "Which single transcript turn contains the most relevant employee behavior for assessing Clear communication?",
-        "definition": "Uses concise, understandable language and confirms important details.",
-        "rubric": [ "Confusing", "Often unclear", "Understandable", "Clear", "Exceptionally clear" ],
-        "guidance": "Choose none only when no turn contains relevant employee behavior."
+      "o_3": {
+        "type": "noul",
+        "instructions": "Did this call give the EMPLOYEE a real opportunity to show \"Resolution & ownership\" (Moves the issue to a clear resolution or a specific, owned next step.)? Answer no only if nothing in the call called for this skill."
       },
-      "criteria": {
-        "none": "No transcript turn provides direct evidence for the judgment.",
-        "turn-1": "Employee: ACME Support, this is Priya. How can I help?",
-        "turn-2": "Customer: I reset my password an hour ago and now the app says my account is locked. I have a client call in twenty minutes.",
-        "turn-3": "Employee: That sounds stressful with a call coming up, so let's get you back in quickly. Can you confirm the email on the account and the last four digits of the phone number?",
-        "turn-4": "Customer: sam.rivera@example.com, and the phone ends in 4417.",
-        "turn-5": "Employee: Thanks, that matches. Three failed sign-ins after the reset triggered a security lock. I've cleared it, and I'm sending a one-time code to the phone ending 4417.",
-        "turn-6": "Customer: Got the code and I'm in. Thank you!"
-      }
-    },
-    "signal__restated": {
-      "type": "noul",
-      "instructions": {
-        "task": "Did the employee restate or summarise the customer's problem back to them in their own words?",
-        "guidance": "Judge only the employee's turns in the supplied transcript."
+      "s_4": {
+        "type": "score",
+        "instructions": "Rate the EMPLOYEE on \"Clear communication\": Uses plain language, confirms the details that matter and closes with a summary. Judge only what the transcript shows. Choose the level whose description fits best.",
+        "criteria": [
+          "Confusing: The customer cannot tell what is happening or what to do.",
+          "Often unclear: Jargon, missing steps or contradictions force the customer to ask again.",
+          "Understandable: The customer can follow, but key details are not confirmed.",
+          "Clear: Plain language, one step at a time, with key details confirmed.",
+          "Exceptionally clear: Explains the why as well as the what, confirms details back, and closes with a summary."
+        ]
       },
-      "criteria": {
-        "true": "The employee played the problem back, confirmed their understanding, or summarised the situation for the customer to confirm.",
-        "false": "The employee moved straight to questions, instructions, or a fix without reflecting the problem back."
-      }
-    },
-    "signal__emotion": {
-      "type": "choice",
-      "instructions": {
-        "task": "What is the customer's predominant emotional state in the most recent part of the call?",
-        "guidance": "Weigh the customer's latest turns most heavily; judge the customer, never the employee."
+      "o_4": {
+        "type": "noul",
+        "instructions": "Did this call give the EMPLOYEE a real opportunity to show \"Clear communication\" (Uses plain language, confirms the details that matter and closes with a summary.)? Answer no only if nothing in the call called for this skill."
       },
-      "criteria": {
-        "frustrated": "Annoyed or exasperated with the employee, the product, or having to repeat themselves.",
-        "anxious": "Worried about consequences, under time pressure, or uneasy about risk.",
-        "skeptical": "Doubting what the employee has told them, or pressing for proof of a claim.",
-        "cooperative": "Engaged and working the problem with the employee, without notable distress.",
-        "reassured": "Calm and confident the issue is handled or in good hands.",
-        "neutral": "Matter-of-fact exchange with no clear emotional colour."
+      "e_0": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The customer has expressed frustration, worry, urgency or another clear emotion."
+      },
+      "e_1": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The customer has described the problem they need help with."
+      },
+      "e_2": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The customer has pointed out a mistake by the employee or the company, or described a poor experience the company caused."
+      },
+      "e_4": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The customer has asked for a guarantee, a timeframe, or certainty about an outcome."
+      },
+      "e_5": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The employee has said something inaccurate or made a promise they could not support."
+      },
+      "e_8": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The employee needs to access, discuss or change account-specific information."
+      },
+      "e_10": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The customer has described a problem whose cause is not yet established."
+      },
+      "e_11": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The call has reached the point where the fix or the requested action could be carried out."
+      },
+      "e_12": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: Part of the issue cannot be completed during the call, or follow-up is needed."
+      },
+      "e_13": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The employee has taken or proposed an action on the customer's issue."
+      },
+      "e_14": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The call involves a reference number, amount, date or commitment the customer needs to keep."
+      },
+      "e_15": {
+        "type": "noul",
+        "instructions": "Has this situation come up at any point in the call? Situation: The call is wrapping up or has ended."
+      },
+      "risk": {
+        "type": "score",
+        "instructions": "If the call ended right now, how likely is the CUSTOMER to escalate, complain, or stop using the company?",
+        "criteria": [
+          "Low: the customer is satisfied or calmly working with the employee",
+          "Guarded: some frustration or doubt, but still engaged",
+          "Elevated: clear dissatisfaction, repeated pushback, or loss of trust",
+          "High: asks for a supervisor, threatens to complain or cancel, or has given up on the employee"
+        ]
+      },
+      "t_0_0": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+      },
+      "t_0_1": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee restates or summarises the customer's problem in their own words to confirm understanding."
+      },
+      "t_0_2": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee apologises for, or takes ownership of, a mistake or poor experience without deflecting blame."
+      },
+      "t_0_3": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee dismisses, contradicts or talks past what the customer just said, for example by repeating a step the customer already tried or sending them elsewhere without looking."
+      },
+      "t_0_4": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee is explicit about what they cannot guarantee, do not know, or do not control."
+      },
+      "t_0_5": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee corrects something inaccurate or unsupported that they said earlier in the call."
+      },
+      "t_0_6": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee guarantees an outcome or timeframe that is outside their control or that contradicts what they said earlier."
+      },
+      "t_0_7": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asserts a cause, policy or fact that contradicts information the customer has already given in the call."
+      },
+      "t_0_8": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asks the customer to prove their own identity with security details, or confirms that the security details the customer gave match the account."
+      },
+      "t_0_9": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee makes, or offers to make, a change to account access, credentials or contact details without verifying the identity of the person affected."
+      },
+      "t_0_10": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asks a specific diagnostic question, or reports checking records or logs, to find the cause of the problem."
+      },
+      "t_0_11": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee states that the fix, or the action the customer asked for, has now been carried out."
+      },
+      "t_0_12": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee commits to a specific next step with an owner, a timeframe or a reference number."
+      },
+      "t_0_13": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee gives the reason behind a step, a diagnosis or a decision in plain language."
+      },
+      "t_0_14": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee reads back or confirms a key detail such as a reference number, amount, date or timeframe."
+      },
+      "t_0_15": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-1]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee recaps the call as a whole: what has been done and what happens next."
+      },
+      "c_1_s": {
+        "type": "score",
+        "instructions": "Focus on the single turn labelled [turn-2]; treat every other turn as context only. How does the CUSTOMER feel in that turn?",
+        "criteria": [
+          "Very negative: angry, hostile, or threatening to leave or escalate",
+          "Negative: frustrated, worried, doubtful or dissatisfied",
+          "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+          "Positive: satisfied, relieved or appreciative",
+          "Very positive: delighted or openly grateful"
+        ]
+      },
+      "c_1_e": {
+        "type": "choice",
+        "instructions": "Focus on the single turn labelled [turn-2]; treat every other turn as context only. Which emotion best describes the CUSTOMER in that turn?",
+        "criteria": {
+          "anxious": "Worried about consequences, under time pressure, or uneasy about a risk.",
+          "cooperative": "Engaged and working the problem with the employee, without notable distress.",
+          "frustrated": "Annoyed or exasperated with the employee, the company, or having to repeat themselves.",
+          "neutral": "Matter-of-fact; no clear emotional colour.",
+          "reassured": "Relieved, calmer, appreciative, or confident the issue is in good hands.",
+          "skeptical": "Doubting what they have been told, or pressing for proof or a commitment."
+        }
+      },
+      "t_2_0": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+      },
+      "t_2_1": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee restates or summarises the customer's problem in their own words to confirm understanding."
+      },
+      "t_2_2": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee apologises for, or takes ownership of, a mistake or poor experience without deflecting blame."
+      },
+      "t_2_3": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee dismisses, contradicts or talks past what the customer just said, for example by repeating a step the customer already tried or sending them elsewhere without looking."
+      },
+      "t_2_4": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee is explicit about what they cannot guarantee, do not know, or do not control."
+      },
+      "t_2_5": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee corrects something inaccurate or unsupported that they said earlier in the call."
+      },
+      "t_2_6": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee guarantees an outcome or timeframe that is outside their control or that contradicts what they said earlier."
+      },
+      "t_2_7": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asserts a cause, policy or fact that contradicts information the customer has already given in the call."
+      },
+      "t_2_8": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asks the customer to prove their own identity with security details, or confirms that the security details the customer gave match the account."
+      },
+      "t_2_9": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee makes, or offers to make, a change to account access, credentials or contact details without verifying the identity of the person affected."
+      },
+      "t_2_10": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asks a specific diagnostic question, or reports checking records or logs, to find the cause of the problem."
+      },
+      "t_2_11": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee states that the fix, or the action the customer asked for, has now been carried out."
+      },
+      "t_2_12": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee commits to a specific next step with an owner, a timeframe or a reference number."
+      },
+      "t_2_13": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee gives the reason behind a step, a diagnosis or a decision in plain language."
+      },
+      "t_2_14": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee reads back or confirms a key detail such as a reference number, amount, date or timeframe."
+      },
+      "t_2_15": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-3]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee recaps the call as a whole: what has been done and what happens next."
+      },
+      "c_3_s": {
+        "type": "score",
+        "instructions": "Focus on the single turn labelled [turn-4]; treat every other turn as context only. How does the CUSTOMER feel in that turn?",
+        "criteria": [
+          "Very negative: angry, hostile, or threatening to leave or escalate",
+          "Negative: frustrated, worried, doubtful or dissatisfied",
+          "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+          "Positive: satisfied, relieved or appreciative",
+          "Very positive: delighted or openly grateful"
+        ]
+      },
+      "c_3_e": {
+        "type": "choice",
+        "instructions": "Focus on the single turn labelled [turn-4]; treat every other turn as context only. Which emotion best describes the CUSTOMER in that turn?",
+        "criteria": {
+          "anxious": "Worried about consequences, under time pressure, or uneasy about a risk.",
+          "cooperative": "Engaged and working the problem with the employee, without notable distress.",
+          "frustrated": "Annoyed or exasperated with the employee, the company, or having to repeat themselves.",
+          "neutral": "Matter-of-fact; no clear emotional colour.",
+          "reassured": "Relieved, calmer, appreciative, or confident the issue is in good hands.",
+          "skeptical": "Doubting what they have been told, or pressing for proof or a commitment."
+        }
+      },
+      "t_4_0": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee explicitly acknowledges how the customer feels, the pressure they are under, or the effort they have already made."
+      },
+      "t_4_1": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee restates or summarises the customer's problem in their own words to confirm understanding."
+      },
+      "t_4_2": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee apologises for, or takes ownership of, a mistake or poor experience without deflecting blame."
+      },
+      "t_4_3": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee dismisses, contradicts or talks past what the customer just said, for example by repeating a step the customer already tried or sending them elsewhere without looking."
+      },
+      "t_4_4": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee is explicit about what they cannot guarantee, do not know, or do not control."
+      },
+      "t_4_5": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee corrects something inaccurate or unsupported that they said earlier in the call."
+      },
+      "t_4_6": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee guarantees an outcome or timeframe that is outside their control or that contradicts what they said earlier."
+      },
+      "t_4_7": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asserts a cause, policy or fact that contradicts information the customer has already given in the call."
+      },
+      "t_4_8": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asks the customer to prove their own identity with security details, or confirms that the security details the customer gave match the account."
+      },
+      "t_4_9": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee makes, or offers to make, a change to account access, credentials or contact details without verifying the identity of the person affected."
+      },
+      "t_4_10": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee asks a specific diagnostic question, or reports checking records or logs, to find the cause of the problem."
+      },
+      "t_4_11": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee states that the fix, or the action the customer asked for, has now been carried out."
+      },
+      "t_4_12": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee commits to a specific next step with an owner, a timeframe or a reference number."
+      },
+      "t_4_13": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee gives the reason behind a step, a diagnosis or a decision in plain language."
+      },
+      "t_4_14": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee reads back or confirms a key detail such as a reference number, amount, date or timeframe."
+      },
+      "t_4_15": {
+        "type": "noul",
+        "instructions": "Focus on the single turn labelled [turn-5]; treat every other turn as context only. Is this statement true of that turn? Statement: The employee recaps the call as a whole: what has been done and what happens next."
+      },
+      "c_5_s": {
+        "type": "score",
+        "instructions": "Focus on the single turn labelled [turn-6]; treat every other turn as context only. How does the CUSTOMER feel in that turn?",
+        "criteria": [
+          "Very negative: angry, hostile, or threatening to leave or escalate",
+          "Negative: frustrated, worried, doubtful or dissatisfied",
+          "Neutral: matter-of-fact, giving or asking for information with no clear feeling",
+          "Positive: satisfied, relieved or appreciative",
+          "Very positive: delighted or openly grateful"
+        ]
+      },
+      "c_5_e": {
+        "type": "choice",
+        "instructions": "Focus on the single turn labelled [turn-6]; treat every other turn as context only. Which emotion best describes the CUSTOMER in that turn?",
+        "criteria": {
+          "anxious": "Worried about consequences, under time pressure, or uneasy about a risk.",
+          "cooperative": "Engaged and working the problem with the employee, without notable distress.",
+          "frustrated": "Annoyed or exasperated with the employee, the company, or having to repeat themselves.",
+          "neutral": "Matter-of-fact; no clear emotional colour.",
+          "reassured": "Relieved, calmer, appreciative, or confident the issue is in good hands.",
+          "skeptical": "Doubting what they have been told, or pressing for proof or a commitment."
+        }
       }
     }
   }
